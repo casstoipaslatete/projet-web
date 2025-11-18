@@ -60,10 +60,32 @@ export const ScoreService = (() => {
     return data.score;
   }
 
+  async function saveScore(game, score) {
+    try {
+      const response = await fetch('/api/score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ game, score }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save score');
+      }
+
+      const result = await response.json();
+      console.log(result.message);
+    } catch (error) {
+      console.error('Error saving score:', error);
+    }
+  }
+
   return {
     init,
     getScore,
     addPoints,
     resetScore,
+    saveScore,
   };
 })();

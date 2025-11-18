@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game A - Simon</title>
+    <link rel="stylesheet" href="gameA.css">
+</head>
+<body>
+    <div id="game-container">
+        <h1>Simon</h1>
+        <div class="simon-container">
+            <div class="simon-pad green" data-color="green"></div>
+            <div class="simon-pad red" data-color="red"></div>
+            <div class="simon-pad yellow" data-color="yellow"></div>
+            <div class="simon-pad blue" data-color="blue"></div>
+        </div>
+        <div id="info-display">
+            <p>Score: <span id="score">0</span></p>
+        </div>
+        <button id="start-btn">Start Game</button>
+    </div>
+    <script src="gameA.js"></script>
+</body>
+</html>
