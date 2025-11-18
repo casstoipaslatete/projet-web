@@ -1,5 +1,6 @@
-const Router = (() => {
-  const routes = {};
+export const Router = (() => {
+  const routes = {};    // { menu: handler, profile: handler, leaderboard: handler }
+  const rootId = "app-root";
 
   function register(routeName, handler) {
     routes[routeName] = handler;
@@ -11,7 +12,7 @@ const Router = (() => {
 
   function handleRouteChange() {
     const hash = window.location.hash.replace("#", "") || "menu";
-    const root = document.getElementById("app-root");
+    const root = document.getElementById(rootId);
     if (!root) return;
 
     const handler = routes[hash];
@@ -29,5 +30,8 @@ const Router = (() => {
     register,
     goTo,
     start: handleRouteChange,
+    goToGame: (gameId) => {
+      window.location.href = `/games/${gameId}/${gameId}.html`;
+    }
   };
 })();

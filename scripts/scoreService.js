@@ -1,36 +1,67 @@
-const ScoreService = (() => {
-  const STORAGE_KEY = "webproj_score";
+export const ScoreService = (() => {
 
-  // Get score
-  function getScore() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? parseInt(raw, 10) : 0;
+  let GAME_ID = null;
+
+  function init(gameId) {
+    GAME_ID = gameId;
   }
 
-  // Changement de score
-  function setScore(value) {
-    localStorage.setItem(STORAGE_KEY, String(value));
+  async function getScore() {
+    const res = await fetch(`/api/scores/${GAME_ID}`);
+    if (!res.ok) return 0;
+
+    const data = await res.json();
+    return data.score ?? 0;
+  }
+
+  async function setScore(value) {
+    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ value }),
+    });
+
+    const data = await res.json();
+
     window.dispatchEvent(new CustomEvent("score:changed", {
-      detail: { score: value }
+      detail: { score: data.score }
     }));
+
+    return data.score;
   }
 
-  // Ajouter points
-  function addPoints(points) {
-    const newScore = getScore() + points;
-    setScore(newScore);
+  async function addPoints(points) {
+    const res = await fetch(`/api/scores/${GAME_ID}/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount: points }),
+    });
+
+    const data = await res.json();
+
     window.dispatchEvent(new CustomEvent("score:addPoints", {
-      detail: { added: points, total: newScore }
+      detail: { added: points, total: data.score }
     }));
+
+    return data.score;
   }
 
-  // Reset score
-  function resetScore() {
-    setScore(0);
-    window.dispatchEvent(new CustomEvent("score:reset"));
+  async function resetScore() {
+    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
+      method: "POST"
+    });
+
+    const data = await res.json();
+
+    window.dispatchEvent(new CustomEvent("score:reset", {
+      detail: { score: data.score }
+    }));
+
+    return data.score;
   }
 
   return {
+    init,
     getScore,
     addPoints,
     resetScore,
