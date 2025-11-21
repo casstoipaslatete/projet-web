@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" >
+    <title>Profil</title>
+    <link rel="stylesheet" href="style/profil_style.css">
+</head>
+
+<body class="profil-page">
+	<header>
+		<h1>Mon Profil</h1>
+	</header>
+	
+	<main>
+		<!-- Choix du pseudo -->
+		<section class="profile-section">
+            <h2>Pseudo</h2>
+            <input type="text" id="profile-pseudo" placeholder="Entre ton pseudo" />
+        </section>
+		
+		<!-- Choix de l'avatar -->
+		<section class="profile-section">
+            <h2>Choisis ton personnage</h2>
+			
+			<div class="avatar-list">
+				<button class="avatar-emoji">😺</button>
+				<button class="avatar-emoji">🐳</button>
+				<button class="avatar-emoji">🐻‍❄️</button>
+				<button class="avatar-emoji">🐢</button>
+			</div>
+            
+        </section>
+		
+		<!-- Choix de la couleur -->
+		<section class="profile-section">
+			<h2>Couleur du joueur</h2>
+
+			<p>Couleur choisi: </p><input type="color" id="profile-color" value="#ffcc00">
+
+			<div class="color-buttons">
+			<p>Choisi ta couleur : </p>
+				<button class="color-choice" data-color="#ffcc00" style="background-color:#ffcc00;"></button>
+				<button class="color-choice" data-color="#6ECFFF" style="background-color:#6ECFFF;"></button>
+				<button class="color-choice" data-color="#BFBFBF" style="background-color:#BFBFBF;"></button>
+				<button class="color-choice" data-color="#4CAF50" style="background-color:#4CAF50;"></button>
+			</div>
+		</section>
+
+
+		
+		<!-- Aperçu du profil -->
+		<section class="profile-section">
+            <h2>Aperçu</h2>
+
+            <div id="profile-preview">
+				<div id="preview-avatar" class="avatar-preview">😺</div>
+				<div id="preview-color" class="color-preview"></div>
+            </div>
+			
+        </section>
+
+        <!-- Sauvegerder le profil -->
+        <section class="profile-section">
+            <button id="save-profile">Sauvegarder mon profil</button>
+        </section>
+
+    
+	
+	</main>
+	
+	<script src="scripts/profile.js"></script>
+
+</body>
+</html>
