@@ -1,0 +1,61 @@
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #2c3e50;
+    font-family: 'Arial', sans-serif;
+    color: white;
+}
+
+h1 {
+    font-size: 48px;
+    text-align: center;
+    color: #ffffff;
+    text-shadow:
+        0 0 5px #b1cee9,
+        0 0 10px #85a9ca,
+        0 0 20px #6387a8,
+        0 0 40px #4e6b86,
+        0 0 60px #3c546b;
+
+    letter-spacing: 4px;
+    line-height: 1.2;
+
+}
+
+.boutons {
+    display: flex;
+    flex-direction: column;   
+    align-items: center;      
+    gap: 15px;               
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    width: 140px; 
+    text-align: center;
+}
+
+button:hover {
+    background-color: #364f68;
+}
+
+.btnJouer {
+    background-color: #8e44ad;
+}
+
+.btnAvatar {
+    background-color: rgb(255, 145, 55);
+}
+
+.btnScore {
+    background-color: rgb(65, 167, 235);
+}
