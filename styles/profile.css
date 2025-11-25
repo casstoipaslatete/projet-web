@@ -1,51 +1,100 @@
+/* ---- Mise en page générale ---- */
+body.profil-page {
+    font-family: Arial, sans-serif;
+    background-color: #f3f3f3;
+    padding: 20px;
+}
+
+header h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* ---- Sections ---- */
+.profile-section {
+    background: white;
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ---- Avatar ---- */
+.avatar-list {
+    display: flex;
+    gap: 15px;
+}
+
 .avatar-emoji {
     font-size: 40px;
     background: none;
     border: none;
     cursor: pointer;
+    padding: 8px;
+    transition: transform 0.2s;
 }
 
+.avatar-emoji:hover {
+    transform: scale(1.2);
+}
 
-.color-buttons,
-#profile-color {
+/* ---- Couleurs ---- */
+.color-choices {
     display: flex;
-    gap: 10px;
+    gap: 15px;
     margin-top: 10px;
 }
 
-
-#profile-color {
-    width: 50px;      
-    height: 50px;     
-    border: 2px solid #333;
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0;
-    background: none;
-}
-
-
+#profile-color,
 .color-choice {
     width: 50px;
     height: 50px;
     border-radius: 8px;
     border: 2px solid #333;
     cursor: pointer;
+    background: none;
     transition: transform 0.2s;
 }
 
-
-.color-choice:hover,
-#profile-color:hover {
+#profile-color:hover,
+.color-choice:hover {
     transform: scale(1.1);
-    border-color: #000;
 }
 
+/* ---- Aperçu ---- */
+#profile-preview {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.avatar-preview {
+    font-size: 60px;
+}
 
 #preview-color {
-    width: 50px;       
-    height: 50px;      
-    border-radius: 8px; 
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
     border: 2px solid #333;
-    background-color: #ffcc00; 
+    background-color: #ffcc00;
+}
+
+/* ---- Bouton sauvegarder ---- */
+#save-profile {
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    padding: 12px 25px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#save-profile:hover {
+    background-color: #3e8e41;
 }
