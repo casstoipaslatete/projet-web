@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tape Éclair</title>
+  <link rel="stylesheet" href="speedTyping.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Tape Éclair</h1>
+
+    <div id="st-root">
+      <div id="info-display">
+        <p>Mot : <span id="st-round">0</span> / 10</p>
+        <p>Score de la partie : <span id="st-score">0</span></p>
+        <p>Niveau : <span id="st-level">1</span></p>
+      </div>
+
+      <div id="st-word-box">
+        <span id="st-word">Appuie sur "Commencer"</span>
+      </div>
+
+      <div id="st-input-zone">
+        <input
+          type="text"
+          id="st-input"
+          autocomplete="off"
+          placeholder="Écris le mot ici"
+        />
+        <button id="st-validate" class="simon-btn">Valider</button>
+      </div>
+
+      <div id="st-timer-bar-container">
+        <div id="st-timer-bar"></div>
+      </div>
+
+      <div id="st-feedback"></div>
+
+      <div style="margin-top: 15px;">
+        <button id="st-start" class="simon-btn">Commencer!</button>
+      </div>
+
+      <div id="st-summary" class="hidden">
+        <h2>Fin de la partie!</h2>
+        <p>Ton score : <span id="st-final-score">0</span> / 10</p>
+        <p id="st-best-row" class="hidden">
+          Score global actuel : <span id="st-best-score">0</span>
+        </p>
+        <button id="st-replay" class="simon-btn">Rejouer</button>
+        <button id="st-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="speedTyping.js"></script>
+</body>
+</html>
