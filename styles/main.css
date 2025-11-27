@@ -25,31 +25,35 @@ h1 {
 
 .boutons {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+    flex-direction: column;   
+    align-items: center;      
+    gap: 15px;               
     margin-top: 20px;
 }
 
-.boutons button,
-.boutons a {
+/* Style COMMUN pour tous les boutons du menu (les <a>) */
+.menu-btn {
+    display: block;
+    width: 140px; 
     padding: 10px 20px;
     font-size: 1em;
+    font-weight: 500;
     cursor: pointer;
-    border: none;
     border-radius: 5px;
     color: white;
-    width: 140px;
     text-align: center;
-    text-decoration: none;
-    display: block;
+    text-decoration: none;   /* pas de soulignement */
+    border: none;            /* au cas où */
+    line-height: 1.2;
+    transition: background-color 0.2s ease;
 }
 
-.boutons button:hover,
-.boutons a:hover {
+/* Hover commun */
+.menu-btn:hover {
     background-color: #364f68;
 }
 
+/* Couleurs spécifiques */
 .btnJouer {
     background-color: #8e44ad;
 }
