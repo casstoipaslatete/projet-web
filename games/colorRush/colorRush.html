@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Couleurs à la chaine</title>
+  <link rel="stylesheet" href="colorRush.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Couleurs à la chaine</h1>
+
+    <div id="cr-root">
+      <div id="info-display">
+        <p>Tour : <span id="cr-round">0</span> / 10</p>
+        <p>Score de la partie : <span id="cr-score">0</span></p>
+        <p>Niveau : <span id="cr-level">1</span></p>
+      </div>
+
+      <div id="cr-word-box">
+        <span id="cr-word">Appuie sur "Commencer"!</span>
+      </div>
+
+      <div id="cr-timer-bar-container">
+        <div id="cr-timer-bar"></div>
+      </div>
+
+      <div id="cr-feedback"></div>
+
+      <div id="cr-buttons"></div>
+
+      <div style="margin-top: 15px;">
+        <button id="cr-start" class="simon-btn">Commencer!</button>
+      </div>
+
+      <div id="cr-summary" class="hidden">
+        <h2>Fin de la partie!</h2>
+        <p>Ton score : <span id="cr-final-score">0</span> / 10</p>
+        <p id="cr-best-row" class="hidden">
+          Score global actuel : <span id="cr-best-score">0</span>
+        </p>
+        <button id="cr-replay" class="simon-btn">Rejouer</button>
+        <button id="cr-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="colorRush.js"></script>
+</body>
+</html>
