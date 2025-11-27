@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game A - Simon</title>
-    <link rel="stylesheet" href="gameA.css">
+    <link rel="stylesheet" href="Simon.css">
 </head>
 <body>
     <div id="game-container">
@@ -18,8 +18,16 @@
         <div id="info-display">
             <p>Score: <span id="score">0</span></p>
         </div>
-        <button id="start-btn">Start Game</button>
+        <button id="start-btn" class="simon-btn">Jouer!</button>
+
+        <div id="summary" class="hidden">
+            <h2>Fin de la partie!</h2>
+            <p>Ton score : <span id="final-score">0</span></p>
+            <button id="replay-btn" class="simon-btn">Rejouer</button>
+            <button id="back-menu-btn" class="simon-btn">← Retour à l’arcade</button>
+        </div>
+
     </div>
-    <script src="gameA.js"></script>
+    <script src="Simon.js"></script>
 </body>
 </html>

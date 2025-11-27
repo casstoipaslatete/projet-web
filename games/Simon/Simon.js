@@ -2,19 +2,36 @@ const pads = document.querySelectorAll('.simon-pad');
 const startBtn = document.getElementById('start-btn');
 const scoreDisplay = document.getElementById('score');
 
+const summary = document.getElementById('summary');
+const finalScoreDisplay = document.getElementById('final-score');
+const replayBtn = document.getElementById('replay-btn');
+const backMenuBtn = document.getElementById('back-menu-btn');
+
 const colors = ['green', 'red', 'yellow', 'blue'];
 let sequence = [];
 let playerSequence = [];
 let score = 0;
 let sequenceTurn = false;
+let gameOver = false;
 
 startBtn.addEventListener('click', startGame);
+replayBtn.addEventListener('click', startGame);
+
+backMenuBtn.addEventListener('click', () => {
+    window.location.href = "/index.html#menu";
+});
 
 function startGame() {
     sequence = [];
     playerSequence = [];
     score = 0;
+    sequenceTurn = false;
+    gameOver = false;
+
     updateScore(0);
+
+    summary.classList.add('hidden');
+
     nextTurn();
 }
 
@@ -28,7 +45,7 @@ function nextTurn() {
 }
 
 async function playSequence() {
-    await new Promise(resolve => setTimeout(resolve, 500)); // Pause before showing next sequence
+    await new Promise(resolve => setTimeout(resolve, 500));
     for (const color of sequence) {
         await flashPad(color);
         await new Promise(resolve => setTimeout(resolve, 300));
@@ -49,7 +66,7 @@ function flashPad(color) {
 
 pads.forEach(pad => {
     pad.addEventListener('click', () => {
-        if (sequenceTurn) return; // Don't allow clicks while sequence is playing
+        if (sequenceTurn || gameOver) return;
 
         const clickedColor = pad.dataset.color;
         flashPad(clickedColor);
@@ -62,8 +79,7 @@ function checkPlayerInput() {
     const currentStep = playerSequence.length - 1;
 
     if (playerSequence[currentStep] !== sequence[currentStep]) {
-        alert(`Game Over! Your score: ${score}`);
-        // Here we will call the score service later
+        endGame();
         return;
     }
 
@@ -76,4 +92,13 @@ function checkPlayerInput() {
 function updateScore(newScore) {
     score = newScore;
     scoreDisplay.textContent = score;
+}
+
+function endGame() {
+    gameOver = true;
+
+    finalScoreDisplay.textContent = score;
+    summary.classList.remove('hidden');
+
+    // À AJOUTER SCORESERVICE.JS
 }

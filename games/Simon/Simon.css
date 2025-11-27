@@ -49,3 +49,42 @@ body {
 #info-display {
     margin-top: 20px;
 }
+
+/* Résumé de fin de partie */
+#summary {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#summary h2 {
+    margin-bottom: 10px;
+}
+
+#summary button {
+    margin: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Style partagé pour tous les boutons */
+.simon-btn {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #8e44ad;
+    color: white;
+    transition: filter 0.15s;
+}
+
+.simon-btn:hover {
+    filter: brightness(1.1);
+}
+
+#summary button {
+    margin: 5px;
+}

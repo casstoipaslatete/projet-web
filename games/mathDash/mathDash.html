@@ -1,0 +1,54 @@
+<!-- games/mathDash/mathDash.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Math Dash</title>
+  <link rel="stylesheet" href="/games/mathDash/mathDash.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Math Dash</h1>
+
+    <div id="mathdash-root">
+      <div id="info-display">
+        <p>Question : <span id="md-question-index">1</span> / 10</p>
+        <p>Score de la partie : <span id="md-score">0</span></p>
+        <p>Niveau : <span id="md-level">1</span></p>
+      </div>
+
+      <div id="question-box">
+        <span id="md-question-text">3 + 4 = ?</span>
+      </div>
+
+      <div id="choices">
+        <button class="choice-btn" data-index="0">0</button>
+        <button class="choice-btn" data-index="1">0</button>
+        <button class="choice-btn" data-index="2">0</button>
+      </div>
+
+      <div id="timer-bar-container">
+        <div id="md-timer-bar"></div>
+      </div>
+
+      <div id="md-feedback"></div>
+
+      <div style="margin-top: 20px;">
+        <button id="btn-back-menu">← Retour à l’arcade</button>
+      </div>
+
+      <div id="md-summary" class="hidden">
+        <h2>Partie terminée!</h2>
+        <p>Ton score : <span id="md-final-score">0</span> / 10</p>
+        <p id="md-best-score-row" class="hidden">
+          Score global actuel : <span id="md-best-score">0</span>
+        </p>
+        <button id="md-replay">Rejouer</button>
+        <button id="md-back-menu2">← Retour à l’arcade</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/games/mathDash/mathDash.js"></script>
+</body>
+</html>
