@@ -4,24 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Page d'accueil</title>
-    <link rel="stylesheet" href="../styles/main.css">
+    <title>Mini-arcade</title>
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-   
-        <h1 class="nomSiteWeb">MINI<br>ARCADE</h1>
-        <div class="boutons"> 
-        <a class="btnJouer" id="jouerBtn" href="gameSelect.html">
-            Jouer
-        </a>
-        <a class="btnAvatar" id="AvatarBtn" href="profile.html">
-            Avatar
-        </a>
-        <a class="btnScore" id="ScoreBtn" href="score.html">
-            Score
-        </a>
+    <div id="app-root">
+        <header id="menu">
+            <h1 class="nomSiteWeb">MINI<br>ARCADE</h1>
+            <div class="boutons"> 
+                <a id="jouerBtn" href="/games.html" data-route="games"><button class="btnJouer">Jouer</button></a>
+                <a id="AvatarBtn" href="/profile.html" data-route="profile"><button class="btnAvatar">Avatar</button></a>
+                <a id="ScoreBtn" href="/leaderboard.html" data-route="leaderboard"><button class="btnScore">Score</button></a>
+            </div>
+        </header>
+    </div>
     
+    <!-- Scripts: router d'abord, puis main -->
+    <script src="/scripts/router.js"></script>
+    <script src="/scripts/main.js"></script>
 </body>
 
 </html>

@@ -259,6 +259,7 @@ app.get('/api/user/:userId/scores', async (req, res) => {
         });
 
         res.json(scores);
+        
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Error fetching user scores.' });

@@ -21,8 +21,8 @@ async function saveProfile() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pseudo, avatar, color })
     });
-
-    alert("Profil sauvegardé !");
+    
+    console.log('Profil sauvegardé !');
 }
 
 document.getElementById("save-profile").addEventListener("click", saveProfile);

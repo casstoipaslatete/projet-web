@@ -1,6 +1,10 @@
-export const Router = (() => {
-  const routes = {};    // { menu: handler, profile: handler, leaderboard: handler }
-  const rootId = "app-root";
+// Router global - routage côté client basé sur les hashes (#)
+// Définit `window.Router` si non présent, et évite la redéclaration si le script
+// est accidentellement chargé plusieurs fois (préserve l'état précédemment enregistré).
+if (!window.Router) {
+  window.Router = (() => {
+    const routes = {};    // { menu: handler, profile: handler, leaderboard: handler }
+    const rootId = "app-root"; // injection dans #app-content
 
   function register(routeName, handler) {
     routes[routeName] = handler;
@@ -21,17 +25,22 @@ export const Router = (() => {
       return;
     }
 
+    // Call the handler with the routed content container
     handler(root);
   }
 
-  window.addEventListener("hashchange", handleRouteChange);
+    window.addEventListener("hashchange", handleRouteChange);
 
-  return {
-    register,
-    goTo,
-    start: handleRouteChange,
-    goToGame: (gameId) => {
-      window.location.href = `/games/${gameId}/${gameId}.html`;
-    }
-  };
-})();
+    return {
+      register,
+      goTo,
+      start: handleRouteChange,
+      goToGame: (gameId) => {
+        window.location.href = `/games/${gameId}/${gameId}.html`;
+      }
+    };
+  })();
+}
+
+// Expose `Router` identifier in the global scope for older code that expects it.
+var Router = window.Router;
