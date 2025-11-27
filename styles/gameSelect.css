@@ -1,0 +1,66 @@
+.game-select {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.game-select__title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto 30px auto;
+}
+
+.game-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  color: #2c3e50;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+.game-card__title {
+  margin-bottom: 10px;
+}
+
+.game-card__desc {
+  font-size: 0.95rem;
+  margin-bottom: 18px;
+  min-height: 48px;
+}
+
+.game-card__btn {
+  padding: 10px 18px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #4d74ff;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-decoration: none; /* marche aussi pour le lien "retour" */
+  display: inline-block;
+}
+
+.game-card__btn:hover {
+  background: #3c5ed1;
+}
+
+.game-select__back {
+  margin-top: 10px;
+}

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choix des jeux</title>
+
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/gameSelect.css">
+</head>
+
+<body>
+  <main id="game-select" class="game-select">
+    <h1 class="game-select__title">Sélectionne ton jeu!</h1>
+
+    <div class="game-grid">
+
+      <!-- speedTyping -->
+      <article class="game-card">
+        <h2 class="game-card__title">Tape Éclair</h2>
+        <p class="game-card__desc">
+          Tape les mots le plus vite possible avant la fin du temps.
+        </p>
+        <button class="game-card__btn" data-game-id="speedTyping">
+          Jouer
+        </button>
+      </article>
+
+      <!-- colorRush -->
+      <article class="game-card">
+        <h2 class="game-card__title">Color Rush</h2>
+        <p class="game-card__desc">
+          Réagis aux bonnes couleurs et évite les pièges.
+        </p>
+        <button class="game-card__btn" data-game-id="colorRush">
+          Jouer
+        </button>
+      </article>
+
+      <!-- mathDash -->
+      <article class="game-card">
+        <h2 class="game-card__title">Math Dash</h2>
+        <p class="game-card__desc">
+          Résous des opérations math rapides sous pression.
+        </p>
+        <button class="game-card__btn" data-game-id="mathDash">
+          Jouer
+        </button>
+      </article>
+
+      <!-- Simon -->
+      <article class="game-card">
+        <h2 class="game-card__title">Simon</h2>
+        <p class="game-card__desc">
+          Mémorise et répète les séquences lumineuses.
+        </p>
+        <button class="game-card__btn" data-game-id="Simon">
+          Jouer
+        </button>
+      </article>
+
+    </div>
+
+    <div class="game-select__back">
+      <a href="index.html" class="game-card__btn">
+        ⬅ Retour à l'accueil
+      </a>
+    </div>
+  </main>
+
+  <!-- JS de la page -->
+  <script type="module" src="../scripts/gameSelect.js"></script>
+</body>
+
+</html>
