@@ -10,7 +10,7 @@ body {
 }
 
 h1 {
-    font-size: 48px;
+    font-size: 55px;
     text-align: center;
     color: #ffffff;
     text-shadow:
@@ -64,4 +64,74 @@ h1 {
 
 .btnScore {
     background-color: rgb(65, 167, 235);
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/* Thème global + bordure arcade */
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;   /* ← IMPORTANT : centrer verticalement */
+
+  min-height: 100vh;
+  font-family: 'Arial', sans-serif;
+  color: white;
+
+  background-color: #2c3e50;
+  background-image: url("/static/BorderV2.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+
+/* ================================
+   Bordures ARCADE responsive
+   ================================ */
+
+/* Mobile (petite largeur) */
+@media screen and (max-width: 768px) {
+  body {
+    background-image: url("/static/BorderV2Mobile.svg");
+  }
+}
+
+/* Tablette (entre deux) */
+@media screen and (min-width: 769px) and (max-width: 1199px) {
+  body {
+    background-image: url("/static/BorderV2Tab.svg");
+  }
+}
+
+/* Desktop (grands écrans)
+   -> en pratique c'est le body par défaut,
+      donc cette règle est optionnelle */
+@media screen and (min-width: 1200px) {
+  body {
+    background-image: url("/static/BorderV2.svg");
+  }
+}
+
+.game-select {
+  padding: 40px 20px;
+  text-align: center;
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Centre UNIQUEMENT la page de sélection de jeu */
+#app-root > .game-select {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* centre horizontalement */
+  justify-content: center; /* centre verticalement */
 }

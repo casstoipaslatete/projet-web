@@ -1,3 +1,7 @@
+/* ===========================
+   Mise en page générale
+   =========================== */
+
 .game-select {
   padding: 40px 20px;
   text-align: center;
@@ -8,38 +12,9 @@
   margin-bottom: 40px;
 }
 
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 30px;
-  max-width: 1000px;
-  margin: 0 auto 30px auto;
-}
-
-.game-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.game-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-}
-
-.game-card__title {
-  margin-bottom: 10px;
-}
-
-.game-card__desc {
-  font-size: 0.95rem;
-  margin-bottom: 18px;
-  min-height: 48px;
+/* Bouton "Retour à l'accueil" réutilise ton ancien style */
+.game-select__back {
+  margin-top: 20px;
 }
 
 .game-card__btn {
@@ -51,7 +26,7 @@
   color: #ffffff;
   cursor: pointer;
   transition: background 0.2s ease;
-  text-decoration: none; /* marche aussi pour le lien "retour" */
+  text-decoration: none;
   display: inline-block;
 }
 
@@ -59,19 +34,152 @@
   background: #3c5ed1;
 }
 
-.game-select__back {
-  margin-top: 10px;
+/* Ancienne grille (si jamais tu la réutilises ailleurs) */
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto 30px auto;
 }
 
+/* ===========================
+   Carrousel de jeux
+   =========================== */
+
+.game-carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  max-width: 1000px;
+  margin: 0 auto 20px;
+}
+
+.carousel-arrow {
+  border: none;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.carousel-arrow:hover {
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.1);
+}
+
+.carousel-viewport {
+  overflow: hidden;
+  width: 85vw;
+  max-width: 850px;
+}
+
+/* Bande de cartes */
+.carousel-track {
+  display: flex;
+  gap: 14px;
+  transition: transform 0.35s ease-in-out;
+}
+
+/* ===========================
+   Carte de jeu (image + hover)
+   =========================== */
+
 .game-card {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  position: relative;
+  flex: 0 0 calc(20% - 14px); /* ≈ 5 cartes visibles sur grand écran */
+  background: transparent;
+  border-radius: 0;          /* plus d'arrondis qui dépassent */
+  padding: 0;
+  margin: 0;
+  overflow: hidden;          /* coupe tout ce qui dépasse */
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Image du jeu : occupe toute la carte, bords droits */
+.game-card-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+/* Overlay qui apparaît au survol */
+.game-card-hover {
+  position: absolute;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  align-items: center;
+  justify-content: center;
 
-  color: #2c3e50;
+  text-align: center;
+  color: #fff;
+  padding: 10px;
+
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+.game-card-hover h2 {
+  margin-bottom: 6px;
+  font-size: 1.2rem;
+}
+
+.game-card-hover p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+/* Apparition au hover */
+.game-card:hover .game-card-hover {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
+@media (max-width: 900px) {
+  .game-card {
+    flex: 0 0 calc(25% - 14px); /* 4 cartes */
+  }
+}
+
+@media (max-width: 700px) {
+  .game-card {
+    flex: 0 0 calc(33.33% - 14px); /* 3 cartes */
+  }
+}
+
+@media (max-width: 450px) {
+  .game-card {
+    flex: 0 0 calc(50% - 14px); /* 2 cartes */
+  }
+}
+
+/* Bouton retour - rouge */
+.game-card__btn--back {
+  background: #e63946;        /* Rouge vif */
+}
+
+.game-card__btn--back:hover {
+  background: #364f68;        /* Rouge un peu plus foncé */
 }
