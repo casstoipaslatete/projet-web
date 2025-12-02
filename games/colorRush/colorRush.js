@@ -25,6 +25,39 @@ const COLORS = [
   { value: "brun",   label: "BRUN",   css: "#8d6e63" },
 ];
 
+// --- SONS ET MUSIQUE ---
+let sfxClic, sfxSuccess, sfxError;
+try {
+  sfxClic = new Audio("sfx/clic.mp3");
+  sfxSuccess = new Audio("sfx/success.mp3");
+  sfxError = new Audio("sfx/error.mp3");
+} catch (e) {
+  console.warn("Audio non disponible:", e);
+}
+
+function playSfx(audio) {
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+function withClickSfx(handler) {
+  return function (event) {
+    playSfx(sfxClic);
+    return handler(event);
+  };
+}
+
+const audio = new Audio('music/colorRushMusic.mp3');
+
+audio.loop = true;
+
+audio.play();
+
 // DOM
 const roundSpan = document.getElementById("cr-round");
 const scoreSpan = document.getElementById("cr-score");
@@ -49,7 +82,6 @@ const backMenuBtn2 = document.getElementById("cr-back-menu2");
 function goBackToMenu() {
   window.location.href = "/index.html#menu";
 }
-backMenuBtn2.addEventListener("click", goBackToMenu);
 
 // ---------- Helpers ----------
 function randomInt(max) {
@@ -125,7 +157,7 @@ function createColorButtons() {
     btn.textContent = colorObj.label;
     buttonsContainer.appendChild(btn);
 
-    btn.addEventListener("click", handleColorClick);
+    btn.addEventListener("click", withClickSfx(handleColorClick));
     return btn;
   });
 }
@@ -202,7 +234,7 @@ function startGame() {
 
   setTimeout(() => {
     setupRound();
-  }, 700);
+  }, 2000);
 }
 
 function handleColorClick(event) {
@@ -216,6 +248,7 @@ function handleColorClick(event) {
   updateLevel(isCorrect);
 
   if (isCorrect) {
+    playSfx(sfxSuccess);
     localScore++;
     scoreSpan.textContent = localScore.toString();
     feedbackDiv.textContent = "Bravo!";
@@ -225,6 +258,7 @@ function handleColorClick(event) {
       console.warn("addPoints colorRush:", err)
     );
   } else {
+    playSfx(sfxError);
     const correctLabel =
       COLORS.find(c => c.value === currentTargetColor)?.label || "";
     feedbackDiv.textContent = `La bonne couleur était ${correctLabel}.`;
@@ -233,7 +267,7 @@ function handleColorClick(event) {
 
   setTimeout(() => {
     setupRound();
-  }, 900);
+  }, 2000);
 }
 
 function handleTimeout() {
@@ -241,6 +275,7 @@ function handleTimeout() {
   awaitingAnswer = false;
 
   updateLevel(false);
+  playSfx(sfxError);
 
   const correctLabel =
     COLORS.find(c => c.value === currentTargetColor)?.label || "";
@@ -250,7 +285,7 @@ function handleTimeout() {
 
   setTimeout(() => {
     setupRound();
-  }, 1200);
+  }, 2000);
 }
 
 async function endGame() {
@@ -282,8 +317,10 @@ async function endGame() {
 // ---------- Events & init ----------
 createColorButtons();
 
-startBtn.addEventListener("click", startGame);
-replayBtn.addEventListener("click", startGame);
+// Boutons UI : clic + action
+startBtn.addEventListener("click", withClickSfx(startGame));
+replayBtn.addEventListener("click", withClickSfx(startGame));
+backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
 
 // init de base pour le service de score
 ScoreService.init("colorRush");

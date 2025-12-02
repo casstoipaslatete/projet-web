@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atelier de potions</title>
+  <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="atelierPotions.css">
+</head>
+<body>
+  <div id="game-container">
+    <h1>Atelier de potions</h1>
+
+    <div id="cl-root">
+      <div id="info-display">
+        <p>
+          Énigme :
+          <span id="cl-puzzle-index">1</span> /
+          <span id="cl-puzzle-total">7</span>
+        </p>
+        <p>Potions réussies : <span id="cl-score">0</span></p>
+      </div>
+
+      <div id="cl-puzzle-box">
+        <p id="cl-puzzle-text">
+          Appuie sur « Commencer » pour préparer ta première potion.
+        </p>
+      </div>
+
+      <!-- Robinets magiques -->
+      <div id="cl-faucets">
+        <div class="cl-faucet-col">
+          <p class="cl-faucet-label">Robinet ROUGE</p>
+          <button class="cl-faucet" data-index="0">Fermé</button>
+        </div>
+        <div class="cl-faucet-col">
+          <p class="cl-faucet-label">Robinet JAUNE</p>
+          <button class="cl-faucet" data-index="1">Fermé</button>
+        </div>
+        <div class="cl-faucet-col">
+          <p class="cl-faucet-label">Robinet BLEU</p>
+          <button class="cl-faucet" data-index="2">Fermé</button>
+        </div>
+      </div>
+
+      <!-- Potion + barre de remplissage -->
+      <div id="cl-cauldron-area">
+        <div id="cl-indicator-box">
+          <span id="cl-indicator" class="off">🧪</span>
+          <span id="cl-indicator-label">Potion actuelle : VIDE</span>
+        </div>
+        <div id="cl-potion-bar-container">
+          <div id="cl-potion-bar"></div>
+        </div>
+      </div>
+
+      <div id="cl-feedback"></div>
+
+      <div id="cl-actions">
+        <button id="cl-start" class="simon-btn">Commencer</button>
+        <button id="cl-validate" class="simon-btn">Valider la potion</button>
+        <button id="cl-next" class="simon-btn" disabled>Prochaine potion ➜</button>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <button id="cl-back-menu" class="simon-btn">← Retour à l’arcade</button>
+      </div>
+
+      <div id="cl-summary" class="hidden">
+        <h2>Bravo, apprenti·e alchimiste!</h2>
+        <p>
+          Tu as réussi
+          <span id="cl-final-score">0</span>
+          potions sur
+          <span id="cl-final-total">7</span>.
+        </p>
+        <p id="cl-best-row" class="hidden">
+          Score global actuel : <span id="cl-best-score">0</span>
+        </p>
+        <button id="cl-replay" class="simon-btn">Rejouer</button>
+        <button id="cl-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="atelierPotions.js"></script>
+</body>
+</html>

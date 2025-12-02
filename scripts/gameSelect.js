@@ -28,8 +28,8 @@
       icon: "../static/ColorRush.svg",
     },
     {
-      id: "circuitLogique",
-      title: "Potions Logiques",
+      id: "atelierPotions",
+      title: "Atelier de potions",
       subtitle: "Ouvre les bons robinets pour la potion parfaite!",
       icon: "../static/AtelierPotions.svg",
     },

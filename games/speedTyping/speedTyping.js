@@ -29,6 +29,40 @@ const WORDS_LEVEL_3 = [
   "bibliotheque", "squelette", "pingouin", "parapluie", "astronaute"
 ];
 
+// --- SONS ET MUSIQUE ---
+let sfxClic, sfxSuccess, sfxError;
+
+try {
+  sfxClic    = new Audio("sfx/clic.mp3");
+  sfxSuccess = new Audio("sfx/success.mp3");
+  sfxError   = new Audio("sfx/error.mp3");
+} catch (e) {
+  console.warn("Audio non disponible:", e);
+}
+
+function playSfx(audio) {
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+function withClickSfx(handler) {
+  return function (event) {
+    playSfx(sfxClic);
+    return handler(event);
+  };
+}
+
+const audio = new Audio('music/speedTypingMusic.mp3');
+
+audio.loop = true;
+
+audio.play();
+
 // DOM
 const roundSpan = document.getElementById("st-round");
 const scoreSpan = document.getElementById("st-score");
@@ -52,7 +86,6 @@ const backMenuBtn2 = document.getElementById("st-back-menu2");
 function goBackToMenu() {
   window.location.href = "/index.html#menu";
 }
-backMenuBtn2.addEventListener("click", goBackToMenu);
 
 // ---- helpers ----
 function pickWordForLevel(level) {
@@ -127,8 +160,15 @@ function startGame() {
   feedbackDiv.className = "";
   summary.classList.add("hidden");
 
+  // boutons : cacher Commencer/Rejouer pendant la partie
+  startBtn.classList.add("hidden");
+  replayBtn.classList.add("hidden");
+
+  // réactiver input + bouton valider
+  input.disabled = false;
+  validateBtn.disabled = false;
+
   // reset score global pour ce jeu côté API
-  ScoreService.init("speedTyping");
   ScoreService.resetScore().catch(err =>
     console.warn("resetScore speedTyping:", err)
   );
@@ -169,6 +209,8 @@ function handleValidate() {
   updateLevel(isCorrect);
 
   if (isCorrect) {
+    playSfx(sfxSuccess);
+
     localScore++;
     scoreSpan.textContent = localScore.toString();
     feedbackDiv.textContent = "Bravo!";
@@ -178,6 +220,7 @@ function handleValidate() {
       console.warn("addPoints speedTyping:", err)
     );
   } else {
+    playSfx(sfxError);
     feedbackDiv.textContent = `Le mot était "${currentWord}".`;
     feedbackDiv.classList.add("bad");
   }
@@ -190,6 +233,8 @@ function handleTimeout() {
   awaitingAnswer = false;
 
   updateLevel(false);
+  playSfx(sfxError);
+
   feedbackDiv.textContent = `Temps écoulé! Le mot était "${currentWord}".`;
   feedbackDiv.classList.add("bad");
 
@@ -203,8 +248,15 @@ async function endGame() {
   wordSpan.textContent = "Bon travail!";
   input.value = "";
 
+  // désactiver input + bouton valider
+  input.disabled = true;
+  validateBtn.disabled = true;
+
   finalScoreSpan.textContent = localScore.toString();
   summary.classList.remove("hidden");
+
+  // montrer Rejouer à la fin
+  replayBtn.classList.remove("hidden");
 
   try {
     await ScoreService.saveScore("speedTyping", localScore);
@@ -223,10 +275,10 @@ async function endGame() {
 }
 
 // ---- events ----
-startBtn.addEventListener("click", startGame);
-replayBtn.addEventListener("click", startGame);
-
-validateBtn.addEventListener("click", handleValidate);
+startBtn.addEventListener("click", withClickSfx(startGame));
+replayBtn.addEventListener("click", withClickSfx(startGame));
+backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
+validateBtn.addEventListener("click", withClickSfx(handleValidate));
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
@@ -235,5 +287,36 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-// init
-ScoreService.init("speedTyping");
+// ---- init ----
+function initSpeedTyping() {
+  ScoreService.init("speedTyping");
+
+  clearInterval(timerId);
+  level = 1;
+  localScore = 0;
+  roundIndex = 0;
+  correctStreak = 0;
+  awaitingAnswer = false;
+
+  scoreSpan.textContent = "0";
+  levelSpan.textContent = "1";
+  roundSpan.textContent = "0";
+
+  feedbackDiv.className = "";
+  feedbackDiv.textContent = "Clique sur « Commencer » pour démarrer la partie !";
+
+  wordSpan.textContent = "Prépare-toi à taper vite !";
+
+  summary.classList.add("hidden");
+  bestRow.classList.add("hidden");
+
+  // état des boutons
+  startBtn.classList.remove("hidden");
+  replayBtn.classList.add("hidden");
+
+  // désactiver input + valider tant que la partie n'est pas lancée
+  input.disabled = true;
+  validateBtn.disabled = true;
+}
+
+initSpeedTyping();

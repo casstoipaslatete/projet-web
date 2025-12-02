@@ -14,91 +14,144 @@ let score = 0;
 let sequenceTurn = false;
 let gameOver = false;
 
-startBtn.addEventListener('click', startGame);
-replayBtn.addEventListener('click', startGame);
+// --- SONS ET MUSIQUE ---
+let sfxSimonBeep, sfxClic, sfxError;
+try {
+  sfxSimonBeep = new Audio("sfx/simonBeep.mp3");
+  sfxClic      = new Audio("sfx/clic.mp3");
+  sfxError     = new Audio("sfx/error.mp3");
+} catch (e) {
+  console.warn("Audio non disponible:", e);
+}
 
-backMenuBtn.addEventListener('click', () => {
-    window.location.href = "/index.html#menu";
-});
+function playSfx(audio) {
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } catch {
+  }
+}
+
+function withClickSfx(handler) {
+  return function (event) {
+    playSfx(sfxClic);
+    return handler(event);
+  };
+}
+
+const audio = new Audio('music/simonMusic.mp3');
+
+audio.loop = true;
+
+audio.play();
+
+// ---------- Listeners boutons ----------
+startBtn.addEventListener('click', withClickSfx(startGame));
+replayBtn.addEventListener('click', withClickSfx(startGame));
+backMenuBtn.addEventListener('click', withClickSfx(() => {
+  window.location.href = "/index.html#menu";
+}));
 
 function startGame() {
-    sequence = [];
-    playerSequence = [];
-    score = 0;
-    sequenceTurn = false;
-    gameOver = false;
+  sequence = [];
+  playerSequence = [];
+  score = 0;
+  sequenceTurn = false;
+  gameOver = false;
 
-    updateScore(0);
+  updateScore(0);
+  summary.classList.add('hidden');
 
-    summary.classList.add('hidden');
+  startBtn.classList.add('hidden');
+  replayBtn.classList.add('hidden');
 
-    nextTurn();
+  nextTurn();
 }
 
 function nextTurn() {
-    playerSequence = [];
-    sequenceTurn = true;
-    const nextColor = colors[Math.floor(Math.random() * colors.length)];
-    sequence.push(nextColor);
+  playerSequence = [];
+  sequenceTurn = true;
+  const nextColor = colors[Math.floor(Math.random() * colors.length)];
+  sequence.push(nextColor);
 
-    playSequence();
+  playSequence();
 }
 
 async function playSequence() {
-    await new Promise(resolve => setTimeout(resolve, 500));
-    for (const color of sequence) {
-        await flashPad(color);
-        await new Promise(resolve => setTimeout(resolve, 300));
-    }
-    sequenceTurn = false;
+  await new Promise(resolve => setTimeout(resolve, 500));
+  for (const color of sequence) {
+    await flashPad(color);
+    await new Promise(resolve => setTimeout(resolve, 300));
+  }
+  sequenceTurn = false;
 }
 
 function flashPad(color) {
-    return new Promise(resolve => {
-        const pad = document.querySelector(`.simon-pad[data-color="${color}"]`);
-        pad.classList.add('active');
-        setTimeout(() => {
-            pad.classList.remove('active');
-            resolve();
-        }, 600);
-    });
+  return new Promise(resolve => {
+    const pad = document.querySelector(`.simon-pad[data-color="${color}"]`);
+
+    playSfx(sfxSimonBeep);
+
+    pad.classList.add('active');
+    setTimeout(() => {
+      pad.classList.remove('active');
+      resolve();
+    }, 600);
+  });
 }
 
 pads.forEach(pad => {
-    pad.addEventListener('click', () => {
-        if (sequenceTurn || gameOver) return;
+  pad.addEventListener('click', () => {
+    if (sequenceTurn || gameOver) return;
 
-        const clickedColor = pad.dataset.color;
-        flashPad(clickedColor);
-        playerSequence.push(clickedColor);
-        checkPlayerInput();
-    });
+    const clickedColor = pad.dataset.color;
+
+    flashPad(clickedColor);
+    playerSequence.push(clickedColor);
+    checkPlayerInput();
+  });
 });
 
 function checkPlayerInput() {
-    const currentStep = playerSequence.length - 1;
+  const currentStep = playerSequence.length - 1;
 
-    if (playerSequence[currentStep] !== sequence[currentStep]) {
-        endGame();
-        return;
-    }
+  if (playerSequence[currentStep] !== sequence[currentStep]) {
+    playSfx(sfxError);
+    endGame();
+    return;
+  }
 
-    if (playerSequence.length === sequence.length) {
-        updateScore(score + 1);
-        setTimeout(nextTurn, 1000);
-    }
+  if (playerSequence.length === sequence.length) {
+    updateScore(score + 1);
+    setTimeout(nextTurn, 1000);
+  }
 }
 
 function updateScore(newScore) {
-    score = newScore;
-    scoreDisplay.textContent = score;
+  score = newScore;
+  scoreDisplay.textContent = score;
 }
 
 function endGame() {
-    gameOver = true;
+  gameOver = true;
 
-    finalScoreDisplay.textContent = score;
-    summary.classList.remove('hidden');
+  finalScoreDisplay.textContent = score;
+  summary.classList.remove('hidden');
 
-    // À AJOUTER SCORESERVICE.JS
+  replayBtn.classList.remove('hidden');
+
+  // À AJOUTER SCORESERVICE.JS
 }
+
+// ---------- État initial ----------
+function initSimon() {
+  startBtn.classList.remove('hidden');
+  replayBtn.classList.add('hidden');
+  summary.classList.add('hidden');
+
+  score = 0;
+  updateScore(0);
+}
+
+initSimon();

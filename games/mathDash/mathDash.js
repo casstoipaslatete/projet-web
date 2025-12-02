@@ -1,5 +1,38 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
+// --- SONS ET MUSIQUE ---
+let sfxClic, sfxSuccess, sfxError;
+try {
+  sfxClic = new Audio("sfx/clic.mp3");
+  sfxSuccess = new Audio("sfx/success.mp3");
+  sfxError = new Audio("sfx/error.mp3");
+} catch (e) {
+  console.warn("Audio non disponible:", e);
+}
+
+function playSfx(audio) {
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+function withClickSfx(handler) {
+  return function (event) {
+    playSfx(sfxClic);
+    return handler(event);
+  };
+}
+
+const audio = new Audio('music/mathDashMusic.mp3');
+
+audio.loop = true;
+
+audio.play();
+
 // Nombre de questions par partie
 const TOTAL_QUESTIONS = 10;
 
@@ -28,6 +61,7 @@ const finalScoreSpan = document.getElementById("md-final-score");
 const bestScoreRow = document.getElementById("md-best-score-row");
 const bestScoreSpan = document.getElementById("md-best-score");
 
+const startBtn = document.getElementById("md-start");
 const replayBtn = document.getElementById("md-replay");
 const backMenuBtn = document.getElementById("btn-back-menu");
 const backMenuBtn2 = document.getElementById("md-back-menu2");
@@ -36,9 +70,6 @@ const backMenuBtn2 = document.getElementById("md-back-menu2");
 function goBackToMenu() {
   window.location.href = "/index.html#menu";
 }
-
-backMenuBtn.addEventListener("click", goBackToMenu);
-backMenuBtn2.addEventListener("click", goBackToMenu);
 
 // --------- Helpers et génération de questions ---------
 function randInt(min, max) {
@@ -248,6 +279,7 @@ function handleChoiceClick(event) {
   choiceButtons.forEach(b => (b.disabled = true));
 
   if (isCorrect) {
+    playSfx(sfxSuccess);
     localScore++;
     scoreSpan.textContent = localScore.toString();
     btn.classList.add("correct");
@@ -259,6 +291,7 @@ function handleChoiceClick(event) {
       console.warn("Erreur addPoints MathDash:", err)
     );
   } else {
+    playSfx(sfxError);
     btn.classList.add("wrong");
     const correctBtn = choiceButtons.find(
       b => Number(b.dataset.value) === currentAnswer
@@ -278,6 +311,7 @@ choiceButtons.forEach(btn => {
 // --------- Timeout ---------
 function handleTimeout() {
   updateLevel(false);
+  playSfx(sfxError);
   choiceButtons.forEach(b => (b.disabled = true));
 
   const correctBtn = choiceButtons.find(
@@ -288,7 +322,7 @@ function handleTimeout() {
   feedbackDiv.textContent = `Temps écoulé! La bonne réponse était ${currentAnswer}.`;
   feedbackDiv.classList.add("bad");
 
-  setTimeout(showQuestion, 1200);
+  setTimeout(showQuestion, 2000);
 }
 
 // --------- Fin de partie ---------
@@ -300,6 +334,8 @@ async function endGame() {
 
   finalScoreSpan.textContent = localScore.toString();
   summarySection.classList.remove("hidden");
+  replayBtn.classList.remove("hidden");
+  startBtn.classList.add("hidden");
 
   // Sauvegarde pour le leaderboard global
   try {
@@ -319,8 +355,11 @@ async function endGame() {
   }
 }
 
-// --------- Rejouer ---------
-function resetGame() {
+// --------- Démarrer / Rejouer une partie ---------
+function startGame() {
+  startBtn.classList.add("hidden");
+  replayBtn.classList.add("hidden");
+
   clearInterval(timerId);
   level = 1;
   localScore = 0;
@@ -348,12 +387,40 @@ function resetGame() {
   showQuestion();
 }
 
-replayBtn.addEventListener("click", resetGame);
+// Boutons UI : clic + action
+startBtn.addEventListener("click", withClickSfx(startGame));
+replayBtn.addEventListener("click", withClickSfx(startGame));
+backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
 
 // --------- Initialisation ---------
 function initMathDash() {
   ScoreService.init("mathDash");
-  resetGame();
+
+  startBtn.classList.remove("hidden");   // montrer Commencer
+  replayBtn.classList.add("hidden");     // cacher Rejouer
+
+  clearInterval(timerId);
+  level = 1;
+  localScore = 0;
+  questionIndex = 0;
+  correctStreak = 0;
+
+  scoreSpan.textContent = "0";
+  levelSpan.textContent = "1";
+  questionIndexSpan.textContent = "0";
+
+  summarySection.classList.add("hidden");
+  feedbackDiv.className = "";
+  feedbackDiv.textContent = "Clique sur « Commencer » pour démarrer la partie !";
+
+  questionTextSpan.textContent = "Prépare-toi pour Math Dash !";
+
+  choiceButtons.forEach(btn => {
+    btn.disabled = true;
+    btn.classList.remove("correct", "wrong");
+    btn.textContent = "?";
+    btn.dataset.value = "";
+  });
 }
 
 initMathDash();
