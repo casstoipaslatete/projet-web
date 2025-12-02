@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trier les aliments</title>
+    <link rel="icon" type="image/png" href="/static/favicon.png" />
+    <link rel="apple-touch-icon" href="/public/favicon.png">
+    <link rel="stylesheet" href="/styles/main.css">
+    <link rel="stylesheet" href="trierAliments.css">
+</head>
+
+<body>
+    <div class="game-wrapper">
+        <div class="game-container">
+            <h1>Trie les aliments</h1>
+            <p class="instructions">
+                Clique sur la bonne catégorie pour chaque aliment : <br>
+            </p>
+            <div id="info-display">
+                  <button id="start-btn" class="simon-btn">Jouer!</button>
+                <p id="score-wrapper">Score: <span id="score">0</span></p>
+            </div>
+            <div id="summary" class="hidden">
+                <h2>Fin de la partie!</h2>
+                <p>Ton score : <span id="final-score">0</span></p>
+                <button id="cl-replay" class="simon-btn">Rejouer</button>
+                <button id="cl-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+            </div>
+            <div id="current-item-wrapper">
+                <div class="items-title">Aliment à trier</div>
+                <div class="items-container" id="items-container">
+                </div>
+            </div>
+
+            <!-- 4 catégories -->
+            <div class="zones-container">
+                <div class="zone" data-category="fruits">
+                    <div class="zone-title"> Fruits</div>
+                </div>
+                <div class="zone" data-category="legumes">
+                    <div class="zone-title"> Légumes</div>
+                </div>
+                <div class="zone" data-category="desserts">
+                    <div class="zone-title"> Desserts</div>
+                </div>
+                <div class="zone" data-category="viandes">
+                    <div class="zone-title"> Viandes</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script type="module" src="trierAliments.js"></script>
+</body>
+
+</html>
