@@ -33,6 +33,12 @@
       subtitle: "Ouvre les bons robinets pour la potion parfaite!",
       icon: "../static/AtelierPotions.svg",
     },
+    {
+      id: "puzzleElectrique",
+      title: "Puzzle électrique",
+      subtitle: "Relie les bons câbles pour allumer le circuit!",
+      icon: "../static/PuzzleElectrique.svg",
+    },
   ];
 
   const VISIBLE_COUNT = 5; // on vise 5 cartes visibles sur grand écran

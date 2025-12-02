@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Circuit électrique</title>
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="circuitElectrique.css" />
+</head>
+<body>
+  <div id="ce-container">
+    <h1>Circuit électrique</h1>
+
+    <div id="ce-hud">
+      <p>
+        Circuit :
+        <span id="ce-puzzle-index">1</span> /
+        <span id="ce-puzzle-total">1</span>
+      </p>
+      <p>Circuits réussis : <span id="ce-score">0</span></p>
+    </div>
+
+    <!-- Lampe principale -->
+    <div id="ce-lamp-area">
+      <div id="ce-lamp" class="ce-lamp-off">💡</div>
+      <div id="ce-lamp-label">Lampe éteinte</div>
+      <div id="ce-wire"></div>
+    </div>
+
+    <p id="ce-instructions">
+      Choisis une <strong>batterie</strong>, un <strong>câble</strong> et une
+      <strong>sortie</strong>, puis appuie sur
+      <strong>« Lancer le courant »</strong> pour voir si la lampe s’allume ! ⚡
+    </p>
+
+    <!-- Plateau des composants -->
+    <div id="ce-board">
+      <div class="ce-column">
+        <h2>Batteries</h2>
+        <div id="ce-sources" class="ce-cards"></div>
+      </div>
+
+      <div class="ce-column">
+        <h2>Câbles / modules</h2>
+        <div id="ce-modules" class="ce-cards"></div>
+      </div>
+
+      <div class="ce-column">
+        <h2>Sorties</h2>
+        <div id="ce-outputs" class="ce-cards"></div>
+      </div>
+    </div>
+
+    <div id="ce-feedback"></div>
+
+    <div id="ce-actions">
+      <button id="ce-start" class="ce-btn">Commencer</button>
+      <button id="ce-launch" class="ce-btn" disabled>Lancer le courant ⚡</button>
+      <button id="ce-clear" class="ce-btn" disabled>Effacer les choix</button>
+    </div>
+
+    <div style="margin-top: 10px;">
+      <button id="ce-back-menu2" class="ce-btn">← Retour à l’arcade</button>
+    </div>
+
+    <div id="ce-summary" class="ce-hidden">
+      <h2>Bravo, maître·sse du courant !</h2>
+      <p>
+        Tu as allumé
+        <span id="ce-final-score">0</span>
+        lampes.
+      </p>
+      <p id="ce-best-row" class="ce-hidden">
+        Score global actuel : <span id="ce-best-score">0</span>
+      </p>
+      <button id="ce-replay" class="ce-btn">Rejouer</button>
+      <button id="ce-back-menu3" class="ce-btn">← Retour à l’arcade</button>
+    </div>
+  </div>
+
+  <script type="module" src="circuitElectrique.js"></script>
+</body>
+</html>
