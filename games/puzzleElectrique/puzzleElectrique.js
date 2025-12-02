@@ -1,200 +1,176 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
 // ==============================
-// CONFIG DES PUZZLES
+// LIBRAIRIE DES MODULES
 // ==============================
+const MODULE_LIBRARY = {
+  wire: {
+    id: "wire",
+    icon: "➖",
+    baseLabel: "Fil",
+    baseHint: "Relie deux parties du circuit.",
+    passes: true,
+    hazard: false,
+  },
+  broken_wire: {
+    id: "broken_wire",
+    icon: "✂️",
+    baseLabel: "Fil cassé",
+    baseHint: "Le courant ne peut pas passer.",
+    passes: false,
+    hazard: false,
+  },
+  switch_on: {
+    id: "switch_on",
+    icon: "🔛",
+    baseLabel: "Interrupteur ON",
+    baseHint: "Laisse passer le courant.",
+    passes: true,
+    hazard: false,
+  },
+  switch_off: {
+    id: "switch_off",
+    icon: "⛔",
+    baseLabel: "Interrupteur OFF",
+    baseHint: "Bloque le courant.",
+    passes: false,
+    hazard: false,
+  },
+  diode_forward: {
+    id: "diode_forward",
+    icon: "▶️",
+    baseLabel: "Diode ➜",
+    baseHint: "Le courant passe dans ce sens.",
+    passes: true,
+    hazard: false,
+  },
+  diode_reverse: {
+    id: "diode_reverse",
+    icon: "◀️",
+    baseLabel: "Diode ⬅",
+    baseHint: "Le courant est bloqué.",
+    passes: false,
+    hazard: false,
+  },
+  short_wire: {
+    id: "short_wire",
+    icon: "⚡",
+    baseLabel: "Fil dangereux",
+    baseHint: "Le circuit marche, mais c’est risqué.",
+    passes: true,
+    hazard: true,
+  },
+};
+
+// ==============================
+// PUZZLES (plus variés & fun)
+// ==============================
+// goal:
+//  - "LAMP_ON"       → lampe doit s’allumer
+//  - "SAFE_LAMP_ON"  → lampe allumée SANS danger
+//  - "LAMP_OFF"      → lampe doit rester éteinte (circuit bloqué mais sans danger)
+//  - "SAFE"          → on veut juste un circuit sans danger
 //
-// Chaque puzzle contient:
-// - sources: batteries possibles
-// - modules: câbles / modules
-// - outputs: sorties (lampes, moteur, etc.)
-// - valid: combinaison correcte { sourceId, moduleId, outputId }
-//
+// palette: { moduleId: maxQuantité }  (avec compteur xN restants)
+// maxModules: nombre max de modules posés dans les 3 slots (facultatif)
 const PUZZLES = [
   {
-    name: "Lampe du salon",
-    sources: [
-      {
-        id: "bat_neuve",
-        icon: "🔋",
-        label: "Batterie neuve",
-        hint: "Courant stable et puissant.",
-      },
-      {
-        id: "bat_usee",
-        icon: "🔋",
-        label: "Batterie presque vide",
-        hint: "Elle n'a presque plus d'énergie...",
-      },
-    ],
-    modules: [
-      {
-        id: "fil_propre",
-        icon: "📏",
-        label: "Câble intact",
-        hint: "Le courant passe bien.",
-      },
-      {
-        id: "fil_coupe",
-        icon: "✂️",
-        label: "Câble coupé",
-        hint: "Circuit ouvert, le courant ne passera pas.",
-      },
-      {
-        id: "court_circuit",
-        icon: "⚡",
-        label: "Fil dénudé",
-        hint: "Aïe, ça risque de faire un court-circuit...",
-      },
-    ],
-    outputs: [
-      {
-        id: "lampe_ok",
-        icon: "💡",
-        label: "Lampe du salon",
-        hint: "S'allume si le courant est bon.",
-      },
-      {
-        id: "moteur",
-        icon: "🌀",
-        label: "Petit moteur",
-        hint: "Il tourne, mais ce n'est pas ce qu'on veut.",
-      },
-      {
-        id: "chauffage",
-        icon: "🔥",
-        label: "Résistance chauffante",
-        hint: "Ça chauffe beaucoup!",
-      },
-    ],
-    valid: {
-      sourceId: "bat_neuve",
-      moduleId: "fil_propre",
-      outputId: "lampe_ok",
+    id: "p1",
+    name: "Circuit simple",
+    description:
+      "Relie la batterie à la lampe avec des fils. Commence doucement !",
+    goal: "LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 3,
     },
   },
   {
-    name: "Lampe du couloir",
-    sources: [
-      {
-        id: "bat_neuve2",
-        icon: "🔋",
-        label: "Bloc pile",
-        hint: "Parfait pour un long couloir.",
-      },
-      {
-        id: "adaptateur_mur",
-        icon: "🔌",
-        label: "Prise murale",
-        hint: "Beaucoup d'énergie... à utiliser avec soin.",
-      },
-    ],
-    modules: [
-      {
-        id: "fil_long",
-        icon: "〰️",
-        label: "Câble long",
-        hint: "Légère perte, mais ça passe.",
-      },
-      {
-        id: "fil_torsade",
-        icon: "🧵",
-        label: "Câble emmêlé",
-        hint: "Pas très fiable...",
-      },
-      {
-        id: "protege_court_circuit",
-        icon: "🧯",
-        label: "Protection",
-        hint: "Empêche les gros dégâts en cas d'erreur.",
-      },
-    ],
-    outputs: [
-      {
-        id: "lampe_couloir",
-        icon: "💡",
-        label: "Lampe du couloir",
-        hint: "Doit s'allumer sans tout faire sauter.",
-      },
-      {
-        id: "sirene",
-        icon: "📢",
-        label: "Sirène",
-        hint: "Aïe les oreilles...",
-      },
-      {
-        id: "ventilateur",
-        icon: "🌀",
-        label: "Ventilateur",
-        hint: "Ça souffle, mais ce n'est pas la lumière.",
-      },
-    ],
-    valid: {
-      sourceId: "adaptateur_mur",
-      moduleId: "protege_court_circuit",
-      outputId: "lampe_couloir",
+    id: "p2",
+    name: "Le fil cassé",
+    description:
+      "Un des fils est cassé. Allume la lampe sans utiliser le fil cassé.",
+    goal: "LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      broken_wire: 1,
     },
   },
   {
-    name: "Lampe de la chambre",
-    sources: [
-      {
-        id: "bat_pile_bouton",
-        icon: "🔋",
-        label: "Petite pile",
-        hint: "Parfaite pour une lampe de chevet.",
-      },
-      {
-        id: "bat_trop_forte",
-        icon: "⚡",
-        label: "Super batterie",
-        hint: "Beaucoup trop puissante pour une petite lampe!",
-      },
-    ],
-    modules: [
-      {
-        id: "fil_chevet",
-        icon: "🧵",
-        label: "Fil de chevet",
-        hint: "Adapté à une petite lampe.",
-      },
-      {
-        id: "fil_brico",
-        icon: "🛠️",
-        label: "Fil bricolé",
-        hint: "On n'est pas certain que ce soit sécuritaire...",
-      },
-      {
-        id: "court_circuit2",
-        icon: "⚡",
-        label: "Court-circuit risqué",
-        hint: "Pas une bonne idée.",
-      },
-    ],
-    outputs: [
-      {
-        id: "lampe_chambre",
-        icon: "💡",
-        label: "Lampe de chambre",
-        hint: "Doux éclairage pour raconter des histoires.",
-      },
-      {
-        id: "chauffage2",
-        icon: "🔥",
-        label: "Radiateur",
-        hint: "Ça chauffe, mais ça n'éclaire pas.",
-      },
-      {
-        id: "machine_bizarre",
-        icon: "🧪",
-        label: "Machine étrange",
-        hint: "On ne sait pas trop ce que ça fait.",
-      },
-    ],
-    valid: {
-      sourceId: "bat_pile_bouton",
-      moduleId: "fil_chevet",
-      outputId: "lampe_chambre",
+    id: "p3",
+    name: "Interrupteur magique",
+    description:
+      "Utilise l’interrupteur ON pour allumer la lampe. OFF la bloque.",
+    goal: "LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      switch_on: 1,
+      switch_off: 1,
+    },
+  },
+  {
+    id: "p4",
+    name: "Chambre endormie",
+    description:
+      "Le circuit est branché, mais la lampe doit rester ÉTEINTE (sans danger).",
+    goal: "LAMP_OFF",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      switch_off: 1,
+      broken_wire: 1,
+    },
+  },
+  {
+    id: "p5",
+    name: "Diode directionnelle",
+    description:
+      "La flèche de la diode doit aller de la batterie vers la lampe pour que ça s’allume.",
+    goal: "SAFE_LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      diode_forward: 1,
+      diode_reverse: 1,
+    },
+  },
+  {
+    id: "p6",
+    name: "Circuit sans danger",
+    description:
+      "Allume la lampe sans utiliser le fil dangereux. La sécurité avant tout !",
+    goal: "SAFE_LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      short_wire: 1,
+      switch_on: 1,
+    },
+  },
+  {
+    id: "p7",
+    name: "Mini-circuit",
+    description: "Allume la lampe avec au maximum 2 modules.",
+    goal: "LAMP_ON",
+    maxModules: 2,
+    palette: {
+      wire: 3,
+    },
+  },
+  {
+    id: "p8",
+    name: "Puzzle final",
+    description:
+      "Combine interrupteur, diode et fil pour un circuit SÛR qui allume la lampe.",
+    goal: "SAFE_LAMP_ON",
+    maxModules: 3,
+    palette: {
+      wire: 2,
+      switch_on: 1,
+      diode_forward: 1,
+      short_wire: 1,
     },
   },
 ];
@@ -204,19 +180,20 @@ const TOTAL_PUZZLES = PUZZLES.length;
 // ==============================
 // AUDIO – musique & sfx
 // ==============================
-let sfxClic, sfxPowerOn, sfxZap;
+let sfxClic, sfxPowerOn, sfxZap, sfxError;
 let bgMusic;
 
 try {
-  sfxClic = new Audio("sfx/clic.mp3");           // clic local du jeu
-  sfxPowerOn = new Audio("sfx/powerOn.mp3");     // lampe qui s'allume
-  sfxZap = new Audio("sfx/zap.mp3");             // court-circuit / erreur
+  sfxClic = new Audio("sfx/clic.mp3");
+  sfxPowerOn = new Audio("sfx/powerOn.mp3"); // lampe allumée
+  sfxZap = new Audio("sfx/zap.mp3");         // court-circuit / danger
+  sfxError = new Audio("sfx/error.mp3");     // erreur logique
 
-  bgMusic = new Audio("music/circuitElectriqueMusic.mp3");
+  bgMusic = new Audio("music/puzzleElectriqueMusic.mp3");
   bgMusic.loop = true;
   bgMusic.volume = 0.7;
 } catch (e) {
-  console.warn("Audio circuitElectrique non disponible:", e);
+  console.warn("Audio puzzleElectrique non disponible:", e);
 }
 
 function playSfx(audio) {
@@ -237,6 +214,12 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
+  // Coupe la musique globale de l’arcade si présente
+  if (window.GlobalAudio && GlobalAudio.music) {
+    try {
+      GlobalAudio.music.pause();
+    } catch {}
+  }
   if (!bgMusic) return;
   if (bgMusic.paused) {
     bgMusic.play().catch(() => {});
@@ -247,12 +230,16 @@ function ensureMusic() {
 // ÉTAT DU JEU
 // ==============================
 let currentPuzzleIndex = 0;
+let currentPuzzle = PUZZLES[0];
+
 let solvedCount = 0;
 let puzzleAlreadyCounted = false;
 
-let selectedSourceId = null;
+// slots = tableau de 3 positions (0,1,2)
+let currentSlots = [null, null, null]; // moduleId ou null
 let selectedModuleId = null;
-let selectedOutputId = null;
+// combien de fois chaque module est utilisé dans ce puzzle
+let usedCounts = {};
 
 // ==============================
 // DOM
@@ -263,12 +250,12 @@ const scoreSpan = document.getElementById("ce-score");
 
 const lampEl = document.getElementById("ce-lamp");
 const lampLabelEl = document.getElementById("ce-lamp-label");
-const wireEl = document.getElementById("ce-wire");
+const wirePathEl = document.getElementById("ce-wire-path");
 
-const sourcesContainer = document.getElementById("ce-sources");
-const modulesContainer = document.getElementById("ce-modules");
-const outputsContainer = document.getElementById("ce-outputs");
+const instructionsEl = document.getElementById("ce-instructions");
 
+const slotsEls = Array.from(document.querySelectorAll(".ce-slot"));
+const paletteContainer = document.getElementById("ce-palette");
 const feedbackDiv = document.getElementById("ce-feedback");
 
 const startBtn = document.getElementById("ce-start");
@@ -309,104 +296,258 @@ function setLamp(on, text) {
     lampEl.classList.add("ce-lamp-on");
     lampEl.classList.remove("ce-lamp-off");
     lampLabelEl.textContent = text || "La lampe est allumée !";
-    wireEl.classList.add("ce-wire-on");
+    wirePathEl.classList.add("ce-wire-on");
   } else {
     lampEl.classList.remove("ce-lamp-on");
     lampEl.classList.add("ce-lamp-off");
     lampLabelEl.textContent = text || "Lampe éteinte";
-    wireEl.classList.remove("ce-wire-on");
+    wirePathEl.classList.remove("ce-wire-on");
   }
 }
 
-function clearSelections() {
-  selectedSourceId = null;
-  selectedModuleId = null;
-  selectedOutputId = null;
-
-  document
-    .querySelectorAll(".ce-card")
-    .forEach((card) => card.classList.remove("ce-selected"));
+function resetSlots() {
+  currentSlots = [null, null, null];
+  slotsEls.forEach((slot) => {
+    slot.innerHTML = "";
+    slot.classList.remove("ce-filled");
+  });
 }
 
-function refreshSelectionUI() {
-  document.querySelectorAll(".ce-card").forEach((card) => {
-    const group = card.dataset.group;
+function resetUsedCounts() {
+  usedCounts = {};
+  if (!currentPuzzle || !currentPuzzle.palette) return;
+  Object.keys(currentPuzzle.palette).forEach((id) => {
+    usedCounts[id] = 0;
+  });
+}
+
+function updatePaletteCounts() {
+  if (!currentPuzzle || !currentPuzzle.palette) return;
+  const limits = currentPuzzle.palette;
+
+  const cards = paletteContainer.querySelectorAll(".ce-module-card");
+  cards.forEach((card) => {
     const id = card.dataset.id;
+    const limit = limits[id] ?? 0;
+    const used = usedCounts[id] ?? 0;
+    const remaining = Math.max(0, limit - used);
 
-    let shouldSelect = false;
-    if (group === "source" && id === selectedSourceId) shouldSelect = true;
-    if (group === "module" && id === selectedModuleId) shouldSelect = true;
-    if (group === "output" && id === selectedOutputId) shouldSelect = true;
+    const labelEl = card.querySelector(".ce-module-label");
+    const hintEl = card.querySelector(".ce-module-hint");
 
-    card.classList.toggle("ce-selected", shouldSelect);
+    const base = MODULE_LIBRARY[id]?.baseLabel || id;
+    labelEl.textContent = base;
+
+    if (limit > 0) {
+      hintEl.textContent = `${MODULE_LIBRARY[id]?.baseHint || ""} (x${remaining} restants)`;
+    } else {
+      hintEl.textContent = MODULE_LIBRARY[id]?.baseHint || "";
+    }
+
+    card.disabled = remaining <= 0;
+    card.classList.toggle("ce-selected", id === selectedModuleId && remaining > 0);
   });
 }
 
 // ==============================
-// CHARGEMENT D'UN PUZZLE
+// CREATION PALETTE & SLOTS
 // ==============================
-function createCard(item, group) {
+function createModuleCard(moduleId, limit) {
+  const def = MODULE_LIBRARY[moduleId];
+  if (!def) return null;
+
   const card = document.createElement("button");
   card.type = "button";
-  card.className = "ce-card";
-  card.dataset.group = group;
-  card.dataset.id = item.id;
+  card.className = "ce-module-card";
+  card.dataset.id = moduleId;
 
   card.innerHTML = `
-    <div class="ce-card-icon">${item.icon}</div>
-    <div class="ce-card-main">
-      <div class="ce-card-label">${item.label}</div>
-      <div class="ce-card-hint">${item.hint}</div>
+    <div class="ce-module-icon">${def.icon}</div>
+    <div class="ce-module-main">
+      <div class="ce-module-label">${def.baseLabel}</div>
+      <div class="ce-module-hint">${def.baseHint}</div>
     </div>
   `;
 
   card.addEventListener("click", () => {
-    if (group === "source") {
-      selectedSourceId = item.id;
-    } else if (group === "module") {
-      selectedModuleId = item.id;
-    } else if (group === "output") {
-      selectedOutputId = item.id;
+    // si déjà sélectionné → on désélectionne
+    if (selectedModuleId === moduleId) {
+      selectedModuleId = null;
+    } else {
+      selectedModuleId = moduleId;
     }
-    refreshSelectionUI();
+    updatePaletteCounts();
     setFeedback("", null);
   });
 
   return card;
 }
 
+function renderPaletteForPuzzle(puzzle) {
+  paletteContainer.innerHTML = "";
+  const palette = puzzle.palette || {};
+
+  Object.entries(palette).forEach(([moduleId, limit]) => {
+    if (!MODULE_LIBRARY[moduleId] || limit <= 0) return;
+    const card = createModuleCard(moduleId, limit);
+    if (card) {
+      paletteContainer.appendChild(card);
+    }
+  });
+
+  resetUsedCounts();
+  selectedModuleId = null;
+  updatePaletteCounts();
+}
+
+function onSlotClick(slotIndex) {
+  return () => {
+    if (!currentPuzzle) return;
+
+    const previousModule = currentSlots[slotIndex];
+
+    // Si aucun module sélectionné → on vide la case
+    if (!selectedModuleId) {
+      if (previousModule) {
+        usedCounts[previousModule] = Math.max(
+          0,
+          (usedCounts[previousModule] || 0) - 1
+        );
+        currentSlots[slotIndex] = null;
+        slotsEls[slotIndex].innerHTML = "";
+        slotsEls[slotIndex].classList.remove("ce-filled");
+        updatePaletteCounts();
+      }
+      return;
+    }
+
+    const limit = currentPuzzle.palette[selectedModuleId] ?? 0;
+    const alreadyUsed = usedCounts[selectedModuleId] ?? 0;
+
+    // si on veut enlever le même module → toggle off
+    if (previousModule === selectedModuleId) {
+      usedCounts[selectedModuleId] = Math.max(0, alreadyUsed - 1);
+      currentSlots[slotIndex] = null;
+      slotsEls[slotIndex].innerHTML = "";
+      slotsEls[slotIndex].classList.remove("ce-filled");
+      updatePaletteCounts();
+      return;
+    }
+
+    // check limite avant de remplacer
+    if (alreadyUsed >= limit) {
+      setFeedback("Tu as déjà utilisé ce module au maximum.", "bad");
+      playSfx(sfxError);
+      return;
+    }
+
+    // libère l’ancien module si présent
+    if (previousModule) {
+      usedCounts[previousModule] = Math.max(
+        0,
+        (usedCounts[previousModule] || 0) - 1
+      );
+    }
+
+    // place le nouveau
+    usedCounts[selectedModuleId] = alreadyUsed + 1;
+    currentSlots[slotIndex] = selectedModuleId;
+
+    const def = MODULE_LIBRARY[selectedModuleId];
+    slotsEls[slotIndex].innerHTML = def ? def.icon : "?";
+    slotsEls[slotIndex].classList.add("ce-filled");
+
+    updatePaletteCounts();
+    setFeedback("", null);
+  };
+}
+
+// ==============================
+// SIMULATION DU COURANT
+// ==============================
+function simulateCircuit(slots) {
+  let modulesCount = 0;
+  let hasHazard = false;
+  let blocked = false;
+
+  for (const moduleId of slots) {
+    if (!moduleId) continue;
+    const def = MODULE_LIBRARY[moduleId];
+    if (!def) continue;
+
+    modulesCount++;
+    if (!def.passes) {
+      blocked = true;
+    }
+    if (def.hazard) {
+      hasHazard = true;
+    }
+  }
+
+  const hasPower = modulesCount > 0 && !blocked;
+
+  return {
+    hasPower,
+    hasHazard,
+    modulesCount,
+  };
+}
+
+function evaluateGoal(puzzle, sim) {
+  const { hasPower, hasHazard, modulesCount } = sim;
+
+  if (modulesCount === 0) {
+    return { ok: false, reason: "empty" };
+  }
+
+  if (puzzle.maxModules && modulesCount > puzzle.maxModules) {
+    return { ok: false, reason: "too_many" };
+  }
+
+  if (puzzle.goal === "SAFE_LAMP_ON" || puzzle.goal === "SAFE") {
+    if (hasHazard) {
+      return { ok: false, reason: "hazard" };
+    }
+  }
+
+  switch (puzzle.goal) {
+    case "LAMP_ON":
+    case "SAFE_LAMP_ON":
+      if (!hasPower) return { ok: false, reason: "no_power" };
+      return { ok: true };
+
+    case "LAMP_OFF":
+      if (hasPower) return { ok: false, reason: "lamp_on" };
+      if (hasHazard) return { ok: false, reason: "hazard" };
+      return { ok: true };
+
+    case "SAFE":
+      if (hasHazard) return { ok: false, reason: "hazard" };
+      return { ok: true };
+
+    default:
+      return { ok: false, reason: "unknown" };
+  }
+}
+
+// ==============================
+// CHARGEMENT D’UN PUZZLE
+// ==============================
 function loadPuzzle(index) {
   currentPuzzleIndex = index;
+  currentPuzzle = PUZZLES[currentPuzzleIndex];
   puzzleAlreadyCounted = false;
-
-  const puzzle = PUZZLES[currentPuzzleIndex];
 
   puzzleIndexSpan.textContent = (currentPuzzleIndex + 1).toString();
   puzzleTotalSpan.textContent = TOTAL_PUZZLES.toString();
 
-  // Reset UI
+  instructionsEl.textContent = currentPuzzle.description;
+
   setLamp(false, "Lampe éteinte");
-  setFeedback(`Circuit : ${puzzle.name}`, null);
-  clearSelections();
+  setFeedback(`Circuit : ${currentPuzzle.name}`, null);
 
-  sourcesContainer.innerHTML = "";
-  modulesContainer.innerHTML = "";
-  outputsContainer.innerHTML = "";
-
-  puzzle.sources.forEach((src) => {
-    const card = createCard(src, "source");
-    sourcesContainer.appendChild(card);
-  });
-
-  puzzle.modules.forEach((mod) => {
-    const card = createCard(mod, "module");
-    modulesContainer.appendChild(card);
-  });
-
-  puzzle.outputs.forEach((out) => {
-    const card = createCard(out, "output");
-    outputsContainer.appendChild(card);
-  });
+  resetSlots();
+  renderPaletteForPuzzle(currentPuzzle);
 
   launchBtn.disabled = false;
   clearBtn.disabled = false;
@@ -418,9 +559,9 @@ function loadPuzzle(index) {
 function startGame() {
   ensureMusic();
 
-  ScoreService.init("circuitElectrique");
+  ScoreService.init("puzzleElectrique");
   ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore circuitElectrique:", err)
+    console.warn("resetScore puzzleElectrique:", err)
   );
 
   solvedCount = 0;
@@ -428,47 +569,30 @@ function startGame() {
 
   summary.classList.add("ce-hidden");
   setLamp(false, "Lampe éteinte");
-  setFeedback("Choisis tes composants puis lance le courant !", null);
+  setFeedback("Place des modules puis lance le courant !", null);
 
   startBtn.classList.add("ce-hidden");
-  launchBtn.disabled = true;
-  clearBtn.disabled = true;
 
   loadPuzzle(0);
 }
 
-function clearChoices() {
-  clearSelections();
-  setFeedback("Choix effacés. Recommence ton circuit.", null);
+function clearCircuit() {
+  resetSlots();
+  resetUsedCounts();
+  selectedModuleId = null;
+  updatePaletteCounts();
   setLamp(false, "Lampe éteinte");
-}
-
-function isCurrentCombinationValid() {
-  const puzzle = PUZZLES[currentPuzzleIndex];
-  const { sourceId, moduleId, outputId } = puzzle.valid;
-
-  return (
-    selectedSourceId === sourceId &&
-    selectedModuleId === moduleId &&
-    selectedOutputId === outputId
-  );
+  setFeedback("Circuit effacé. Recommence ton montage !", null);
 }
 
 async function handleLaunchCurrent() {
-  if (!selectedSourceId || !selectedModuleId || !selectedOutputId) {
-    setFeedback(
-      "Tu dois choisir une batterie, un câble et une sortie avant de lancer le courant.",
-      "bad"
-    );
-    playSfx(sfxZap);
-    return;
-  }
+  const sim = simulateCircuit(currentSlots);
+  const result = evaluateGoal(currentPuzzle, sim);
+  const { hasPower, hasHazard } = sim;
 
-  const ok = isCurrentCombinationValid();
-
-  if (ok) {
+  if (result.ok) {
     setLamp(true, "La lampe s'allume, bravo !");
-    setFeedback("Bravo ! Ton circuit est parfait, la lampe s'allume ! ⚡", "good");
+    setFeedback("Bravo ! Ton circuit fonctionne comme demandé ⚡", "good");
     playSfx(sfxPowerOn);
 
     if (!puzzleAlreadyCounted) {
@@ -479,15 +603,13 @@ async function handleLaunchCurrent() {
       try {
         await ScoreService.addPoints(1);
       } catch (e) {
-        console.warn("addPoints circuitElectrique:", e);
+        console.warn("addPoints puzzleElectrique:", e);
       }
     }
 
-    // Passage au puzzle suivant
-    launchBtn.disabled = true;
-    clearBtn.disabled = true;
-
     if (currentPuzzleIndex < TOTAL_PUZZLES - 1) {
+      launchBtn.disabled = true;
+      clearBtn.disabled = true;
       setTimeout(() => {
         loadPuzzle(currentPuzzleIndex + 1);
       }, 1000);
@@ -495,13 +617,47 @@ async function handleLaunchCurrent() {
       await endGame();
     }
   } else {
-    // Mauvais circuit : court-circuit / erreur
-    setLamp(false, "Lampe éteinte");
-    setFeedback(
-      "Oups... ce circuit ne fonctionne pas. Essaie une autre combinaison !",
-      "bad"
-    );
-    playSfx(sfxZap);
+    // Gestion des échecs plus fun
+    if (result.reason === "empty") {
+      setLamp(false, "Lampe éteinte");
+      setFeedback(
+        "Il n’y a encore aucun module dans le circuit. Ajoute des pièces !",
+        "bad"
+      );
+      playSfx(sfxError);
+    } else if (result.reason === "too_many") {
+      setLamp(hasPower, hasPower ? "Lampe allumée" : "Lampe éteinte");
+      setFeedback(
+        "Tu as utilisé trop de pièces pour ce puzzle. Essaie avec moins de modules.",
+        "bad"
+      );
+      playSfx(sfxError);
+    } else if (result.reason === "hazard") {
+      setLamp(hasPower, hasPower ? "Lampe allumée (dangereuse!)" : "Lampe éteinte");
+      setFeedback(
+        "Oups ! Ton circuit est dangereux. Évite le fil ⚡ risqué.",
+        "bad"
+      );
+      playSfx(sfxZap);
+    } else if (result.reason === "no_power") {
+      setLamp(false, "Lampe éteinte");
+      setFeedback(
+        "Le courant n’arrive pas jusqu’à la lampe. Vérifie que rien ne bloque le chemin.",
+        "bad"
+      );
+      playSfx(sfxError);
+    } else if (result.reason === "lamp_on") {
+      setLamp(true, "Lampe allumée (mais ce n’est pas ce qu’on veut)");
+      setFeedback(
+        "La lampe s’allume alors qu’elle devrait rester éteinte. Change ton montage.",
+        "bad"
+      );
+      playSfx(sfxError);
+    } else {
+      setLamp(false, "Lampe éteinte");
+      setFeedback("Ce circuit ne correspond pas à la consigne. Réessaie !", "bad");
+      playSfx(sfxError);
+    }
   }
 }
 
@@ -514,9 +670,9 @@ async function endGame() {
   clearBtn.disabled = true;
 
   try {
-    await ScoreService.saveScore("circuitElectrique", solvedCount);
+    await ScoreService.saveScore("puzzleElectrique", solvedCount);
   } catch (e) {
-    console.warn("saveScore circuitElectrique:", e);
+    console.warn("saveScore puzzleElectrique:", e);
   }
 
   try {
@@ -524,7 +680,7 @@ async function endGame() {
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("ce-hidden");
   } catch (e) {
-    console.warn("getScore circuitElectrique:", e);
+    console.warn("getScore puzzleElectrique:", e);
     bestRow.classList.add("ce-hidden");
   }
 }
@@ -534,14 +690,21 @@ async function endGame() {
 // ==============================
 startBtn.addEventListener("click", withClickSfx(startGame));
 launchBtn.addEventListener("click", withClickSfx(handleLaunchCurrent));
-clearBtn.addEventListener("click", withClickSfx(clearChoices));
+clearBtn.addEventListener("click", withClickSfx(clearCircuit));
 
 replayBtn.addEventListener("click", withClickSfx(startGame));
 backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
 backMenuBtn3.addEventListener("click", withClickSfx(goBackToMenu));
 
+slotsEls.forEach((slot, index) => {
+  slot.addEventListener("click", onSlotClick(index));
+});
+
 // Init de base
-ScoreService.init("circuitElectrique");
+ScoreService.init("puzzleElectrique");
 puzzleTotalSpan.textContent = TOTAL_PUZZLES.toString();
 setLamp(false, "Lampe éteinte");
-setFeedback("Appuie sur « Commencer » pour réparer ton premier circuit !", null);
+setFeedback(
+  "Appuie sur « Commencer » puis ajoute des modules pour créer ton premier circuit !",
+  null
+);
