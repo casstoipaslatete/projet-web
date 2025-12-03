@@ -55,6 +55,54 @@ let currentItemWrapper;
 let totalAliments = 0;
 let bienPlaces = 0;
 
+// ==============================
+// AUDIO – musique & sfx
+// ==============================
+let sfxClic, sfxError, sfxSuccess;
+let bgMusic;
+
+try {
+  sfxClic = new Audio("sfx/clic.mp3");
+  sfxSuccess = new Audio("sfx/success.mp3");
+  sfxError = new Audio("sfx/error.mp3");
+
+  bgMusic = new Audio("music/trierAlimentsMusic.mp3");
+  bgMusic.loop = true;
+  bgMusic.volume = 0.7;
+} catch (e) {
+  console.warn("Audio trierAliments non disponible:", e);
+}
+
+function playSfx(audio) {
+  if (!audio) return;
+  try {
+    audio.currentTime = 0;
+    audio.play().catch(() => {});
+  } catch {
+    // ignore
+  }
+}
+
+function withClickSfx(handler) {
+  return function (event) {
+    playSfx(sfxClic);
+    return handler(event);
+  };
+}
+
+function ensureMusic() {
+  // Coupe la musique globale de l’arcade si présente
+  if (window.GlobalAudio && GlobalAudio.music) {
+    try {
+      GlobalAudio.music.pause();
+    } catch {}
+  }
+  if (!bgMusic) return;
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+  }
+}
+
 // Ordre aléatoire des aliments
 let ordreAliments = [];
 let currentIndex = 0;   
@@ -114,70 +162,83 @@ function initialiserJeu() {
 }
 
 function initialiserZones() {
-    zones.forEach((zone) => {
-        zone.addEventListener("click", () => {
-            if (!currentItem) return;
+  zones.forEach((zone) => {
+    zone.addEventListener("click", (event) => {
+      if (!currentItem) return;
 
-            const categorieZone = zone.dataset.category;
-            const bonneCategorie = currentItem.category;
+      const categorieZone = zone.dataset.category;
+      const bonneCategorie = currentItem.category;
 
-            if (categorieZone === bonneCategorie) {
-                const sorted = document.createElement("div");
-                sorted.classList.add("item", "correct");
-                sorted.textContent = currentItem.label;
-                zone.appendChild(sorted);
+      if (categorieZone === bonneCategorie) {
+        playSfx(sfxSuccess);
 
-                bienPlaces++;
-                scoreSpan.textContent = String(bienPlaces);
+        const sorted = document.createElement("div");
+        sorted.classList.add("item", "correct");
+        sorted.textContent = currentItem.label;
+        zone.appendChild(sorted);
 
-                if (bienPlaces === totalAliments) {
-                    // Affichage en fin de partie
-                    itemsContainer.innerHTML = "";
-                    currentItem = null;
-                    finalScoreSpan.textContent = String(bienPlaces);
-                    currentItemWrapper.classList.add("hidden");
-                    scoreWrapper.classList.add("hidden");
-                    summaryDiv.classList.remove("hidden");
-                } else {
-                    // Aliment suivant
-                    currentIndex++;
-                    afficherAlimentCourant();
-                }
-            } else {
-                // Animation d’erreur
-                zone.classList.add("wrong");
-                setTimeout(() => {
-                    zone.classList.remove("wrong");
-                }, 200);
-            }
-        });
+        bienPlaces++;
+        scoreSpan.textContent = String(bienPlaces);
+
+        if (bienPlaces === totalAliments) {
+          // Fin de partie
+          itemsContainer.innerHTML = "";
+          currentItem = null;
+          finalScoreSpan.textContent = String(bienPlaces);
+          currentItemWrapper.classList.add("hidden");
+          scoreWrapper.classList.add("hidden");
+          summaryDiv.classList.remove("hidden");
+        } else {
+          // Aliment suivant
+          currentIndex++;
+          afficherAlimentCourant();
+        }
+      } else {
+        playSfx(sfxError);
+
+        zone.classList.add("wrong");
+        setTimeout(() => {
+          zone.classList.remove("wrong");
+        }, 200);
+      }
     });
+  });
 }
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    itemsContainer = document.getElementById("items-container");
-    zones = document.querySelectorAll(".zone");
-    scoreSpan = document.getElementById("score");
-    scoreWrapper = document.getElementById("score-wrapper");
-    summaryDiv = document.getElementById("summary");
-    finalScoreSpan = document.getElementById("final-score");
-    startBtn = document.getElementById("start-btn");
-    replayBtn = document.getElementById("cl-replay");
-    currentItemWrapper = document.getElementById("current-item-wrapper");
+  itemsContainer = document.getElementById("items-container");
+  zones = document.querySelectorAll(".zone");
+  scoreSpan = document.getElementById("score");
+  scoreWrapper = document.getElementById("score-wrapper");
+  summaryDiv = document.getElementById("summary");
+  finalScoreSpan = document.getElementById("final-score");
+  startBtn = document.getElementById("start-btn");
+  replayBtn = document.getElementById("cl-replay");
+  currentItemWrapper = document.getElementById("current-item-wrapper");
 
-    // Affichage du début
-    currentItemWrapper.classList.add("hidden");
-    scoreWrapper.classList.add("hidden");
-    summaryDiv.classList.add("hidden");
+  // Affichage du début
+  currentItemWrapper.classList.add("hidden");
+  scoreWrapper.classList.add("hidden");
+  summaryDiv.classList.add("hidden");
 
-    initialiserZones();
+  initialiserZones();
 
-    // Interactions avec les boutons
-    startBtn.addEventListener("click", () => {
-        initialiserJeu();
-    });
-    replayBtn.addEventListener("click", () => {
-        initialiserJeu();
-    });
+  // Interactions avec les boutons
+  startBtn.addEventListener(
+    "click",
+    withClickSfx(() => {
+      ensureMusic();
+      initialiserJeu();
+    })
+  );
+
+  replayBtn.addEventListener(
+    "click",
+    withClickSfx(() => {
+      ensureMusic();
+      initialiserJeu();
+    })
+  );
 });
+

@@ -39,6 +39,12 @@
       subtitle: "Relie les bons câbles pour allumer le circuit!",
       icon: "../static/PuzzleElectrique.svg",
     },
+    {
+      id: "trierAliments",
+      title: "Trier les aliments",
+      subtitle: "Place les aliments dans leur bonne catégorie!",
+      icon: "../static/TrierAliments.svg",
+    },
   ];
 
   const VISIBLE_COUNT = 5; // on vise 5 cartes visibles sur grand écran
