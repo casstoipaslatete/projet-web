@@ -45,6 +45,12 @@
       subtitle: "Place les aliments dans leur bonne catégorie!",
       icon: "../static/TrierAliments.svg",
     },
+    {
+      id: "motMystere",
+      title: "Mot Mystere",
+      subtitle: "Trouve le mot mélangé le plus vite possible!",
+      icon: "../static/MotMystere.svg",
+    },
   ];
 
   const VISIBLE_COUNT = 5; // on vise 5 cartes visibles sur grand écran
