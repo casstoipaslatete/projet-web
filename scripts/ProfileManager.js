@@ -9,9 +9,11 @@ window.ProfileManager = (function () {
     color: "#ffcc00",
   };
 
+  const DEFAULT_PROFILE_ID = 1; // Simple default profile ID (no auth system)
+
   async function load() {
     try {
-      const response = await fetch("/api/profile");
+      const response = await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`);
       if (!response.ok) {
         console.warn("[ProfileManager] /api/profile a répondu", response.status);
         return DEFAULT_PROFILE;
@@ -30,7 +32,7 @@ window.ProfileManager = (function () {
 
   async function save(profile) {
     try {
-      await fetch("/api/profile", {
+      await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
@@ -41,8 +43,21 @@ window.ProfileManager = (function () {
     }
   }
 
+  async function delete_profile() {
+    try {
+      await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" }
+      });
+      console.log("[ProfileManager] Profil supprimé !");
+    } catch (err) {
+      console.error("[ProfileManager] Erreur lors de la suppression du profil:", err);
+    }
+  }
+
   return {
     load,
     save,
+    delete_profile,
   };
 })();
