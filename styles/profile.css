@@ -20,10 +20,20 @@
 }
 
 .profile-header h1 {
-  font-size: 2.6rem;             /* un peu plus petit qu’avant */
-  letter-spacing: 3px;
   margin: 0;
+  font-size: 3rem;
+  letter-spacing: 4px;
+  text-align: center;
+  color: #ffffff;
+
+  text-shadow:
+    0 0 10px #d2eaff,
+    0 0 20px #8bb6d8,
+    0 0 35px #5a7fa2,
+    0 0 55px #45647f,
+    0 0 85px #324b61;
 }
+
 
 /* Contenu principal */
 .profile-main {
