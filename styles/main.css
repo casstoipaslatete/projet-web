@@ -1,69 +1,9 @@
-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #2c3e50;
-    font-family: 'Arial', sans-serif;
-    color: white;
-}
+/* =========================================
+   RESET & BASE
+   ========================================= */
 
-h1 {
-    font-size: 55px;
-    text-align: center;
-    color: #ffffff;
-    text-shadow:
-        0 0 5px #b1cee9,
-        0 0 10px #85a9ca,
-        0 0 20px #6387a8,
-        0 0 40px #4e6b86,
-        0 0 60px #3c546b;
-    letter-spacing: 4px;
-    line-height: 1.2;
-}
-
-.boutons {
-    display: flex;
-    flex-direction: column;   
-    align-items: center;      
-    gap: 15px;               
-    margin-top: 20px;
-}
-
-/* Style COMMUN pour tous les boutons du menu (les <a>) */
-.menu-btn {
-    display: block;
-    width: 140px; 
-    padding: 10px 20px;
-    font-size: 1em;
-    font-weight: 500;
-    cursor: pointer;
-    border-radius: 5px;
-    color: white;
-    text-align: center;
-    text-decoration: none;   /* pas de soulignement */
-    border: none;            /* au cas où */
-    line-height: 1.2;
-    transition: background-color 0.2s ease;
-}
-
-/* Hover commun */
-.menu-btn:hover {
-    background-color: #364f68;
-}
-
-/* Couleurs spécifiques */
-.btnJouer {
-    background-color: #8e44ad;
-}
-
-.btnAvatar {
-    background-color: rgb(255, 145, 55);
-}
-
-.btnScore {
-    background-color: rgb(65, 167, 235);
+* {
+  box-sizing: border-box;
 }
 
 html,
@@ -73,16 +13,19 @@ body {
   height: 100%;
 }
 
-/* Thème global + bordure arcade */
+/* =========================================
+   THÈME GLOBAL + BORDURE ARCADE
+   ========================================= */
+
 body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;   /* ← IMPORTANT : centrer verticalement */
+  justify-content: center;
 
   min-height: 100vh;
   font-family: 'Arial', sans-serif;
-  color: white;
+  color: #ffffff;
 
   background-color: #2c3e50;
   background-image: url("/static/BorderV2.svg");
@@ -91,34 +34,146 @@ body {
   background-size: cover;
 }
 
-
-/* ================================
-   Bordures ARCADE responsive
-   ================================ */
-
-/* Mobile (petite largeur) */
+/* Mobile */
 @media screen and (max-width: 768px) {
   body {
     background-image: url("/static/BorderV2Mobile.svg");
   }
 }
 
-/* Tablette (entre deux) */
+/* Tablette */
 @media screen and (min-width: 769px) and (max-width: 1199px) {
   body {
     background-image: url("/static/BorderV2Tab.svg");
   }
 }
 
-/* Desktop (grands écrans)
-   -> en pratique c'est le body par défaut,
-      donc cette règle est optionnelle */
+/* Desktop (optionnel, mais explicite) */
 @media screen and (min-width: 1200px) {
   body {
     background-image: url("/static/BorderV2.svg");
   }
 }
 
+/* Conteneur principal injecté par le router */
+#app-root {
+  width: 100%;
+  max-width: 900px;
+  padding: 40px 20px;
+  margin: 0 auto;
+}
+
+/* =========================================
+   MENU PRINCIPAL (index)
+   ========================================= */
+
+#menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Titre "MINI ARCADE" */
+.nomSiteWeb {
+  margin: 0;
+  text-align: center;
+  font-size: 4.2rem;
+  letter-spacing: 6px;
+  line-height: 1.1;
+  color: #ffffff;
+
+  text-shadow:
+    0 0 5px #b1cee9,
+    0 0 10px #85a9ca,
+    0 0 20px #6387a8,
+    0 0 40px #4e6b86,
+    0 0 60px #3c546b;
+}
+
+@media (max-width: 768px) {
+  .nomSiteWeb {
+    font-size: 3rem;
+    letter-spacing: 4px;
+  }
+}
+
+/* Conteneur des boutons "Jouer / Avatar / Score" */
+.boutons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 28px;
+}
+
+/* Style commun pour les boutons de menu (les <a>) */
+.menu-btn {
+  background: radial-gradient(circle at top, rgba(255,255,255,0.25), rgba(0,0,0,0.55));
+  display: block;
+  width: 230px;
+  max-width: 80vw;
+  padding: 11px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 999px;
+  border: none;
+  color: #ffffff;
+  box-shadow:
+    inset 0 0 12px rgba(0,0,0,0.55),
+    0 12px 20px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+
+/* Hover / focus commun */
+.menu-btn:hover,
+.menu-btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 26px rgba(0, 0, 0, 0.9),
+    0 0 26px rgba(255, 255, 255, 0.15);
+  filter: brightness(1.05);
+}
+
+/* Clic : bouton "enfoncé" */
+.menu-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 8px 14px rgba(0, 0, 0, 0.9),
+    0 0 16px rgba(0, 0, 0, 0.9);
+  filter: brightness(0.97);
+}
+
+/* ---------------------------
+   Variantes de couleur
+   --------------------------- */
+
+.btnJouer {
+  background: radial-gradient(circle at top, #9a54c6, #5d2d73);
+}
+
+.btnAvatar {
+  background: radial-gradient(circle at top, #ffb165, #b65a1b);
+}
+
+.btnScore {
+  background: radial-gradient(circle at top, #7ec7ff, #1f6fa1);
+}
+
+
+/* =========================================
+   PAGE DE SÉLECTION DE JEU (gameSelect)
+   ========================================= */
+
+/* Layout global de la page de sélection */
 .game-select {
   padding: 40px 20px;
   text-align: center;
@@ -127,11 +182,12 @@ body {
   margin: 0 auto;
 }
 
-/* Centre UNIQUEMENT la page de sélection de jeu */
+/* Centre uniquement la page de sélection de jeu
+   à l'intérieur de #app-root */
 #app-root > .game-select {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;   /* centre horizontalement */
-  justify-content: center; /* centre verticalement */
+  align-items: center;
+  justify-content: center;
 }

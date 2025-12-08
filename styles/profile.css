@@ -1,100 +1,328 @@
-/* ---- Mise en page générale ---- */
-body.profil-page {
-    font-family: Arial, sans-serif;
-    background-color: #f3f3f3;
-    padding: 20px;
+/* ===========================
+   Layout global du profil
+   =========================== */
+
+/* Conteneur injecté dans l’arcade */
+.profile-page {
+  width: 100%;
+  max-width: 900px;              /* largeur raisonnable */
+  margin: 70px auto 40px;        /* <-- pousse tout sous la bordure + centre */
+  padding: 0 16px 40px;
+  box-sizing: border-box;
+  color: #ecf0f1;
+  font-family: 'Arial', sans-serif;
 }
 
-header h1 {
-    text-align: center;
-    margin-bottom: 20px;
+/* Titre */
+.profile-header {
+  text-align: center;
+  margin-bottom: 24px;
 }
 
-/* ---- Sections ---- */
+.profile-header h1 {
+  font-size: 2.6rem;             /* un peu plus petit qu’avant */
+  letter-spacing: 3px;
+  margin: 0;
+}
+
+/* Contenu principal */
+.profile-main {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* ===========================
+   Cartes communes
+   =========================== */
+
 .profile-section {
-    background: white;
-    padding: 15px;
-    margin: 20px 0;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background: radial-gradient(circle at top left, #273949, #101722);
+  border-radius: 20px;
+  padding: 20px 22px;
+  margin: 0;
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.6),
+    0 0 1px rgba(255, 255, 255, 0.05);
+  color: #ecf0f1;
 }
 
-/* ---- Avatar ---- */
+.profile-section h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.05rem;
+}
+
+/* ===========================
+   Grille Pseudo / Avatar / Couleur
+   =========================== */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "pseudo color"
+    "avatar color";
+  gap: 14px;
+}
+
+.profile-pseudo {
+  grid-area: pseudo;
+  min-height: 90px;
+}
+
+.profile-avatar {
+  grid-area: avatar;
+  min-height: 100px;
+}
+
+.profile-color {
+  grid-area: color;
+  min-height: 180px;
+}
+
+/* ===========================
+   Pseudo
+   =========================== */
+
+#profile-pseudo {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 4px;
+
+  padding: 8px 12px;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: #111b24;
+  color: #ecf0f1;
+  font-size: 0.9rem;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+#profile-pseudo::placeholder {
+  color: #7f8c8d;
+}
+
+#profile-pseudo:focus {
+  border-color: #c27dff;
+  box-shadow:
+    0 0 0 2px rgba(194, 125, 255, 0.35),
+    0 0 18px rgba(194, 125, 255, 0.45);
+  background: #0d1721;
+}
+
+/* ===========================
+   Avatar
+   =========================== */
+
 .avatar-list {
-    display: flex;
-    gap: 15px;
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
 }
 
 .avatar-emoji {
-    font-size: 40px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    transition: transform 0.2s;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  background: radial-gradient(circle at top, #304158, #141c25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
 }
 
 .avatar-emoji:hover {
-    transform: scale(1.2);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 24px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
 
-/* ---- Couleurs ---- */
-.color-choices {
-    display: flex;
-    gap: 15px;
-    margin-top: 10px;
+.avatar-emoji.selected {
+  background: radial-gradient(circle at top, #3f7fff, #1b2e42);
+  box-shadow:
+    0 0 12px rgba(63, 127, 255, 0.8),
+    0 8px 20px rgba(0, 0, 0, 0.8);
 }
 
-#profile-color,
+/* ===========================
+   Couleur joueur
+   =========================== */
+
+.field-label {
+  margin: 6px 0 3px 0;
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+#profile-color {
+  width: 64px;
+  height: 30px;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  box-shadow:
+    0 0 10px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.color-buttons {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
 .color-choice {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    border: 2px solid #333;
-    cursor: pointer;
-    background: none;
-    transition: transform 0.2s;
+  width: 24px;
+  height: 24px;
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(0, 0, 0, 0.3);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    border-color 0.12s ease;
 }
 
-#profile-color:hover,
 .color-choice:hover {
-    transform: scale(1.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
 }
 
-/* ---- Aperçu ---- */
+.color-choice.selected {
+  border-color: #ffffff;
+  box-shadow:
+    0 0 12px rgba(255, 255, 255, 0.8),
+    0 6px 12px rgba(0, 0, 0, 0.9);
+}
+
+/* ===========================
+   Aperçu
+   =========================== */
+
+
 #profile-preview {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  position: relative;
+  width: 100%;
+  height: 160px;
 }
 
-.avatar-preview {
-    font-size: 60px;
-}
-
+/* carré de couleur */
 #preview-color {
-    width: 60px;
-    height: 60px;
-    border-radius: 8px;
-    border: 2px solid #333;
-    background-color: #ffcc00;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 110px;
+  height: 110px;
+  border-radius: 20px;
+  border: 3px solid #ffffff;
+  background-color: #ffcc00;
+  box-shadow:
+    0 0 12px rgba(241, 196, 15, 0.9),
+    0 0 26px rgba(243, 156, 18, 0.8);
 }
 
-/* ---- Bouton sauvegarder ---- */
-#save-profile {
-    display: block;
-    margin: auto;
-    margin-top: 10px;
-    padding: 12px 25px;
-    background-color: #4caf50;
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
+/* avatar centré dans le carré */
+#preview-avatar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  font-size: 2.2rem;
 }
 
-#save-profile:hover {
-    background-color: #3e8e41;
+/* ===========================
+   Boutons bas
+   =========================== */
+
+.profile-actions {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+/* base pill */
+.btn-pill {
+  display: block;
+  width: 230px;
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 9px 22px;
+  border-radius: 999px;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #ffffff;
+  text-align: center;
+  box-shadow:
+    0 12px 20px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.8);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+.btn-back {
+  margin-bottom: 10px;
+  background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
+}
+
+.btn-save {
+  background: radial-gradient(circle at top, #ff7bff, #8e44ad);
+}
+
+.btn-pill:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 26px rgba(0, 0, 0, 0.9),
+    0 0 26px rgba(255, 255, 255, 0.15);
+  filter: brightness(1.05);
+}
+
+/* ===========================
+   Responsive
+   =========================== */
+
+@media (max-width: 900px) {
+  .profile-page {
+    margin-top: 40px;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas:
+      "pseudo"
+      "avatar"
+      "color";
+  }
+
+  .profile-header h1 {
+    font-size: 2.1rem;
+    letter-spacing: 2px;
+  }
 }

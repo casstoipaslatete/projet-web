@@ -80,7 +80,6 @@ window.addEventListener("DOMContentLoaded", () => {
     Router.goTo(route);
   });
 
-  // 🔓 Débloqueur global : si l'autoplay a été bloqué,
   // le prochain clic sur n'importe quel bouton/lien relance la musique.
   document.body.addEventListener("click", (e) => {
     if (!window.GlobalAudio) return;
@@ -95,6 +94,10 @@ window.addEventListener("DOMContentLoaded", () => {
   // Route GAMES (gameSelect)
   // =========================
   Router.register("games", async (root) => {
+    if (window.GlobalAudio) {
+          GlobalAudio.startMusic();
+        }
+
     root.innerHTML = '<p>Chargement des mini-jeux...</p>';
     try {
       const res = await fetch('/public/gameSelect.html');
@@ -124,20 +127,26 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // Route MENU (index.html)
+  // Route MENU
   // =========================
   Router.register("menu", async (root) => {
+    if (window.GlobalAudio) {
+      GlobalAudio.startMusic();
+    }
+
     root.innerHTML = '<p>Chargement du menu...</p>';
+
     try {
       const res = await fetch('/public/index.html');
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
       const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-      const tpl = doc.getElementById('menu');
-      if (tpl) {
-        root.innerHTML = tpl.innerHTML;
+      // On récupère l'écran complet (bordure + menu)
+      const screen = doc.getElementById('screen');
+      if (screen) {
+        root.innerHTML = screen.outerHTML;
       } else {
         root.innerHTML = `
           <h2>Menu</h2>
@@ -151,43 +160,33 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 
   // =========================
-  // Route GAME A (si tu l'utilises)
-  // =========================
-  Router.register("gameA", (root) => {
-    if (typeof initGameA === "function") {
-      initGameA(root, ScoreService);
-    } else {
-      root.innerHTML = "<p>Game A pas encore prêt</p>";
-    }
-  });
-
-  // =========================
   // Route PROFILE
   // =========================
-  Router.register('profile', async (root) => {
+  Router.register("profile", async (root) => {
+    if (window.GlobalAudio) {
+      GlobalAudio.startMusic();
+    }
+
     root.innerHTML = '<p>Chargement du profil...</p>';
+
     try {
       const res = await fetch('/public/profile.html');
       if (!res.ok) throw new Error('HTTP ' + res.status);
 
       const html = await res.text();
-      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-      const tpl = doc.getElementById('profile-page');
-      if (tpl) {
-        root.innerHTML = tpl.innerHTML;
+      // On récupère l'écran complet (bordure + page profil)
+      const screen = doc.getElementById('screen');
+      if (screen) {
+        root.innerHTML = screen.outerHTML;
 
-        Array.from(root.querySelectorAll('script')).forEach(oldScript => {
-          const s = document.createElement('script');
-          if (oldScript.src) {
-            s.src = oldScript.src;
-            s.async = false;
-            s.addEventListener('load', () => s.remove());
-          } else {
-            s.textContent = oldScript.textContent;
-          }
-          document.body.appendChild(s);
-        });
+        // On reconnecte la logique du profil
+        if (window.initProfilePage) {
+          window.initProfilePage();
+        } else {
+          console.warn('[router/profile] initProfilePage non défini');
+        }
       } else {
         root.innerHTML = `
           <h2>Profil</h2>

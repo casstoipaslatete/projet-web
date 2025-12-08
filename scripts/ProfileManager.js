@@ -1,31 +1,48 @@
-async function loadProfile() {
-    const response = await fetch("/api/profile");
-    const data = await response.json();
+// scripts/ProfileManager.js
 
-    document.getElementById("profile-pseudo").value = data.pseudo || "";
+// Petit module global qui s'occupe UNIQUEMENT de parler à l'API.
+// AUCUN accès au DOM ici.
+window.ProfileManager = (function () {
+  const DEFAULT_PROFILE = {
+    pseudo: "",
+    avatar: "😺",
+    color: "#ffcc00",
+  };
 
-    // avatar
-    document.getElementById("preview-avatar").textContent = data.avatar;
+  async function load() {
+    try {
+      const response = await fetch("/api/profile");
+      if (!response.ok) {
+        console.warn("[ProfileManager] /api/profile a répondu", response.status);
+        return DEFAULT_PROFILE;
+      }
+      const data = await response.json();
+      return {
+        pseudo: data.pseudo ?? "",
+        avatar: data.avatar ?? "😺",
+        color: data.color ?? "#ffcc00",
+      };
+    } catch (err) {
+      console.error("[ProfileManager] Erreur lors du chargement du profil:", err);
+      return DEFAULT_PROFILE;
+    }
+  }
 
-    // couleur
-    document.getElementById("preview-color").style.backgroundColor = data.color;
-}
-
-async function saveProfile() {
-    const pseudo = document.getElementById("profile-pseudo").value;
-    const avatar = document.getElementById("preview-avatar").textContent;
-    const color = getComputedStyle(document.getElementById("preview-color")).backgroundColor;
-
-    await fetch("/api/profile", {
+  async function save(profile) {
+    try {
+      await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pseudo, avatar, color })
-    });
-    
-    console.log('Profil sauvegardé !');
-}
+        body: JSON.stringify(profile),
+      });
+      console.log("[ProfileManager] Profil sauvegardé !");
+    } catch (err) {
+      console.error("[ProfileManager] Erreur lors de la sauvegarde du profil:", err);
+    }
+  }
 
-document.getElementById("save-profile").addEventListener("click", saveProfile);
-
-// charger le profil au démarrage
-loadProfile();
+  return {
+    load,
+    save,
+  };
+})();

@@ -1,80 +1,164 @@
-// --- Sélecteurs ---
-const avatarButtons = document.querySelectorAll(".avatar-emoji");
-const previewAvatar = document.getElementById("preview-avatar");
+// scripts/profile.js
+(function () {
+  function initProfilePage() {
+    const pageRoot = document.getElementById("profile-page");
+    if (!pageRoot) return; // profil pas dans le DOM
 
-const colorPicker = document.getElementById("profile-color");
-const previewColor = document.getElementById("preview-color");
-const colorButtons = document.querySelectorAll(".color-choice");
+    const pseudoInput   = pageRoot.querySelector("#profile-pseudo");
+    const avatarButtons = pageRoot.querySelectorAll(".avatar-emoji");
+    const colorPicker   = pageRoot.querySelector("#profile-color");
+    const colorButtons  = pageRoot.querySelectorAll(".color-choice");
+    const previewAvatar = pageRoot.querySelector("#preview-avatar");
+    const previewColor  = pageRoot.querySelector("#preview-color");
+    const saveButton    = pageRoot.querySelector("#save-profile");
+    const backButton    = pageRoot.querySelector("#back-to-arcade");
 
-const pseudoInput = document.getElementById("profile-pseudo");
-const saveButton = document.getElementById("save-profile");
+    if (!pseudoInput || !previewAvatar || !previewColor) return;
 
-// --- État du profil ---
-let currentProfile = {
-  pseudo: '',
-  avatar: '😺',
-  color: '#ffcc00'
-};
+    // -----------------------
+    // Helpers DOM <-> profil
+    // -----------------------
 
-// --- Initialisation au démarrage ---
-window.addEventListener("DOMContentLoaded", () => {
-  // Charger depuis localStorage
-  const savedAvatar = localStorage.getItem('avatar') || '😺';
-  const savedColor = localStorage.getItem('color') || '#ffcc00';
-  const savedPseudo = localStorage.getItem('pseudo') || '';
+    function applyProfileToUI(profile) {
+      const pseudo = profile.pseudo ?? "";
+      const avatar = profile.avatar ?? "😺";
+      const color  = profile.color ?? "#ffcc00";
 
-  currentProfile.avatar = savedAvatar;
-  currentProfile.color = savedColor;
-  currentProfile.pseudo = savedPseudo;
+      pseudoInput.value = pseudo;
+      previewAvatar.textContent = avatar;
+      previewColor.style.backgroundColor = color;
 
-  updatePreview();
-});
+      if (colorPicker) {
+        // si l'API renvoie un rgb(), on garde au moins la couleur visuelle
+        try {
+          if (color.startsWith("#")) {
+            colorPicker.value = color;
+          }
+        } catch {}
+      }
 
-// --- Mise à jour de l'aperçu ---
-function updatePreview() {
-  previewAvatar.textContent = currentProfile.avatar;
-  previewColor.style.backgroundColor = currentProfile.color;
-  pseudoInput.value = currentProfile.pseudo;
-  colorPicker.value = currentProfile.color;
-}
+      // Sélection visuelle des avatars
+      avatarButtons.forEach((btn) => {
+        const emoji = (btn.dataset.avatar || btn.textContent || "").trim();
+        btn.classList.toggle("selected", emoji === avatar);
+      });
 
-// --- Changement d'avatar ---
-avatarButtons.forEach(button => {
-  button.addEventListener("click", () => {
-    const chosenAvatar = button.getAttribute("data-avatar");
-    currentProfile.avatar = chosenAvatar;
-    previewAvatar.textContent = chosenAvatar;
-  });
-});
+      // Sélection visuelle des couleurs
+      colorButtons.forEach((btn) => {
+        const c = btn.getAttribute("data-color");
+        btn.classList.toggle("selected", c === color);
+      });
+    }
 
-// --- Changement de couleur via color picker ---
-colorPicker.addEventListener("input", () => {
-  currentProfile.color = colorPicker.value;
-  previewColor.style.backgroundColor = colorPicker.value;
-});
+    function getProfileFromUI() {
+      const pseudo = pseudoInput.value;
+      const avatar = previewAvatar.textContent;
+      const color  = getComputedStyle(previewColor).backgroundColor;
+      return { pseudo, avatar, color };
+    }
 
-// --- Changement de couleur via boutons prédéfinis ---
-colorButtons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const chosenColor = btn.getAttribute("data-color");
-    currentProfile.color = chosenColor;
-    previewColor.style.backgroundColor = chosenColor;
-    colorPicker.value = chosenColor;
-  });
-});
+    // -----------------------
+    // Listeners UI
+    // -----------------------
 
-// --- Changement du pseudo ---
-pseudoInput.addEventListener("input", () => {
-  currentProfile.pseudo = pseudoInput.value;
-});
+    // Avatars
+    avatarButtons.forEach((btn) => {
+      const emoji = (btn.dataset.avatar || btn.textContent || "").trim();
+      btn.addEventListener("click", () => {
+        previewAvatar.textContent = emoji;
 
-// --- Sauvegarde du profil ---
-saveButton.addEventListener("click", () => {
-  // Sauvegarder dans localStorage
-  localStorage.setItem('pseudo', currentProfile.pseudo);
-  localStorage.setItem('avatar', currentProfile.avatar);
-  localStorage.setItem('color', currentProfile.color);
-  
-  // Feedback non bloquant: log console
-  console.log('Profil sauvegardé avec succès ✓');
-});
+        avatarButtons.forEach((b) => {
+          const e = (b.dataset.avatar || b.textContent || "").trim();
+          b.classList.toggle("selected", e === emoji);
+        });
+      });
+    });
+
+    // Color picker
+    if (colorPicker) {
+      colorPicker.addEventListener("input", () => {
+        const c = colorPicker.value;
+        previewColor.style.backgroundColor = c;
+
+        colorButtons.forEach((b) => {
+          const col = b.getAttribute("data-color");
+          b.classList.toggle("selected", col === c);
+        });
+      });
+    }
+
+    // Boutons couleurs
+    colorButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const c = btn.getAttribute("data-color");
+        if (!c) return;
+
+        previewColor.style.backgroundColor = c;
+
+        if (colorPicker && c.startsWith("#")) {
+          colorPicker.value = c;
+        }
+
+        colorButtons.forEach((b) => {
+          const col = b.getAttribute("data-color");
+          b.classList.toggle("selected", col === c);
+        });
+      });
+    });
+
+    // Sauvegarde
+    if (saveButton) {
+      saveButton.addEventListener("click", async () => {
+        const profile = getProfileFromUI();
+        if (window.ProfileManager && typeof ProfileManager.save === "function") {
+          await ProfileManager.save(profile);
+        } else {
+          console.log("Profil (fallback, pas d'API):", profile);
+        }
+      });
+    }
+
+    // Retour au menu
+    if (backButton) {
+      backButton.addEventListener("click", () => {
+        if (window.Router) {
+          Router.goTo("menu");
+        } else {
+          window.location.hash = "#menu";
+        }
+      });
+    }
+
+    // -----------------------
+    // Chargement depuis l'API
+    // -----------------------
+    (async () => {
+      if (window.ProfileManager && typeof ProfileManager.load === "function") {
+        const profile = await ProfileManager.load();
+        applyProfileToUI(profile);
+      } else {
+        // Profil par défaut si pas d'API
+        applyProfileToUI({ pseudo: "", avatar: "😺", color: "#ffcc00" });
+      }
+    })();
+  }
+
+  // Cas "page profil ouverte directement" (hors router)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initProfilePage);
+  } else {
+    initProfilePage();
+  }
+
+  // Cas SPA : on expose la fonction pour que le router puisse la rappeler
+  window.initProfilePage = initProfilePage;
+
+  const backButton = pageRoot.querySelector("#back-to-arcade");
+
+  if (backButton && !window.Router) {
+    backButton.addEventListener("click", () => {
+      // Ici on renvoie vers l'arcade, où le router prend le relais
+      window.location.href = "/public/index.html#menu";
+    });
+  }
+})();

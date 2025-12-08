@@ -1,50 +1,102 @@
 /* ===========================
-   Mise en page générale
+   PAGE SÉLECTEUR DE JEUX
    =========================== */
 
 .game-select {
   padding: 40px 20px;
   text-align: center;
-}
-
-.game-select__title {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-}
-
-/* Bouton "Retour à l'accueil" réutilise ton ancien style */
-.game-select__back {
-  margin-top: 20px;
-}
-
-.game-card__btn {
-  padding: 10px 18px;
-  font-size: 1rem;
-  border: none;
-  border-radius: 8px;
-  background: #4d74ff;
-  color: #ffffff;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.game-card__btn:hover {
-  background: #3c5ed1;
-}
-
-/* Ancienne grille (si jamais tu la réutilises ailleurs) */
-.game-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 30px;
+  width: 100%;
   max-width: 1000px;
-  margin: 0 auto 30px auto;
+  margin: 0 auto;
+}
+
+/* Titre façon arcade (même style que “MINI ARCADE”) */
+.game-select__title {
+  font-size: 3rem;
+  margin-bottom: 40px;
+  letter-spacing: 4px;
+
+  text-shadow:
+    0 0 10px #d2eaff,
+    0 0 20px #8bb6d8,
+    0 0 35px #5a7fa2,
+    0 0 55px #45647f,
+    0 0 85px #324b61;
+}
+
+@media (max-width: 768px) {
+  .game-select__title {
+    font-size: 2.3rem;
+  }
 }
 
 /* ===========================
-   Carrousel de jeux
+   Bouton "Retour à l'accueil"
+   (même look que les boutons profil/menu)
+   =========================== */
+
+.game-select__back {
+  margin-top: 30px;
+}
+
+/* ===========================================
+   Bouton "Retour à l’accueil"
+   (exactement le même style que les boutons du menu)
+   =========================================== */
+
+.game-card__btn--back {
+  display: inline-block;
+
+  /* dimensions */
+  padding: 11px 24px;
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  /* forme pill */
+  border-radius: 999px;
+  border: none;
+
+  /* couleur texte */
+  color: #ffffff;
+  text-decoration: none;
+  cursor: pointer;
+
+  /* même ombré interne + ombre externe */
+  box-shadow:
+    inset 0 0 12px rgba(0,0,0,0.55),
+    0 12px 20px rgba(0,0,0,0.8),
+    0 0 20px rgba(0,0,0,0.8);
+
+  /* dégradé rouge (variante rouge) */
+  background: radial-gradient(circle at top, #ff7b6b, #e63946);
+
+  /* animations du menu */
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+/* hover */
+.game-card__btn--back:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 26px rgba(0,0,0,0.9),
+    0 0 26px rgba(255,255,255,0.15);
+  filter: brightness(1.05);
+}
+
+/* clic */
+.game-card__btn--back:active {
+  transform: translateY(0);
+  box-shadow:
+    0 8px 14px rgba(0,0,0,0.9),
+    0 0 16px rgba(0,0,0,0.9);
+  filter: brightness(0.97);
+}
+
+/* ===========================
+   CARROUSEL
    =========================== */
 
 .game-carousel {
@@ -58,21 +110,29 @@
 
 .carousel-arrow {
   border: none;
-  background: rgba(0, 0, 0, 0.3);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
   font-size: 2rem;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
+
+  box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+
+  transition:
+    background 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
 .carousel-arrow:hover {
-  background: rgba(0, 0, 0, 0.5);
-  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.55);
+  transform: scale(1.12);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.5);
 }
 
+/* Zone visible */
 .carousel-viewport {
   overflow: hidden;
   width: 85vw;
@@ -82,59 +142,67 @@
 /* Bande de cartes */
 .carousel-track {
   display: flex;
-  gap: 14px;
+  gap: 20px;
   transition: transform 0.35s ease-in-out;
 }
 
+
 /* ===========================
-   Carte de jeu (image + hover)
+   CARTE DE JEU
    =========================== */
 
 .game-card {
   position: relative;
-  flex: 0 0 calc(20% - 14px); /* ≈ 5 cartes visibles sur grand écran */
-  background: transparent;
-  border-radius: 0;          /* plus d'arrondis qui dépassent */
-  padding: 0;
-  margin: 0;
-  overflow: hidden;          /* coupe tout ce qui dépasse */
+  flex: 0 0 calc(20% - 20px);
+
+  border-radius: 0;
+  overflow: hidden;
+
+  box-shadow:
+    0 10px 25px rgba(0,0,0,0.45),
+    0 0 8px rgba(0,0,0,0.4);
+
   cursor: pointer;
   transition: transform 0.15s ease;
 }
 
 .game-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-6px);
 }
 
-/* Image du jeu : occupe toute la carte, bords droits */
 .game-card-icon {
+  border-radius: 0 !important;
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-  border-radius: 0;
 }
 
-/* Overlay qui apparaît au survol */
+/* Overlay (description + bouton) */
 .game-card-hover {
   position: absolute;
   inset: 0;
-
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.65);
   backdrop-filter: blur(4px);
+
+  opacity: 0;
+  transform: translateY(20px);
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
+  padding: 14px;
+  color: white;
   text-align: center;
-  color: #fff;
-  padding: 10px;
 
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+}
+
+.game-card:hover .game-card-hover {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .game-card-hover h2 {
@@ -144,42 +212,52 @@
 
 .game-card-hover p {
   font-size: 0.9rem;
-  opacity: 0.9;
+  opacity: 0.85;
 }
 
-/* Apparition au hover */
-.game-card:hover .game-card-hover {
-  opacity: 1;
-  transform: translateY(0);
+#game-hint {
+  margin-top: 10px;
+
+  font-size: 1rem;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  text-align: center;
+
+  color: #d8ecff;
+
+  /* Glow doux façon arcade */
+  text-shadow:
+    0 0 6px rgba(255,255,255,0.6),
+    0 0 12px rgba(120,170,255,0.45);
+
+  animation: hintPulse 2.4s ease-in-out infinite;
+}
+
+/* Animation douce */
+@keyframes hintPulse {
+  0% { opacity: 0.75; transform: translateY(0); }
+  50% { opacity: 1;   transform: translateY(-2px); }
+  100% { opacity: 0.75; transform: translateY(0); }
 }
 
 /* ===========================
-   Responsive
+   RESPONSIVE
    =========================== */
 
 @media (max-width: 900px) {
   .game-card {
-    flex: 0 0 calc(25% - 14px); /* 4 cartes */
+    flex: 0 0 calc(25% - 20px);
   }
 }
 
 @media (max-width: 700px) {
   .game-card {
-    flex: 0 0 calc(33.33% - 14px); /* 3 cartes */
+    flex: 0 0 calc(33.33% - 20px);
   }
 }
 
 @media (max-width: 450px) {
   .game-card {
-    flex: 0 0 calc(50% - 14px); /* 2 cartes */
+    flex: 0 0 calc(50% - 20px);
   }
-}
-
-/* Bouton retour - rouge */
-.game-card__btn--back {
-  background: #e63946;        /* Rouge vif */
-}
-
-.game-card__btn--back:hover {
-  background: #364f68;        /* Rouge un peu plus foncé */
 }

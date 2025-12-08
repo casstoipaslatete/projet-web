@@ -1,50 +1,57 @@
 <!-- public/index.html -->
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mini-arcade</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
+
+  <!-- Styles globaux -->
   <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/profile.css">
   <link rel="stylesheet" href="/styles/gameSelect.css">
 </head>
 
-<body>
+<body class="arcade-body">
   <div id="app-root">
-    <header id="menu">
-      <h1 class="nomSiteWeb">MINI<br>ARCADE</h1>
-      <div class="boutons">
-        <a id="jouerBtn"
-            href="/gameSelect.html"
-            data-route="games"
-            class="menu-btn btnJouer">
+    <!-- COQUILLE ÉCRAN ARCADE -->
+    <div id="screen" class="arcade-screen">
+      <!-- CONTENU DU MENU PAR DÉFAUT -->
+      <header id="menu">
+        <h1 class="nomSiteWeb">MINI<br>ARCADE</h1>
+        <div class="boutons">
+          <a id="jouerBtn"
+             href="/gameSelect.html"
+             data-route="games"
+             class="menu-btn btnJouer">
             Jouer
-        </a>
+          </a>
 
-        <a id="AvatarBtn"
-            href="/profile.html"
-            data-route="profile"
-            class="menu-btn btnAvatar">
+          <a id="AvatarBtn"
+             href="/profile.html"
+             data-route="profile"
+             class="menu-btn btnAvatar">
             Avatar
-        </a>
+          </a>
 
-        <a id="ScoreBtn"
-            href="/leaderboard.html"
-            data-route="leaderboard"
-            class="menu-btn btnScore">
+          <a id="ScoreBtn"
+             href="/leaderboard.html"
+             data-route="leaderboard"
+             class="menu-btn btnScore">
             Score
-        </a>
+          </a>
         </div>
-    </header>
+      </header>
+    </div>
   </div>
 
-  <!-- Scripts: router d'abord, puis main -->
+  <!-- Scripts globaux -->
   <script src="/scripts/router.js"></script>
   <script src="/scripts/main.js"></script>
   <script src="/scripts/gameSelect.js"></script>
+  <script src="/scripts/profile.js"></script>
+  <script src="/scripts/ProfileManager.js"></script>
 </body>
-
 </html>
