@@ -1,27 +1,43 @@
-const pads = document.querySelectorAll('.simon-pad');
-const startBtn = document.getElementById('start-btn');
-const scoreDisplay = document.getElementById('score');
+import { ScoreService } from "../../scripts/scoreService.js";
 
-const summary = document.getElementById('summary');
-const finalScoreDisplay = document.getElementById('final-score');
-const replayBtn = document.getElementById('replay-btn');
-const backMenuBtn = document.getElementById('back-menu-btn');
+// ---------- DOM ----------
+const pads = document.querySelectorAll(".simon-pad");
+const startBtn = document.getElementById("start-btn");
+const scoreDisplay = document.getElementById("score");
 
-const colors = ['green', 'red', 'yellow', 'blue'];
+const summary = document.getElementById("summary");
+const finalScoreDisplay = document.getElementById("final-score");
+const bestRow = document.getElementById("best-row");
+const bestScoreSpan = document.getElementById("best-score");
+const replayBtn = document.getElementById("replay-btn");
+const backMenuBtn = document.getElementById("back-menu-btn");
+const backBtnInGame = document.getElementById("btn-back");
+
+// ---------- ÉTAT ----------
+const colors = ["green", "red", "yellow", "blue"];
 let sequence = [];
 let playerSequence = [];
 let score = 0;
 let sequenceTurn = false;
 let gameOver = false;
 
-// --- SONS ET MUSIQUE ---
+// ---------- AUDIO ----------
 let sfxSimonBeep, sfxClic, sfxError;
+let bgMusic;
+
 try {
+  // SFX
   sfxSimonBeep = new Audio("sfx/simonBeep.mp3");
   sfxClic      = new Audio("sfx/clic.mp3");
   sfxError     = new Audio("sfx/error.mp3");
+
+  // Musique de fond
+  bgMusic = new Audio("music/SimonMusic.mp3");
+  bgMusic.loop = true;
+  bgMusic.volume = 0.25;
+  bgMusic.play().catch(() => {});
 } catch (e) {
-  console.warn("Audio non disponible:", e);
+  console.warn("Audio Simon non disponible:", e);
 }
 
 function playSfx(audio) {
@@ -30,6 +46,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
+    // ignore
   }
 }
 
@@ -40,20 +57,49 @@ function withClickSfx(handler) {
   };
 }
 
-const audio = new Audio('music/simonMusic.mp3');
+function ensureMusic() {
+  if (!bgMusic) return;
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+  }
+}
 
-audio.loop = true;
+function stopMusic() {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+}
 
-audio.play();
+// ---------- NAVIGATION ----------
+function goBackToMenu() {
+  stopMusic();
 
-// ---------- Listeners boutons ----------
-startBtn.addEventListener('click', withClickSfx(startGame));
-replayBtn.addEventListener('click', withClickSfx(startGame));
-backMenuBtn.addEventListener('click', withClickSfx(() => {
-  window.location.href = "/index.html#menu";
-}));
+  // Hash pour la SPA
+  window.location.hash = "#menu";
+
+  // Fallback si jamais Router n'est pas là (chargé en standalone)
+  if (!window.Router) {
+    window.location.href = "/public/index.html#games";
+  }
+}
+
+// ---------- LOGIQUE DU JEU ----------
+function updateScore(newScore) {
+  score = newScore;
+  scoreDisplay.textContent = score.toString();
+}
 
 function startGame() {
+  ensureMusic();
+
+  const backBtnInGameLocal = document.getElementById("btn-back");
+  if (backBtnInGameLocal) backBtnInGameLocal.classList.remove("hidden");
+
+  ScoreService.init("simon");
+  ScoreService.resetScore().catch((err) =>
+    console.warn("resetScore simon:", err)
+  );
+
   sequence = [];
   playerSequence = [];
   score = 0;
@@ -61,10 +107,11 @@ function startGame() {
   gameOver = false;
 
   updateScore(0);
-  summary.classList.add('hidden');
+  summary.classList.add("hidden");
+  bestRow.classList.add("hidden");
 
-  startBtn.classList.add('hidden');
-  replayBtn.classList.add('hidden');
+  startBtn.classList.add("hidden");
+  replayBtn.classList.add("hidden");
 
   nextTurn();
 }
@@ -72,6 +119,7 @@ function startGame() {
 function nextTurn() {
   playerSequence = [];
   sequenceTurn = true;
+
   const nextColor = colors[Math.floor(Math.random() * colors.length)];
   sequence.push(nextColor);
 
@@ -79,35 +127,45 @@ function nextTurn() {
 }
 
 async function playSequence() {
-  await new Promise(resolve => setTimeout(resolve, 500));
+  await wait(500);
+
   for (const color of sequence) {
     await flashPad(color);
-    await new Promise(resolve => setTimeout(resolve, 300));
+    await wait(250);
   }
+
   sequenceTurn = false;
 }
 
-function flashPad(color) {
-  return new Promise(resolve => {
-    const pad = document.querySelector(`.simon-pad[data-color="${color}"]`);
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
+function flashPad(color) {
+  return new Promise((resolve) => {
+    const pad = document.querySelector(`.simon-pad[data-color="${color}"]`);
+    if (!pad) return resolve();
+
+    // son du pad
     playSfx(sfxSimonBeep);
 
-    pad.classList.add('active');
+    pad.classList.add("active");
     setTimeout(() => {
-      pad.classList.remove('active');
+      pad.classList.remove("active");
       resolve();
-    }, 600);
+    }, 500);
   });
 }
 
-pads.forEach(pad => {
-  pad.addEventListener('click', () => {
+pads.forEach((pad) => {
+  pad.addEventListener("click", async () => {
     if (sequenceTurn || gameOver) return;
 
     const clickedColor = pad.dataset.color;
 
-    flashPad(clickedColor);
+    // petit flash visuel + son au clic
+    await flashPad(clickedColor);
+
     playerSequence.push(clickedColor);
     checkPlayerInput();
   });
@@ -123,34 +181,62 @@ function checkPlayerInput() {
   }
 
   if (playerSequence.length === sequence.length) {
-    updateScore(score + 1);
-    setTimeout(nextTurn, 1000);
+    const newScore = score + 1;
+    updateScore(newScore);
+
+    // 1 point par séquence réussie pour le score global
+    ScoreService.addPoints(1).catch((err) =>
+      console.warn("addPoints simon:", err)
+    );
+
+    setTimeout(nextTurn, 900);
   }
 }
 
-function updateScore(newScore) {
-  score = newScore;
-  scoreDisplay.textContent = score;
-}
-
-function endGame() {
+async function endGame() {
   gameOver = true;
 
-  finalScoreDisplay.textContent = score;
-  summary.classList.remove('hidden');
+  // Cacher le bouton Retour du milieu en fin de partie
+  const backBtnInGameLocal = document.getElementById("btn-back");
+  if (backBtnInGameLocal) backBtnInGameLocal.classList.add("hidden");
 
-  replayBtn.classList.remove('hidden');
+  finalScoreDisplay.textContent = score.toString();
+  summary.classList.remove("hidden");
+  replayBtn.classList.remove("hidden");
 
-  // À AJOUTER SCORESERVICE.JS
+  // Sauvegarde du meilleur score
+  try {
+    await ScoreService.saveScore("simon", score);
+  } catch (e) {
+    console.warn("saveScore simon:", e);
+  }
+
+  try {
+    const best = await ScoreService.getScore();
+    bestScoreSpan.textContent = best.toString();
+    bestRow.classList.remove("hidden");
+  } catch (e) {
+    console.warn("getScore simon:", e);
+    bestRow.classList.add("hidden");
+  }
 }
 
-// ---------- État initial ----------
-function initSimon() {
-  startBtn.classList.remove('hidden');
-  replayBtn.classList.add('hidden');
-  summary.classList.add('hidden');
+// ---------- EVENTS ----------
+startBtn.addEventListener("click", withClickSfx(startGame));
+replayBtn.addEventListener("click", withClickSfx(startGame));
 
-  score = 0;
+backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
+backBtnInGame.addEventListener("click", withClickSfx(goBackToMenu));
+
+// ---------- INIT ----------
+function initSimon() {
+  ScoreService.init("simon");
+
+  startBtn.classList.remove("hidden");
+  replayBtn.classList.add("hidden");
+  summary.classList.add("hidden");
+  bestRow.classList.add("hidden");
+
   updateScore(0);
 }
 

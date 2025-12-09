@@ -183,18 +183,10 @@ const TOTAL_PUZZLES = PUZZLES.length;
 let sfxClic, sfxPowerOn, sfxZap, sfxError;
 let bgMusic;
 
-try {
-  sfxClic = new Audio("sfx/clic.mp3");
-  sfxPowerOn = new Audio("sfx/powerOn.mp3"); // lampe allumée
-  sfxZap = new Audio("sfx/zap.mp3");         // court-circuit / danger
-  sfxError = new Audio("sfx/error.mp3");     // erreur logique
-
-  bgMusic = new Audio("music/puzzleElectriqueMusic.mp3");
-  bgMusic.loop = true;
-  bgMusic.volume = 0.7;
-} catch (e) {
-  console.warn("Audio puzzleElectrique non disponible:", e);
-}
+const audio = new Audio("music/puzzleElectriqueMusic.mp3");
+audio.loop = true;
+audio.volume = 0.40;
+audio.play().catch(() => {});
 
 function playSfx(audio) {
   if (!audio) return;
@@ -214,7 +206,6 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
-  // Coupe la musique globale de l’arcade si présente
   if (window.GlobalAudio && GlobalAudio.music) {
     try {
       GlobalAudio.music.pause();
@@ -271,12 +262,19 @@ const replayBtn = document.getElementById("ce-replay");
 const backMenuBtn2 = document.getElementById("ce-back-menu2");
 const backMenuBtn3 = document.getElementById("ce-back-menu3");
 
+const actionsRow = document.getElementById("ce-actions");
+
 // ==============================
 // NAVIGATION ARCADE
 // ==============================
 function goBackToMenu() {
-  window.location.href = "/index.html#menu";
+  window.location.hash = "#menu";
+
+  if (!window.Router) {
+    window.location.href = "/public/index.html#games";
+  }
 }
+
 
 // ==============================
 // HELPERS UI
@@ -571,7 +569,12 @@ function startGame() {
   setLamp(false, "Lampe éteinte");
   setFeedback("Place des modules puis lance le courant !", null);
 
+  actionsRow.classList.remove("ce-hidden");
+  backMenuBtn2.classList.remove("ce-hidden");
   startBtn.classList.add("ce-hidden");
+
+  launchBtn.disabled = false;
+  clearBtn.disabled = false;
 
   loadPuzzle(0);
 }
@@ -665,9 +668,10 @@ async function endGame() {
   finalScoreSpan.textContent = solvedCount.toString();
   summary.classList.remove("ce-hidden");
 
-  startBtn.classList.remove("ce-hidden");
   launchBtn.disabled = true;
   clearBtn.disabled = true;
+  actionsRow.classList.add("ce-hidden");
+  backMenuBtn2.classList.add("ce-hidden");
 
   try {
     await ScoreService.saveScore("puzzleElectrique", solvedCount);
@@ -708,3 +712,10 @@ setFeedback(
   "Appuie sur « Commencer » puis ajoute des modules pour créer ton premier circuit !",
   null
 );
+launchBtn.disabled = true;
+clearBtn.disabled = true;
+startBtn.classList.remove("ce-hidden");
+actionsRow.classList.remove("ce-hidden");
+launchBtn.disabled = true;
+clearBtn.disabled = true;
+

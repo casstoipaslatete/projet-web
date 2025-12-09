@@ -4,14 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Mot Mystère</title>
+
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
+
+  <!-- Thème global arcade + styles spécifiques -->
   <link rel="stylesheet" href="/styles/main.css">
+  <link rel="stylesheet" href="/styles/arcade-theme.css">
   <link rel="stylesheet" href="motMystere.css" />
 </head>
-<body>
-  <div id="game-container">
-    <h1>Mot Mystère</h1>
+
+<body class="arcade-game-body">
+  <div id="game-container" class="arcade-game-root">
+    <h1 class="arcade-title-main">Mot Mystère</h1>
 
     <div id="mm-root">
       <div id="info-display">
@@ -21,11 +26,16 @@
       </div>
 
       <div id="mm-word-box">
-        <span id="mm-word">Appuie sur "Commencer"</span>
+        <span id="mm-word">Appuie sur « Commencer »</span>
       </div>
 
       <div id="mm-input-zone">
-        <input type="text" id="mm-input" autocomplete="off" placeholder="Tape le mot correct" />
+        <input
+          type="text"
+          id="mm-input"
+          autocomplete="off"
+          placeholder="Tape le mot correct"
+        />
         <button id="mm-validate" class="mm-btn">Valider</button>
       </div>
 
@@ -35,17 +45,26 @@
 
       <div id="mm-feedback"></div>
 
-      <div style="margin-top: 15px;">
+      <!-- Actions principales -->
+      <div id="mm-actions">
         <button id="mm-start" class="mm-btn">Commencer !</button>
       </div>
 
+      <!-- Résumé de fin -->
       <div id="mm-summary" class="hidden">
         <h2>Partie terminée !</h2>
-        <p>Ton score : <span id="mm-final-score">0</span> / 100</p>
+        <p>Ton score : <span id="mm-final-score">0</span> / 10</p>
         <p id="mm-best-row" class="hidden">
           Ton meilleur score : <span id="mm-best-score">0</span>
         </p>
         <button id="mm-replay" class="mm-btn">Rejouer</button>
+      </div>
+
+      <!-- Retour à l’arcade -->
+      <div class="mm-footer-actions">
+        <button id="mm-back" class="mm-btn mm-btn--back">
+          ← Retour à l’arcade
+        </button>
       </div>
     </div>
   </div>

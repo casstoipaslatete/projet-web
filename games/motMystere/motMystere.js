@@ -1,5 +1,35 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
+/* --------------------------------------------------
+    MUSIQUE + SFX
+-------------------------------------------------- */
+let sfxClick, sfxSuccess, sfxError;
+let music;
+
+const audio = new Audio("music/motMystereMusic.mp3");
+audio.loop = true;
+audio.volume = 0.25;
+audio.play().catch(() => {});
+
+function playSfx(a) {
+  if (!a) return;
+  try {
+    a.currentTime = 0;
+    a.play().catch(() => {});
+  } catch {}
+}
+
+function clickWrap(handler) {
+  return function (e) {
+    playSfx(sfxClick);
+    return handler(e);
+  };
+}
+
+/* --------------------------------------------------
+    LOGIQUE DU JEU
+-------------------------------------------------- */
+
 const TOTAL_WORDS = 10;
 
 let level = 1;
@@ -14,23 +44,22 @@ let timeLeftMs = 0;
 let maxTimeMs = 8000;
 let awaitingAnswer = false;
 
-// mots 6-9 ans
+// mots enfants
 const WORDS_LEVEL_1 = [
-  "chat", "chien", "papa", "maman", "nez", "mer", "lune", "soleil",
-  "main", "livre", "porte", "table", "tasse"
+  "chat","chien","papa","maman","nez","mer","lune","soleil",
+  "main","livre","porte","table","tasse"
 ];
 
 const WORDS_LEVEL_2 = [
-  "maison", "ecole", "banane", "orange", "pantalon", "salade",
-  "camion", "biscuit", "chocolat", "brouillard", "caneton"
+  "maison","ecole","banane","orange","pantalon","salade",
+  "camion","biscuit","chocolat","brouillard","caneton"
 ];
 
 const WORDS_LEVEL_3 = [
-  "dinosaure", "ordinateur", "telephone", "papillon", "robotique",
-  "bibliotheque", "squelette", "pingouin", "parapluie", "astronaute"
+  "dinosaure","ordinateur","telephone","papillon","robotique",
+  "bibliotheque","squelette","pingouin","parapluie","astronaute"
 ];
 
-// Mélanger les lettres d'un mot
 function scramble(word) {
   return word
     .split("")
@@ -38,11 +67,15 @@ function scramble(word) {
     .join("");
 }
 
-// DOM
+/* --------------------------------------------------
+   DOM
+-------------------------------------------------- */
+
 const roundSpan = document.getElementById("mm-round");
 const scoreSpan = document.getElementById("mm-score");
 const levelSpan = document.getElementById("mm-level");
 const wordSpan = document.getElementById("mm-word");
+
 const input = document.getElementById("mm-input");
 const validateBtn = document.getElementById("mm-validate");
 const timerBar = document.getElementById("mm-timer-bar");
@@ -55,10 +88,17 @@ const bestScoreSpan = document.getElementById("mm-best-score");
 
 const startBtn = document.getElementById("mm-start");
 const replayBtn = document.getElementById("mm-replay");
+const backBtn = document.getElementById("mm-back");
 
-// Choisir un mot selon le niveau
+/* --------------------------------------------------
+   SÉLECTION DES MOTS
+-------------------------------------------------- */
+
 function pickWord(level) {
-  const arr = level === 1 ? WORDS_LEVEL_1 : level === 2 ? WORDS_LEVEL_2 : WORDS_LEVEL_3;
+  const arr =
+    level === 1 ? WORDS_LEVEL_1 :
+    level === 2 ? WORDS_LEVEL_2 :
+                  WORDS_LEVEL_3;
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -73,7 +113,10 @@ function updateLevel(isCorrect) {
   levelSpan.textContent = level;
 }
 
-// Timer
+/* --------------------------------------------------
+   TIMER
+-------------------------------------------------- */
+
 function startTimer() {
   clearInterval(timerId);
 
@@ -87,6 +130,7 @@ function startTimer() {
 
   timerId = setInterval(() => {
     timeLeftMs -= 100;
+
     if (timeLeftMs <= 0) {
       clearInterval(timerId);
       timerBar.style.width = "0%";
@@ -102,7 +146,10 @@ function startTimer() {
   }, 100);
 }
 
-// Nouvelle manche
+/* --------------------------------------------------
+   MANCHE
+-------------------------------------------------- */
+
 function nextRound() {
   roundIndex++;
   if (roundIndex > TOTAL_WORDS) return endGame();
@@ -114,7 +161,6 @@ function nextRound() {
   currentWord = pickWord(level);
   scrambledWord = scramble(currentWord);
 
-  // éviter un mot identique si shuffle mauvais
   if (scrambledWord === currentWord) scrambledWord = scramble(currentWord);
 
   wordSpan.textContent = scrambledWord;
@@ -126,11 +172,13 @@ function nextRound() {
 }
 
 function startGame() {
+  playSfx(sfxClick);
+  if (music) music.play().catch(() => {});
+
   score = 0;
   level = 1;
   roundIndex = 0;
   correctStreak = 0;
-  awaitingAnswer = false;
 
   scoreSpan.textContent = "0";
   levelSpan.textContent = "1";
@@ -146,8 +194,14 @@ function startGame() {
   nextRound();
 }
 
+/* --------------------------------------------------
+   VALIDATION
+-------------------------------------------------- */
+
 function handleValidate() {
   if (!awaitingAnswer) return;
+
+  playSfx(sfxClick);
 
   const typed = input.value.trim().toLowerCase();
   awaitingAnswer = false;
@@ -157,29 +211,36 @@ function handleValidate() {
   updateLevel(isCorrect);
 
   if (isCorrect) {
+    playSfx(sfxSuccess);
     score++;
     scoreSpan.textContent = score;
     feedbackDiv.textContent = "Bravo !";
     feedbackDiv.classList.add("good");
   } else {
-    feedbackDiv.textContent = `Le mot était "${currentWord}".`;
+    playSfx(sfxError);
+    feedbackDiv.textContent = `Le mot était « ${currentWord} ».`;
     feedbackDiv.classList.add("bad");
   }
 
-  setTimeout(nextRound, 900);
+  setTimeout(nextRound, 2000);
 }
 
 function handleTimeout() {
   if (!awaitingAnswer) return;
   awaitingAnswer = false;
 
-  updateLevel(false);
+  playSfx(sfxError);
 
-  feedbackDiv.textContent = `Temps écoulé ! Le mot était "${currentWord}".`;
+  updateLevel(false);
+  feedbackDiv.textContent = `Temps écoulé ! Le mot était « ${currentWord} ».`;
   feedbackDiv.classList.add("bad");
 
-  setTimeout(nextRound, 1000);
+  setTimeout(nextRound, 2000);
 }
+
+/* --------------------------------------------------
+   FIN DE PARTIE
+-------------------------------------------------- */
 
 function endGame() {
   clearInterval(timerId);
@@ -188,24 +249,41 @@ function endGame() {
   input.disabled = true;
   validateBtn.disabled = true;
 
-  finalScoreSpan.textContent = score;
-  summary.classList.remove("hidden");
+  finalScoreSpan.textContent = score.toString();
 
+  summary.classList.remove("hidden");
   replayBtn.classList.remove("hidden");
 }
 
-// Events
-startBtn.addEventListener("click", startGame);
-replayBtn.addEventListener("click", startGame);
+/* --------------------------------------------------
+   BOUTON RETOUR
+-------------------------------------------------- */
+
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    playSfx(sfxClick);
+    window.location.href = "/public/index.html#games";
+  });
+}
+
+/* --------------------------------------------------
+   EVENTS
+-------------------------------------------------- */
+
+startBtn.addEventListener("click", clickWrap(startGame));
+replayBtn.addEventListener("click", clickWrap(startGame));
 validateBtn.addEventListener("click", handleValidate);
 
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleValidate();
 });
 
-// Init
+/* --------------------------------------------------
+   INIT
+-------------------------------------------------- */
+
 function initMotMystere() {
-  feedbackDiv.textContent = "Clique sur Commencer pour jouer !";
+  feedbackDiv.textContent = "Clique sur « Commencer » pour jouer !";
   input.disabled = true;
   validateBtn.disabled = true;
   summary.classList.add("hidden");

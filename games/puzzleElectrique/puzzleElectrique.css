@@ -1,24 +1,38 @@
+/* ============================
+   Carte principale du jeu
+   ============================ */
+
 #ce-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 24px 28px;
-  background: rgba(0, 0, 0, 0.65);
-  border-radius: 18px;
-  box-shadow: 0 0 24px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  max-width: 980px;
+  margin: 60px auto 40px;
+  padding: 28px 30px 32px;
+  box-sizing: border-box;
+
+  background: radial-gradient(circle at top, #273949, #101722);
+  border-radius: 26px;
+  box-shadow:
+    0 26px 40px rgba(0, 0, 0, 0.85),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  color: #ecf0f1;
   text-align: center;
 }
 
 #ce-container h1 {
-  font-size: 2.4rem;
-  margin-bottom: 12px;
+  margin-top: 0;
 }
+
+/* ============================
+   HUD
+   ============================ */
 
 #ce-hud {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 16px;
   font-size: 1rem;
+  opacity: 0.95;
 }
 
 #ce-instructions {
@@ -27,13 +41,16 @@
   font-size: 0.95rem;
 }
 
-/* Ligne de circuit */
+/* ============================
+   Ligne de circuit
+   ============================ */
+
 #ce-line {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 32px;
-  margin: 18px 0;
+  margin: 18px 0 20px;
 }
 
 .ce-endpoint {
@@ -51,6 +68,7 @@
   font-size: 0.9rem;
 }
 
+/* Chemin entre batterie et lampe */
 #ce-wire-path {
   display: flex;
   align-items: center;
@@ -62,25 +80,26 @@
   overflow: hidden;
 }
 
-/* animation de courant */
+/* Animation de courant quand allumé */
 #ce-wire-path.ce-wire-on::before {
   content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(
     90deg,
-    rgba(241, 196, 15, 0.1),
+    rgba(241, 196, 15, 0.05),
     rgba(241, 196, 15, 0.9),
-    rgba(241, 196, 15, 0.1)
+    rgba(241, 196, 15, 0.05)
   );
   animation: ce-energy-run 0.7s linear infinite;
 }
 
+/* Slots pour les modules */
 .ce-slot {
   width: 60px;
   height: 60px;
-  border-radius: 16px;
-  background: #2c3e50;
+  border-radius: 18px;
+  background: #1a2432;
   border: 2px dashed #bdc3c7;
   display: flex;
   align-items: center;
@@ -95,6 +114,10 @@
     border-color 0.15s ease;
 }
 
+.ce-slot:hover {
+  background: #223246;
+}
+
 .ce-slot.ce-filled {
   border-style: solid;
   border-color: #f1c40f;
@@ -105,7 +128,10 @@
 /* Lampe */
 #ce-lamp {
   font-size: 3rem;
-  transition: transform 0.2s ease, text-shadow 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    text-shadow 0.2s ease,
+    color 0.2s ease;
 }
 
 #ce-lamp.ce-lamp-off {
@@ -122,7 +148,10 @@
   animation: ce-lamp-pulse 0.8s ease-in-out infinite alternate;
 }
 
-/* Palette de modules */
+/* ============================
+   Palette des modules
+   ============================ */
+
 #ce-palette {
   display: flex;
   flex-wrap: wrap;
@@ -134,12 +163,12 @@
 
 .ce-module-card {
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 14px;
   border: 2px solid #7f8c8d;
-  background: #34495e;
+  background: #192434;
   color: #ecf0f1;
   cursor: pointer;
-  min-width: 160px;
+  min-width: 170px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -150,6 +179,17 @@
     transform 0.1s ease,
     box-shadow 0.15s ease,
     border-color 0.15s ease;
+}
+
+.ce-module-card:hover {
+  background: #24344a;
+  box-shadow: 0 0 8px rgba(236, 240, 241, 0.35);
+}
+
+.ce-module-card.ce-selected {
+  border-color: #f1c40f;
+  box-shadow: 0 0 12px rgba(241, 196, 15, 0.8);
+  transform: translateY(-1px);
 }
 
 .ce-module-icon {
@@ -171,18 +211,10 @@
   opacity: 0.85;
 }
 
-.ce-module-card:hover {
-  background: #3f5b75;
-  box-shadow: 0 0 8px rgba(236, 240, 241, 0.4);
-}
+/* ============================
+   Feedback & actions
+   ============================ */
 
-.ce-module-card.ce-selected {
-  border-color: #f1c40f;
-  box-shadow: 0 0 12px rgba(241, 196, 15, 0.8);
-  transform: translateY(-1px);
-}
-
-/* Feedback */
 #ce-feedback {
   min-height: 24px;
   margin-top: 6px;
@@ -197,32 +229,65 @@
   color: #e74c3c;
 }
 
-/* Boutons */
+#ce-actions {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* ============================
+   Boutons pill arcade
+   ============================ */
+
 .ce-btn {
   margin: 6px;
-  padding: 8px 18px;
+  padding: 9px 22px;
   border-radius: 999px;
   border: none;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  background: #8e44ad;
-  color: #ecf0f1;
-  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  color: #ffffff;
+  box-shadow:
+    0 12px 20px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.8);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+/* Boutons principaux (Commencer, Lancer, Rejouer...) */
+.ce-btn-primary {
+  background: radial-gradient(circle at top, #ff7bff, #8e44ad);
+}
+
+/* Boutons secondaires (Effacer, etc.) */
+.ce-btn-secondary {
+  background: radial-gradient(circle at top, #4ec6ff, #2e86de);
+}
+
+/* Boutons retour */
+.ce-btn-back {
+  background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
 }
 
 .ce-btn:hover:not(:disabled) {
-  background: #9b59b6;
-  box-shadow: 0 0 10px rgba(155, 89, 182, 0.7);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 26px rgba(0, 0, 0, 0.9),
+    0 0 26px rgba(255, 255, 255, 0.15);
+  filter: brightness(1.05);
 }
 
 .ce-btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: default;
 }
 
-/* Résumé */
+/* ============================
+   Résumé
+   ============================ */
+
 #ce-summary {
   margin-top: 24px;
 }
@@ -231,13 +296,10 @@
   display: none;
 }
 
-.ce-module-count {
-  margin-left: auto;
-  font-size: 0.8rem;
-  opacity: 0.9;
-}
+/* ============================
+   Animations
+   ============================ */
 
-/* Animations */
 @keyframes ce-lamp-pulse {
   from {
     transform: scale(1);
@@ -256,15 +318,19 @@
   }
 }
 
-/* Responsive */
+/* ============================
+   Responsive
+   ============================ */
+
 @media (max-width: 900px) {
   #ce-container {
-    margin: 16px;
+    margin: 40px 16px 24px;
+    padding: 22px 18px 26px;
   }
 
   #ce-hud {
     flex-direction: column;
-    align-items: center;
+    gap: 6px;
   }
 
   #ce-line {

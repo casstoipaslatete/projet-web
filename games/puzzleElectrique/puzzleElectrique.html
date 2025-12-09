@@ -6,12 +6,18 @@
   <title>Puzzle électrique</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
+
+  <!-- Styles globaux de l’arcade -->
   <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="/styles/arcade-theme.css" />
+
+  <!-- Style spécifique au jeu -->
   <link rel="stylesheet" href="puzzleElectrique.css" />
 </head>
-<body>
-  <div id="ce-container">
-    <h1>Puzzle électrique</h1>
+
+<body class="arcade-game-body">
+  <div id="ce-container" class="arcade-game-root">
+    <h1 class="arcade-title-main">Puzzle électrique</h1>
 
     <div id="ce-hud">
       <p>
@@ -54,13 +60,13 @@
     <div id="ce-feedback"></div>
 
     <div id="ce-actions">
-      <button id="ce-start" class="ce-btn">Commencer</button>
-      <button id="ce-launch" class="ce-btn" disabled>Lancer le courant ⚡</button>
-      <button id="ce-clear" class="ce-btn" disabled>Effacer le circuit</button>
+      <button id="ce-start" class="ce-btn ce-btn-primary">Commencer</button>
+      <button id="ce-launch" class="ce-btn ce-btn-primary" disabled>Lancer le courant ⚡</button>
+      <button id="ce-clear" class="ce-btn ce-btn-secondary" disabled>Effacer le circuit</button>
     </div>
 
     <div style="margin-top: 10px;">
-      <button id="ce-back-menu2" class="ce-btn">← Retour à l’arcade</button>
+      <button id="ce-back-menu2" class="ce-btn ce-btn-back">← Retour à l’arcade</button>
     </div>
 
     <div id="ce-summary" class="ce-hidden">
@@ -73,8 +79,8 @@
       <p id="ce-best-row" class="ce-hidden">
         Score global actuel : <span id="ce-best-score">0</span>
       </p>
-      <button id="ce-replay" class="ce-btn">Rejouer</button>
-      <button id="ce-back-menu3" class="ce-btn">← Retour à l’arcade</button>
+      <button id="ce-replay" class="ce-btn ce-btn-primary">Rejouer</button>
+      <button id="ce-back-menu3" class="ce-btn ce-btn-back">← Retour à l’arcade</button>
     </div>
   </div>
 

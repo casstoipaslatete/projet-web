@@ -1,36 +1,49 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simon</title>
-    <link rel="icon" type="image/png" href="/static/favicon.png" />
-    <link rel="apple-touch-icon" href="/static/favicon.png">
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="stylesheet" href="Simon.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simon</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="apple-touch-icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="/styles/arcade-theme.css" />
+  <link rel="stylesheet" href="Simon.css" />
 </head>
-<body>
-    <div id="game-container">
-        <h1>Simon</h1>
-        <div class="simon-container">
-            <div class="simon-pad green" data-color="green"></div>
-            <div class="simon-pad red" data-color="red"></div>
-            <div class="simon-pad yellow" data-color="yellow"></div>
-            <div class="simon-pad blue" data-color="blue"></div>
-        </div>
-        <div id="info-display">
-            <p>Score: <span id="score">0</span></p>
-        </div>
-        <button id="start-btn" class="simon-btn">Jouer!</button>
+<body class="arcade-game-body">
+  <div id="game-container" class="arcade-game-root">
+    <h1 class="arcade-title-main">Simon</h1>
 
-        <div id="summary" class="hidden">
-            <h2>Fin de la partie!</h2>
-            <p>Ton score : <span id="final-score">0</span></p>
-            <button id="replay-btn" class="simon-btn">Rejouer</button>
-            <button id="back-menu-btn" class="simon-btn">← Retour à l’arcade</button>
-        </div>
+    <div id="simon-root">
+      <div class="simon-container">
+        <div class="simon-pad green" data-color="green"></div>
+        <div class="simon-pad red" data-color="red"></div>
+        <div class="simon-pad yellow" data-color="yellow"></div>
+        <div class="simon-pad blue" data-color="blue"></div>
+      </div>
 
+      <div id="info-display">
+        <p>Score : <span id="score">0</span></p>
+      </div>
+
+      <button id="start-btn" class="simon-btn">Commencer</button>
+
+      <div style="margin-top: 16px;">
+        <button id="btn-back" class="arcade-back-btn">← Retour à l’arcade</button>
+      </div>
+
+      <div id="summary" class="hidden">
+        <h2>Fin de la partie !</h2>
+        <p>Ton score : <span id="final-score">0</span></p>
+        <p id="best-row" class="hidden">
+          Score global actuel : <span id="best-score">0</span>
+        </p>
+        <button id="replay-btn" class="simon-btn">Rejouer</button>
+        <button id="back-menu-btn" class="arcade-back-btn">← Retour à l’arcade</button>
+      </div>
     </div>
-    <script src="Simon.js"></script>
+  </div>
+
+  <script type="module" src="Simon.js"></script>
 </body>
 </html>
