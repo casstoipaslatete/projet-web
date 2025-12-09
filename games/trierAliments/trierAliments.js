@@ -1,63 +1,80 @@
+import { ScoreService } from "../../scripts/scoreService.js";
+
 const aliments = [
-    // Fruits
-    { label: "🍎 Pomme",      category: "fruits" },
-    { label: "🍌 Banane",     category: "fruits" },
-    { label: "🍓 Fraise",     category: "fruits" },
-    { label: "🍐 Poire",      category: "fruits" },
-    { label: "🍇 Raisin",     category: "fruits" },
-    { label: "🫐 Bleuet",     category: "fruits" },
-    { label: "🍍 Ananas",     category: "fruits" },
-    { label: "🍉 Melon d'eau",category: "fruits" },
+  // Fruits
+  { label: "🍎 Pomme",       category: "fruits" },
+  { label: "🍌 Banane",      category: "fruits" },
+  { label: "🍓 Fraise",      category: "fruits" },
+  { label: "🍐 Poire",       category: "fruits" },
+  { label: "🍇 Raisin",      category: "fruits" },
+  { label: "🫐 Bleuet",      category: "fruits" },
+  { label: "🍍 Ananas",      category: "fruits" },
+  { label: "🍉 Melon d'eau", category: "fruits" },
 
-    // Légumes
-    { label: "🥕 Carotte",    category: "legumes" },
-    { label: "🥦 Brocoli",    category: "legumes" },
-    { label: "🥔 Patate",     category: "legumes" },
-    { label: "🥒 Concombre",  category: "legumes" },
-    { label: "🧅 Oignon",     category: "legumes" },
-    { label: "🫛 Petits pois",category: "legumes" },
-    { label: "🍆 Aubergine",  category: "legumes" },
-    { label: "🥬 Laitue",     category: "legumes" },
+  // Légumes
+  { label: "🥕 Carotte",     category: "legumes" },
+  { label: "🥦 Brocoli",     category: "legumes" },
+  { label: "🥔 Patate",      category: "legumes" },
+  { label: "🥒 Concombre",   category: "legumes" },
+  { label: "🧅 Oignon",      category: "legumes" },
+  { label: "🫛 Petits pois", category: "legumes" },
+  { label: "🍆 Aubergine",   category: "legumes" },
+  { label: "🥬 Laitue",      category: "legumes" },
 
-    // Desserts
-    { label: "🍰 Gâteau",       category: "desserts" },
-    { label: "🍦 Crème glacée", category: "desserts" },
-    { label: "🧁 Cupcake",      category: "desserts" },
-    { label: "🍪 Biscuit",      category: "desserts" },
-    { label: "🍩 Beigne",       category: "desserts" },
-    { label: "🍫 Chocolat",     category: "desserts" },
-    { label: "🍬 Bonbon",       category: "desserts" },
-    { label: "🍿 Popcorn",      category: "desserts" },
+  // Desserts
+  { label: "🍰 Gâteau",        category: "desserts" },
+  { label: "🍦 Crème glacée",  category: "desserts" },
+  { label: "🧁 Cupcake",       category: "desserts" },
+  { label: "🍪 Biscuit",       category: "desserts" },
+  { label: "🍩 Beigne",        category: "desserts" },
+  { label: "🍫 Chocolat",      category: "desserts" },
+  { label: "🍬 Bonbon",        category: "desserts" },
+  { label: "🍿 Popcorn",       category: "desserts" },
 
-    // Viandes
-    { label: "🍗 Poulet",    category: "viandes" },
-    { label: "🥩 Steak",     category: "viandes" },
-    { label: "🌭 Saucisse",  category: "viandes" },
-    { label: "🥓 Bacon",     category: "viandes" },
-    { label: "🥚 Oeuf",      category: "viandes" },
-    { label: "🍤 Crevette",  category: "viandes" },
-    { label: "🐟 Poisson",   category: "viandes" },
-    { label: "🍖 Boeuf",     category: "viandes" },
+  // Viandes & protéines
+  { label: "🍗 Poulet",   category: "viandes" },
+  { label: "🥩 Steak",    category: "viandes" },
+  { label: "🌭 Saucisse", category: "viandes" },
+  { label: "🥓 Bacon",    category: "viandes" },
+  { label: "🥚 Œuf",      category: "viandes" },
+  { label: "🍤 Crevette", category: "viandes" },
+  { label: "🐟 Poisson",  category: "viandes" },
+  { label: "🍖 Bœuf",     category: "viandes" },
 ];
 
 const NB_ALIMENTS_PAR_PARTIE = 10;
 
-let itemsContainer;
-let zones;
-let scoreSpan;
-let scoreWrapper;
-let summaryDiv;
-let finalScoreSpan;
-let startBtn;
-let replayBtn;
-let currentItemWrapper;
-
-let totalAliments = 0;
+// ------- ÉTAT -------
+let ordreAliments = [];
+let currentIndex = 0;
+let currentItem = null;
 let bienPlaces = 0;
+let totalAliments = 0;
 
-// ==============================
-// AUDIO – musique & sfx
-// ==============================
+// ------- DOM -------
+const itemsContainer = document.getElementById("ta-items-container");
+const zones = Array.from(document.querySelectorAll(".ta-zone"));
+const scoreSpan = document.getElementById("ta-score");
+const indexSpan = document.getElementById("ta-index");
+const totalSpan = document.getElementById("ta-total");
+
+const startWrapper = document.getElementById("ta-start-wrapper");
+const startBtn = document.getElementById("ta-start");
+
+const currentItemWrapper = document.getElementById("ta-current-item-wrapper");
+
+const feedbackDiv = document.getElementById("ta-feedback");
+
+const summaryDiv = document.getElementById("ta-summary");
+const finalScoreSpan = document.getElementById("ta-final-score");
+const finalTotalSpan = document.getElementById("ta-final-total");
+const bestRow = document.getElementById("ta-best-row");
+const bestScoreSpan = document.getElementById("ta-best-score");
+const replayBtn = document.getElementById("ta-replay");
+const backMenuBtn = document.getElementById("ta-back-menu");
+const backMenuInGameBtn = document.getElementById("ta-back-menu-ingame");
+
+// ------- AUDIO -------
 let sfxClic, sfxError, sfxSuccess;
 let bgMusic;
 
@@ -91,7 +108,6 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
-  // Coupe la musique globale de l’arcade si présente
   if (window.GlobalAudio && GlobalAudio.music) {
     try {
       GlobalAudio.music.pause();
@@ -103,142 +119,204 @@ function ensureMusic() {
   }
 }
 
-// Ordre aléatoire des aliments
-let ordreAliments = [];
-let currentIndex = 0;   
-let currentItem = null; 
+function stopMusic() {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+}
 
+// ------- NAVIGATION -------
+function goBackToMenu() {
+  stopMusic();
+  window.location.hash = "#menu";
+  if (!window.Router) {
+    window.location.href = "/public/index.html#games";
+  }
+}
+
+// ------- HELPERS -------
 function shuffle(array) {
-    const arr = array.slice();
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    return arr;
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 
-// Afficher l'aliment
+function setFeedback(msg, type) {
+  feedbackDiv.textContent = msg || "";
+  feedbackDiv.className = "arcade-feedback";
+
+  if (type === "good") {
+    feedbackDiv.classList.add("arcade-feedback--good");
+  } else if (type === "warn") {
+    feedbackDiv.classList.add("arcade-feedback--warn");
+  }
+}
+
+// ------- JEU -------
 function afficherAlimentCourant() {
-    itemsContainer.innerHTML = "";
+  itemsContainer.innerHTML = "";
 
-    // S’il n’y a plus d’aliments à afficher
-    if (currentIndex >= ordreAliments.length) {
-        currentItem = null;
-        return;
-    }
-
-    currentItem = ordreAliments[currentIndex];
-
-    const card = document.createElement("div");
-    card.classList.add("item");
-    card.textContent = currentItem.label;
-
-    itemsContainer.appendChild(card);
-}
-
-// initialiser le jeu
-function initialiserJeu() {
-    ordreAliments = shuffle(aliments).slice(0, NB_ALIMENTS_PAR_PARTIE);
-    bienPlaces = 0;
-    currentIndex = 0;
+  if (currentIndex >= ordreAliments.length) {
     currentItem = null;
-    totalAliments = ordreAliments.length;
+    return;
+  }
 
-    // Affichage en cours de partie
-    scoreSpan.textContent = "0";
-    summaryDiv.classList.add("hidden");
-    currentItemWrapper.classList.remove("hidden");
-    scoreWrapper.classList.remove("hidden");
-    startBtn.classList.add("hidden");
-    zones.forEach((zone) => {
-        const titre = zone.querySelector(".zone-title");
-        zone.innerHTML = "";
-        if (titre) {
-            zone.appendChild(titre);
-        }
-    });
+  currentItem = ordreAliments[currentIndex];
+  indexSpan.textContent = String(currentIndex + 1);
 
-    afficherAlimentCourant();
+  const card = document.createElement("div");
+  card.classList.add("ta-item");
+  card.textContent = currentItem.label;
+
+  itemsContainer.appendChild(card);
 }
 
-function initialiserZones() {
+function initialiserJeu() {
+  ensureMusic();
+  ScoreService.init("trierAliments");
+  ScoreService.resetScore().catch((err) =>
+    console.warn("resetScore trierAliments:", err)
+  );
+
+  ordreAliments = shuffle(aliments).slice(0, NB_ALIMENTS_PAR_PARTIE);
+  bienPlaces = 0;
+  currentIndex = 0;
+  currentItem = null;
+  totalAliments = ordreAliments.length;
+
+  scoreSpan.textContent = "0";
+  indexSpan.textContent = "0";
+  totalSpan.textContent = String(totalAliments);
+  finalTotalSpan.textContent = String(totalAliments);
+
+  summaryDiv.classList.add("arcade-hidden");
+  bestRow.classList.add("arcade-hidden");
+
+  currentItemWrapper.classList.remove("arcade-hidden");
+  startWrapper.classList.add("arcade-hidden");
+
+  setFeedback("Clique sur une catégorie pour classer l’aliment.", null);
+
+  // Reset visuel des zones
   zones.forEach((zone) => {
-    zone.addEventListener("click", (event) => {
-      if (!currentItem) return;
-
-      const categorieZone = zone.dataset.category;
-      const bonneCategorie = currentItem.category;
-
-      if (categorieZone === bonneCategorie) {
-        playSfx(sfxSuccess);
-
-        const sorted = document.createElement("div");
-        sorted.classList.add("item", "correct");
-        sorted.textContent = currentItem.label;
-        zone.appendChild(sorted);
-
-        bienPlaces++;
-        scoreSpan.textContent = String(bienPlaces);
-
-        if (bienPlaces === totalAliments) {
-          // Fin de partie
-          itemsContainer.innerHTML = "";
-          currentItem = null;
-          finalScoreSpan.textContent = String(bienPlaces);
-          currentItemWrapper.classList.add("hidden");
-          scoreWrapper.classList.add("hidden");
-          summaryDiv.classList.remove("hidden");
-        } else {
-          // Aliment suivant
-          currentIndex++;
-          afficherAlimentCourant();
-        }
-      } else {
-        playSfx(sfxError);
-
-        zone.classList.add("wrong");
-        setTimeout(() => {
-          zone.classList.remove("wrong");
-        }, 200);
-      }
+    zone.classList.remove("ta-zone--wrong");
+    const title = zone.querySelector(".ta-zone-title");
+    const children = Array.from(zone.children);
+    children.forEach((c) => {
+      if (!c.classList.contains("ta-zone-title")) zone.removeChild(c);
     });
   });
+
+  afficherAlimentCourant();
 }
 
+function handleZoneClick(zone) {
+  if (!currentItem) return;
 
-document.addEventListener("DOMContentLoaded", () => {
-  itemsContainer = document.getElementById("items-container");
-  zones = document.querySelectorAll(".zone");
-  scoreSpan = document.getElementById("score");
-  scoreWrapper = document.getElementById("score-wrapper");
-  summaryDiv = document.getElementById("summary");
-  finalScoreSpan = document.getElementById("final-score");
-  startBtn = document.getElementById("start-btn");
-  replayBtn = document.getElementById("cl-replay");
-  currentItemWrapper = document.getElementById("current-item-wrapper");
+  const categorieZone = zone.dataset.category;
+  const bonneCategorie = currentItem.category;
 
-  // Affichage du début
-  currentItemWrapper.classList.add("hidden");
-  scoreWrapper.classList.add("hidden");
-  summaryDiv.classList.add("hidden");
+  if (categorieZone === bonneCategorie) {
+    playSfx(sfxSuccess);
 
-  initialiserZones();
+    const sorted = document.createElement("div");
+    sorted.classList.add("ta-item", "ta-item--correct");
+    sorted.textContent = currentItem.label;
+    zone.appendChild(sorted);
 
-  // Interactions avec les boutons
-  startBtn.addEventListener(
-    "click",
-    withClickSfx(() => {
-      ensureMusic();
-      initialiserJeu();
-    })
-  );
+    bienPlaces++;
+    scoreSpan.textContent = String(bienPlaces);
 
-  replayBtn.addEventListener(
-    "click",
-    withClickSfx(() => {
-      ensureMusic();
-      initialiserJeu();
-    })
-  );
+    // Score global : 1 point par bon tri
+    ScoreService.addPoints(1).catch((err) =>
+      console.warn("addPoints trierAliments:", err)
+    );
+
+    if (bienPlaces === totalAliments) {
+      finDePartie();
+    } else {
+      currentIndex++;
+      afficherAlimentCourant();
+      setFeedback("Bien joué ! Continue de trier les aliments.", "good");
+    }
+  } else {
+    playSfx(sfxError);
+    setFeedback("Oups, ce n’est pas la bonne catégorie.", "warn");
+
+    zone.classList.add("ta-zone--wrong");
+    setTimeout(() => zone.classList.remove("ta-zone--wrong"), 220);
+  }
+}
+
+async function finDePartie() {
+  itemsContainer.innerHTML = "";
+  currentItem = null;
+
+  currentItemWrapper.classList.add("arcade-hidden");
+  summaryDiv.classList.remove("arcade-hidden");
+
+  finalScoreSpan.textContent = String(bienPlaces);
+  setFeedback("", null);
+
+  // cacher le bouton retour in-game (on garde seulement celui du bas dans le résumé)
+  backMenuInGameBtn.classList.add("arcade-hidden");
+
+  try {
+    await ScoreService.saveScore("trierAliments", bienPlaces);
+  } catch (e) {
+    console.warn("saveScore trierAliments:", e);
+  }
+
+  try {
+    const globalScore = await ScoreService.getScore();
+    bestScoreSpan.textContent = globalScore.toString();
+    bestRow.classList.remove("arcade-hidden");
+  } catch (e) {
+    console.warn("getScore trierAliments:", e);
+    bestRow.classList.add("arcade-hidden");
+  }
+}
+
+// ------- EVENTS -------
+
+// Zones
+zones.forEach((zone) => {
+  zone.addEventListener("click", () => handleZoneClick(zone));
 });
 
+// Boutons
+startBtn.addEventListener("click", withClickSfx(() => {
+  backMenuInGameBtn.classList.remove("arcade-hidden");
+  initialiserJeu();
+}));
+
+replayBtn.addEventListener("click", withClickSfx(() => {
+  backMenuInGameBtn.classList.remove("arcade-hidden");
+  initialiserJeu();
+}));
+
+backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
+backMenuInGameBtn.addEventListener("click", withClickSfx(goBackToMenu));
+
+// ------- INIT -------
+function initTrierAliments() {
+  ScoreService.init("trierAliments");
+
+  scoreSpan.textContent = "0";
+  indexSpan.textContent = "0";
+  totalSpan.textContent = String(NB_ALIMENTS_PAR_PARTIE);
+
+  currentItemWrapper.classList.add("arcade-hidden");
+  summaryDiv.classList.add("arcade-hidden");
+  bestRow.classList.add("arcade-hidden");
+
+  startWrapper.classList.remove("arcade-hidden");
+  backMenuInGameBtn.classList.remove("arcade-hidden");
+
+  setFeedback("Appuie sur « Jouer ! » pour commencer à trier les aliments.", null);
+}
+
+initTrierAliments();

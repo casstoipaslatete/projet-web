@@ -1,160 +1,181 @@
-/* ----- STYLE GLOBAL ----- */
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #2c3e50;
-    font-family: 'Arial', sans-serif;
-    color: white;
-    margin: 0;
+/* Panneau principal du jeu */
+#ta-root {
+  max-width: 900px;
 }
 
-.game-wrapper {
-    max-width: 1100px;
-    width: 95%;
-    margin: 20px auto;
+/* Petit texte d’instructions */
+.ta-instructions {
+  margin: 0 0 10px 0;
 }
 
-.game-container {
-    text-align: center;
+/* HUD */
+#info-display {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 12px;
+  font-size: 0.95rem;
 }
 
-.instructions {
-    background-color: #1c2833;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 15px 0;
-    font-size: 1.05rem;
+/* Bouton de départ */
+.ta-actions {
+  margin: 10px 0 8px;
 }
 
-.zones-container {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 20px;
+/* Aliment courant */
+#ta-current-item-wrapper {
+  margin: 10px 0 14px;
+  text-align: center;
 }
 
-.zone {
-    flex: 1;
-    max-width: 200px;
-    min-height: 120px;
-    border-radius: 15px;
-    padding: 10px;
-    border: 3px dashed;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.ta-items-title {
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
-.zone-title {
-    text-align: center;
-    font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 1.05rem;
+.ta-items-container {
+  min-height: 40px;
 }
 
-.zone[data-category="fruits"]  {
-     border-color: #5faaf0;
-     background-color: #5faaf071; 
-    }
-.zone[data-category="legumes"] {
-     border-color: #73f1d2;
-     background-color: #73f1d179;
-    
-    }
-.zone[data-category="desserts"]{
-     border-color: #f1a9f1;
-     background-color: #f1a9f181;
-     }
-.zone[data-category="viandes"] { 
-    border-color: #f1c039; 
-    background-color: #f1c03981;
+/* Carte de l’aliment */
+.ta-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 14px;
+  border-radius: 16px;
+
+  background: #1f2a38;
+  border: 2px solid #3c5878;
+  font-size: 1rem;
+
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.8),
+    0 0 1px rgba(255, 255, 255, 0.06);
 }
 
-#current-item-wrapper {
-     margin-top: 10px;
-    margin-bottom: 10px;
-    text-align: center;
+/* Item déjà bien placé dans une zone */
+.ta-item--correct {
+  background: #1b3a2a;
+  border-color: #48e68f;
+  box-shadow:
+    0 0 8px rgba(72, 230, 143, 0.8),
+    0 12px 20px rgba(0, 0, 0, 0.9);
 }
 
-
-.items-title {
-    font-weight: bold;
-    margin-bottom: 8px;
-    text-align: center;
+/* Zones de catégories */
+.ta-zones-container {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 12px;
 }
 
-.item {
-    background: #2c3e50;
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 1rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    white-space: nowrap;
-    border: 2px solid rgb(56, 93, 129);
-    
+.ta-zone {
+  min-height: 120px;
+  border-radius: 18px;
+  padding: 10px 10px 12px;
+
+  border: 3px dashed;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  box-shadow:
+    inset 0 0 14px rgba(0, 0, 0, 0.7),
+    0 0 1px rgba(255, 255, 255, 0.03);
+
+  cursor: pointer;
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.1s ease,
+    border-color 0.12s ease,
+    background-color 0.12s ease;
 }
 
-
-.item.correct {
-    background-color: #2c3e5057;
-    border-color: #7bed9f;
-    box-shadow: 0 0 8px #44bd32;
+.ta-zone:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 16px 26px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.9);
 }
 
-.zone.wrong {
-    border-color: #e84118 !important;
+.ta-zone-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 0.98rem;
 }
 
-.bottom-bar {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
+/* Couleurs par catégorie */
+.ta-zone[data-category="fruits"] {
+  border-color: #5faaf0;
+  background-color: rgba(95, 170, 240, 0.2);
 }
 
-#cl-feedback {
-    min-height: 24px;
-    margin: 8px 0 10px;
+.ta-zone[data-category="legumes"] {
+  border-color: #73f1d2;
+  background-color: rgba(115, 241, 210, 0.2);
 }
 
-#cl-feedback.good {
-    color: #2ecc71;
+.ta-zone[data-category="desserts"] {
+  border-color: #f1a9f1;
+  background-color: rgba(241, 169, 241, 0.2);
 }
 
-#cl-feedback.bad {
-    color: #f1c40f;
+.ta-zone[data-category="viandes"] {
+  border-color: #f1c039;
+  background-color: rgba(241, 192, 57, 0.2);
 }
 
-.simon-btn {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #8e44ad;
-    color: white;
-    transition: filter 0.15s;
+/* Zone clignote rouge si erreur */
+.ta-zone--wrong {
+  border-color: #e84118 !important;
 }
 
-.simon-btn:hover {
-    filter: brightness(1.1);
+/* Feedback */
+#ta-feedback {
+  margin-top: 10px;
 }
 
-.hidden {
-    display: none;
+#ta-feedback.arcade-feedback--good {
+  color: #2ecc71;
 }
 
-@media (min-width: 480px) {
-    #cl-actions {
-        flex-direction: row;
-        justify-content: center;
-    }
+#ta-feedback.arcade-feedback--warn {
+  color: #f1c40f;
 }
 
+/* Résumé */
+#ta-summary {
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
 
+.ta-summary-actions {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+/* Bouton retour global */
+.ta-footer-actions {
+  margin-top: 14px;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .ta-zones-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .ta-zones-container {
+    grid-template-columns: 1fr;
+  }
+}

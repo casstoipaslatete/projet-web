@@ -1,58 +1,90 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trier les aliments</title>
-    <link rel="icon" type="image/png" href="/static/favicon.png" />
-    <link rel="apple-touch-icon" href="/static/favicon.png">
-    <link rel="stylesheet" href="/styles/main.css">
-    <link rel="stylesheet" href="trierAliments.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trier les aliments</title>
+  <link rel="icon" type="image/png" href="/static/favicon.png" />
+  <link rel="apple-touch-icon" href="/static/favicon.png" />
+  <link rel="stylesheet" href="/styles/main.css" />
+  <link rel="stylesheet" href="/styles/arcade-theme.css" />
+  <link rel="stylesheet" href="trierAliments.css" />
 </head>
 
-<body>
-    <div class="game-wrapper">
-        <div class="game-container">
-            <h1>Trie les aliments</h1>
-            <p class="instructions">
-                Clique sur la bonne catégorie pour chaque aliment : <br>
-            </p>
-            <div id="info-display">
-                  <button id="start-btn" class="simon-btn">Jouer!</button>
-                <p id="score-wrapper">Score: <span id="score">0</span></p>
-            </div>
-            <div id="summary" class="hidden">
-                <h2>Fin de la partie!</h2>
-                <p>Ton score : <span id="final-score">0</span></p>
-                <button id="cl-replay" class="simon-btn">Rejouer</button>
-                <button id="cl-back-menu2" class="simon-btn">← Retour à l’arcade</button>
-            </div>
-            <div id="current-item-wrapper">
-                <div class="items-title">Aliment à trier</div>
-                <div class="items-container" id="items-container">
-                </div>
-            </div>
+<body class="arcade-game-body">
+  <div class="arcade-game-root">
+    <h1 class="arcade-title-main">Trier les aliments</h1>
 
-            <!-- 4 catégories -->
-            <div class="zones-container">
-                <div class="zone" data-category="fruits">
-                    <div class="zone-title"> Fruits</div>
-                </div>
-                <div class="zone" data-category="legumes">
-                    <div class="zone-title"> Légumes</div>
-                </div>
-                <div class="zone" data-category="desserts">
-                    <div class="zone-title"> Desserts</div>
-                </div>
-                <div class="zone" data-category="viandes">
-                    <div class="zone-title"> Viandes</div>
-                </div>
-            </div>
-            
+    <div id="ta-root" class="arcade-panel">
+      <p class="ta-instructions arcade-text-muted">
+        Clique sur la bonne catégorie pour chaque aliment.
+      </p>
+
+      <!-- HUD -->
+      <div id="info-display">
+        <p>Aliment : <span id="ta-index">0</span> / <span id="ta-total">10</span></p>
+        <p>Score de la partie : <span id="ta-score">0</span></p>
+      </div>
+
+      <!-- Bouton de départ -->
+      <div id="ta-start-wrapper" class="ta-actions">
+        <button id="ta-start" class="arcade-btn arcade-btn--primary">
+          Jouer !
+        </button>
+      </div>
+
+      <!-- Aliment courant -->
+      <div id="ta-current-item-wrapper">
+        <div class="ta-items-title">Aliment à trier</div>
+        <div class="ta-items-container" id="ta-items-container"></div>
+      </div>
+
+      <!-- 4 catégories -->
+      <div class="ta-zones-container">
+        <div class="ta-zone" data-category="fruits">
+          <div class="ta-zone-title">Fruits</div>
         </div>
-    </div>
-    <script type="module" src="trierAliments.js"></script>
-</body>
+        <div class="ta-zone" data-category="legumes">
+          <div class="ta-zone-title">Légumes</div>
+        </div>
+        <div class="ta-zone" data-category="desserts">
+          <div class="ta-zone-title">Desserts</div>
+        </div>
+        <div class="ta-zone" data-category="viandes">
+          <div class="ta-zone-title">Viandes</div>
+        </div>
+      </div>
 
+      <!-- Feedback (optionnel) -->
+      <div id="ta-feedback" class="arcade-feedback"></div>
+
+      <!-- Résumé -->
+      <div id="ta-summary" class="arcade-hidden">
+        <h2 class="arcade-title-sub">Fin de la partie !</h2>
+        <p>Ton score : <span id="ta-final-score">0</span> / <span id="ta-final-total">10</span></p>
+        <p id="ta-best-row" class="arcade-hidden">
+          Score global actuel : <span id="ta-best-score">0</span>
+        </p>
+
+        <div class="ta-summary-actions">
+          <button id="ta-replay" class="arcade-btn arcade-btn--primary">
+            Rejouer
+          </button>
+          <button id="ta-back-menu" class="arcade-btn arcade-btn--danger">
+            ← Retour à l’arcade
+          </button>
+        </div>
+      </div>
+
+      <!-- Bouton retour pendant le jeu -->
+      <div class="ta-footer-actions">
+        <button id="ta-back-menu-ingame" class="arcade-btn arcade-btn--danger">
+          ← Retour à l’arcade
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="trierAliments.js"></script>
+</body>
 </html>
