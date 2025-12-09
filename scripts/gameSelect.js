@@ -53,8 +53,6 @@
     },
   ];
 
-  const VISIBLE_COUNT = 5; // on vise 5 cartes visibles sur grand écran
-
   // On expose une fonction globale que le router pourra appeler
   window.initGameSelectCarousel = function initGameSelectCarousel() {
     const track = document.getElementById("game-track");
@@ -97,39 +95,102 @@
       track.appendChild(card);
     });
 
-    // --- Logique du carrousel ---
-    let position = 0; // index de la première carte visible
+    // --- Logique du carrousel infini ---
 
-    function updateCarousel() {
+    let isAnimating = false;
+
+    // Calcule dynamiquement la taille d'un "pas" (carte + gap)
+    function getStep() {
       const firstCard = track.children[0];
-      if (!firstCard) return;
+      if (!firstCard) return 0;
 
-      // largeur de la carte + gap (14px défini en CSS)
-      const cardWidth = firstCard.offsetWidth + 14;
+      const styles = window.getComputedStyle(track);
+      const gap = parseFloat(styles.gap) || 0;
 
-      const max = Math.max(0, GAMES.length - VISIBLE_COUNT);
-      if (position > max) position = max;
-
-      const offset = -position * cardWidth;
-      track.style.transform = `translateX(${offset}px)`;
+      return firstCard.offsetWidth + gap;
     }
 
+    function slideNext() {
+      if (isAnimating) return;
+      const step = getStep();
+      if (!step) return;
+
+      isAnimating = true;
+
+      // On anime vers la gauche
+      track.style.transition = "transform 0.35s ease-in-out";
+      track.style.transform = `translateX(-${step}px)`;
+
+      const onTransitionEnd = () => {
+        track.removeEventListener("transitionend", onTransitionEnd);
+
+        // On enlève la transition pour réorganiser les cartes sans voir le jump
+        track.style.transition = "none";
+        track.style.transform = "translateX(0)";
+
+        // On déplace la première carte à la fin => effet infini
+        const first = track.firstElementChild;
+        if (first) {
+          track.appendChild(first);
+        }
+
+        // On force le navigateur à appliquer les changements avant de réactiver la transition
+        // (évite des glitches visuels)
+        void track.offsetWidth;
+
+        track.style.transition = "";
+        isAnimating = false;
+      };
+
+      track.addEventListener("transitionend", onTransitionEnd);
+    }
+
+    function slidePrev() {
+      if (isAnimating) return;
+      const step = getStep();
+      if (!step) return;
+
+      isAnimating = true;
+
+      // On enlève d'abord la transition, on place la dernière carte au début
+      track.style.transition = "none";
+
+      const last = track.lastElementChild;
+      if (last) {
+        track.insertBefore(last, track.firstElementChild);
+      }
+
+      // On place la track déjà décalée vers la gauche
+      track.style.transform = `translateX(-${step}px)`;
+
+      // On force le reflow pour que le navigateur "prenne en compte" ce transform
+      void track.offsetWidth;
+
+      // Puis on anime pour revenir à 0
+      track.style.transition = "transform 0.35s ease-in-out";
+      track.style.transform = "translateX(0)";
+
+      const onTransitionEnd = () => {
+        track.removeEventListener("transitionend", onTransitionEnd);
+        track.style.transition = "";
+        isAnimating = false;
+      };
+
+      track.addEventListener("transitionend", onTransitionEnd);
+    }
+
+    // Boutons
     prevBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      position = Math.max(0, position - 1);
-      updateCarousel();
+      slidePrev();
     });
 
     nextBtn.addEventListener("click", (event) => {
       event.stopPropagation();
-      const max = Math.max(0, GAMES.length - VISIBLE_COUNT);
-      position = Math.min(max, position + 1);
-      updateCarousel();
+      slideNext();
     });
 
-    window.addEventListener("resize", updateCarousel);
-
-    // Premier placement après que le layout soit calculé
-    setTimeout(updateCarousel, 0);
+    // On s'assure que le transform est bien initialisé
+    track.style.transform = "translateX(0)";
   };
 })();
