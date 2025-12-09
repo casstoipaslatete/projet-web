@@ -1,120 +1,102 @@
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #2c3e50;
-    font-family: 'Arial', sans-serif;
-    color: white;
-    margin: 0;
-}
+/* Tape Éclair – styles spécifiques
+   Tout le look principal vient de arcade-theme.css
+*/
 
-#game-container {
-    text-align: center;
-}
-
-/* boîte principale */
+/* Panneau principal : on limite juste la largeur */
 #st-root {
-    background-color: #34495e;
-    padding: 20px 25px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-    min-width: 280px;
+  max-width: 480px;
 }
 
-/* infos */
+/* Infos du haut (réutilise #info-display comme les autres jeux) */
 #info-display p {
-    margin: 5px 0;
+  margin: 4px 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
 }
 
-/* mot à taper */
+/* Mot à taper : on garde la carte sombre du thème, on ajuste surtout la taille de police */
 #st-word-box {
-    background-color: #1c2833;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 15px 0;
-    font-size: 2rem;
+  margin: 18px 0;
+  font-size: 2rem;
 }
 
-/* zone input */
+/* Zone input */
 #st-input-zone {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 #st-input {
-    padding: 8px 10px;
-    font-size: 1.2rem;
-    border-radius: 5px;
-    border: none;
-    width: 160px;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  border-radius: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  background: #111b24;
+  color: #ecf0f1;
+  min-width: 180px;
+  outline: none;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
-/* timer */
+#st-input::placeholder {
+  color: #7f8c8d;
+}
+
+#st-input:focus {
+  border-color: #c27dff;
+  box-shadow:
+    0 0 0 2px rgba(194, 125, 255, 0.35),
+    0 0 18px rgba(194, 125, 255, 0.45);
+  background: #0d1721;
+}
+
+/* Timer : on reprend les styles de .arcade-timer-container / .arcade-timer-bar
+   mais on ajuste juste le spacing si besoin */
 #st-timer-bar-container {
-    width: 100%;
-    height: 12px;
-    background-color: #1c2833;
-    border-radius: 999px;
-    overflow: hidden;
-    margin-bottom: 10px;
+  margin-bottom: 10px;
 }
 
-#st-timer-bar {
-    height: 100%;
-    width: 100%;
-    background-color: #2ecc71;
-    transition: width 0.1s linear, background-color 0.2s;
-}
-
-/* feedback */
+/* Feedback : on s'aligne sur arcade-feedback */
 #st-feedback {
-    min-height: 24px;
-    margin-bottom: 10px;
+  /* déjà min-height + font-size via .arcade-feedback */
+  margin-top: 4px;
 }
 
+/* Mapping avec les classes déjà utilisées dans le JS */
 #st-feedback.good {
-    color: #2ecc71;
+  color: #2ecc71; /* même couleur que .arcade-feedback--good */
 }
 
 #st-feedback.bad {
-    color: #f1c40f;
+  color: #f1c40f; /* même couleur que .arcade-feedback--warn */
 }
 
-/* résumé */
+/* Résumé */
 #st-summary {
-    margin-top: 15px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  margin-top: 18px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-#st-summary h2 {
-    margin-bottom: 10px;
-}
-
-#st-summary button {
-    margin: 5px;
-}
-
-/* même style que Simon pour les boutons */
-.simon-btn {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    background-color: #8e44ad;
-    color: white;
-    transition: filter 0.15s;
-}
-
-.simon-btn:hover {
-    filter: brightness(1.1);
-}
-
+/* Classe utilitaire déjà utilisée par le JS */
 .hidden {
-    display: none;
+  display: none !important;
+}
+
+/* Responsive léger */
+@media (max-width: 480px) {
+  #st-root {
+    padding: 20px 18px 22px;
+  }
+
+  #st-input-zone {
+    flex-direction: column;
+  }
 }

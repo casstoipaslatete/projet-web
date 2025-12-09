@@ -6,24 +6,28 @@
   <title>Tape Éclair</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
-  <link rel="stylesheet" href="/styles/main.css">
+  <!-- Thème arcade global -->
+  <link rel="stylesheet" href="/styles/arcade-theme.css">
+  <!-- Styles spécifiques au jeu -->
   <link rel="stylesheet" href="speedTyping.css">
 </head>
-<body>
-  <div id="game-container">
-    <h1>Tape Éclair</h1>
+<body class="arcade-game-body">
+  <div class="arcade-game-root">
+    <h1 class="arcade-title-main">Tape Éclair</h1>
 
-    <div id="st-root">
+    <div id="st-root" class="arcade-panel">
       <div id="info-display">
         <p>Mot : <span id="st-round">0</span> / 10</p>
         <p>Score de la partie : <span id="st-score">0</span></p>
         <p>Niveau : <span id="st-level">1</span></p>
       </div>
 
-      <div id="st-word-box">
-        <span id="st-word">Appuie sur "Commencer"</span>
+      <!-- Mot à taper -->
+      <div id="st-word-box" class="arcade-card">
+        <span id="st-word">Appuie sur « Commencer »</span>
       </div>
 
+      <!-- Zone input + bouton valider -->
       <div id="st-input-zone">
         <input
           type="text"
@@ -31,27 +35,64 @@
           autocomplete="off"
           placeholder="Écris le mot ici"
         />
-        <button id="st-validate" class="simon-btn">Valider</button>
+        <button
+          id="st-validate"
+          class="arcade-btn arcade-btn--primary"
+        >
+          Valider
+        </button>
       </div>
 
-      <div id="st-timer-bar-container">
-        <div id="st-timer-bar"></div>
+      <!-- Barre de temps (réutilise le timer générique) -->
+      <div id="st-timer-bar-container" class="arcade-timer-container">
+        <div id="st-timer-bar" class="arcade-timer-bar"></div>
       </div>
 
-      <div id="st-feedback"></div>
+      <!-- Feedback -->
+      <div id="st-feedback" class="arcade-feedback"></div>
 
+      <!-- Bouton Commencer -->
       <div style="margin-top: 15px;">
-        <button id="st-start" class="simon-btn">Commencer!</button>
+        <button
+          id="st-start"
+          class="arcade-btn arcade-btn--primary"
+        >
+          Commencer !
+        </button>
       </div>
 
+      <!-- Bouton retour (pendant la partie) -->
+      <div style="margin-top: 10px;">
+        <button
+          id="st-back-menu"
+          class="arcade-btn arcade-btn--danger"
+        >
+          ← Retour à l’arcade
+        </button>
+      </div>
+
+      <!-- Résumé de fin de partie -->
       <div id="st-summary" class="hidden">
-        <h2>Fin de la partie!</h2>
+        <h2 class="arcade-title-sub">Fin de la partie !</h2>
         <p>Ton score : <span id="st-final-score">0</span> / 10</p>
-        <p id="st-best-row" class="hidden">
+        <p id="st-best-row" class="hidden arcade-text-muted">
           Score global actuel : <span id="st-best-score">0</span>
         </p>
-        <button id="st-replay" class="simon-btn">Rejouer</button>
-        <button id="st-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+
+        <div style="margin-top: 10px;">
+          <button
+            id="st-replay"
+            class="arcade-btn arcade-btn--primary"
+          >
+            Rejouer
+          </button>
+          <button
+            id="st-back-menu2"
+            class="arcade-btn arcade-btn--danger"
+          >
+            ← Retour à l’arcade
+          </button>
+        </div>
       </div>
     </div>
   </div>

@@ -31,13 +31,19 @@ const WORDS_LEVEL_3 = [
 
 // --- SONS ET MUSIQUE ---
 let sfxClic, sfxSuccess, sfxError;
+let bgMusic;
 
 try {
   sfxClic    = new Audio("sfx/clic.mp3");
   sfxSuccess = new Audio("sfx/success.mp3");
   sfxError   = new Audio("sfx/error.mp3");
+
+  bgMusic = new Audio("music/speedTypingMusic.mp3");
+  bgMusic.loop = true;
+  bgMusic.volume = 0.25;     // volume plus doux
+  // ne pas lancer tout de suite pour éviter les blocages autoplay
 } catch (e) {
-  console.warn("Audio non disponible:", e);
+  console.warn("Audio speedTyping non disponible:", e);
 }
 
 function playSfx(audio) {
@@ -57,11 +63,24 @@ function withClickSfx(handler) {
   };
 }
 
-const audio = new Audio('music/speedTypingMusic.mp3');
+function ensureMusic() {
+  // couper éventuellement la musique globale du menu
+  if (window.GlobalAudio && GlobalAudio.music) {
+    try {
+      GlobalAudio.music.pause();
+    } catch {}
+  }
+  if (!bgMusic) return;
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+  }
+}
 
-audio.loop = true;
-
-audio.play();
+function stopMusic() {
+  if (!bgMusic) return;
+  bgMusic.pause();
+  bgMusic.currentTime = 0;
+}
 
 // DOM
 const roundSpan = document.getElementById("st-round");
@@ -80,11 +99,20 @@ const bestScoreSpan = document.getElementById("st-best-score");
 
 const startBtn = document.getElementById("st-start");
 const replayBtn = document.getElementById("st-replay");
+const backMenuBtn = document.getElementById("st-back-menu");
 const backMenuBtn2 = document.getElementById("st-back-menu2");
 
 // ---- navigation vers l'arcade ----
 function goBackToMenu() {
-  window.location.href = "/index.html#menu";
+  stopMusic();
+
+  // SPA : on change le hash
+  window.location.hash = "#menu";
+
+  // Fallback si jamais Router n'est pas dispo (lancé en standalone)
+  if (!window.Router) {
+    window.location.href = "/public/index.html#games";
+  }
 }
 
 // ---- helpers ----
@@ -146,6 +174,8 @@ function startTimer() {
 
 // ---- logique du jeu ----
 function startGame() {
+  ensureMusic();
+
   clearInterval(timerId);
   level = 1;
   localScore = 0;
@@ -159,17 +189,21 @@ function startGame() {
   feedbackDiv.textContent = "";
   feedbackDiv.className = "";
   summary.classList.add("hidden");
+  bestRow.classList.add("hidden");
 
   // boutons : cacher Commencer/Rejouer pendant la partie
   startBtn.classList.add("hidden");
   replayBtn.classList.add("hidden");
+
+  // montrer le bouton retour milieu pendant la partie
+  backMenuBtn.classList.remove("hidden");
 
   // réactiver input + bouton valider
   input.disabled = false;
   validateBtn.disabled = false;
 
   // reset score global pour ce jeu côté API
-  ScoreService.resetScore().catch(err =>
+  ScoreService.resetScore().catch((err) =>
     console.warn("resetScore speedTyping:", err)
   );
 
@@ -216,7 +250,7 @@ function handleValidate() {
     feedbackDiv.textContent = "Bravo!";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch(err =>
+    ScoreService.addPoints(1).catch((err) =>
       console.warn("addPoints speedTyping:", err)
     );
   } else {
@@ -225,7 +259,7 @@ function handleValidate() {
     feedbackDiv.classList.add("bad");
   }
 
-  setTimeout(nextRound, 1000);
+  setTimeout(nextRound, 2000);
 }
 
 function handleTimeout() {
@@ -238,7 +272,7 @@ function handleTimeout() {
   feedbackDiv.textContent = `Temps écoulé! Le mot était "${currentWord}".`;
   feedbackDiv.classList.add("bad");
 
-  setTimeout(nextRound, 1200);
+  setTimeout(nextRound, 2000);
 }
 
 async function endGame() {
@@ -251,6 +285,9 @@ async function endGame() {
   // désactiver input + bouton valider
   input.disabled = true;
   validateBtn.disabled = true;
+
+  // à la fin : cacher le bouton retour du milieu
+  backMenuBtn.classList.add("hidden");
 
   finalScoreSpan.textContent = localScore.toString();
   summary.classList.remove("hidden");
@@ -277,7 +314,10 @@ async function endGame() {
 // ---- events ----
 startBtn.addEventListener("click", withClickSfx(startGame));
 replayBtn.addEventListener("click", withClickSfx(startGame));
+
+backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
 backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
+
 validateBtn.addEventListener("click", withClickSfx(handleValidate));
 
 input.addEventListener("keydown", (e) => {
@@ -313,6 +353,7 @@ function initSpeedTyping() {
   // état des boutons
   startBtn.classList.remove("hidden");
   replayBtn.classList.add("hidden");
+  backMenuBtn.classList.remove("hidden"); // visible au début
 
   // désactiver input + valider tant que la partie n'est pas lancée
   input.disabled = true;
