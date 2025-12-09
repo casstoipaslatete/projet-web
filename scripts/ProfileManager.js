@@ -32,7 +32,7 @@ window.ProfileManager = (function () {
 
   async function save(profile) {
     try {
-      await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`, {
+      await fetch(`/api/profile/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),

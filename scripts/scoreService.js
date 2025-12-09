@@ -3,72 +3,68 @@ export const ScoreService = (() => {
 
   let GAME_ID = null;
 
-  function init(gameId) {
+  function init(gameId, profileId) {
     GAME_ID = gameId;
+    PROFILE_ID = profileId;
   }
 
+  // récupérer le score pour un jeu
   async function getScore() {
     const res = await fetch(`/api/scores/${GAME_ID}`);
     if (!res.ok) return 0;
 
     const data = await res.json();
-    return data.score ?? 0;
+    return data.scores ?? 0;
   }
 
-  async function setScore(value) {
-    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ value }),
-    });
+  // récupérer le score pour un profil
+  async function getScoresProfile() {
+    const res = await fetch(`/api/profile/${PROFILE_ID}/scores`);
+    if (!res.ok) return 0;
 
     const data = await res.json();
-
-    window.dispatchEvent(new CustomEvent("score:changed", {
-      detail: { score: data.score }
-    }));
-
-    return data.score;
+    return data.scores ?? 0;
   }
 
-  async function addPoints(points) {
-    const res = await fetch(`/api/scores/${GAME_ID}/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: points }),
-    });
+  // async function addPoints(points) {
+  //   const res = await fetch(`/api/scores/${GAME_ID}/add`, {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json" },
+  //     body: JSON.stringify({ amount: points }),
+  //   });
 
-    const data = await res.json();
+  //   const data = await res.json();
 
-    window.dispatchEvent(new CustomEvent("score:addPoints", {
-      detail: { added: points, total: data.score }
-    }));
+  //   window.dispatchEvent(new CustomEvent("score:addPoints", {
+  //     detail: { added: points, total: data.score }
+  //   }));
 
-    return data.score;
-  }
+  //   return data.score;
+  // }
 
-  async function resetScore() {
-    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
-      method: "POST"
-    });
+  // async function resetScore() {
+  //   const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
+  //     method: "POST"
+  //   });
 
-    const data = await res.json();
+  //   const data = await res.json();
 
-    window.dispatchEvent(new CustomEvent("score:reset", {
-      detail: { score: data.score }
-    }));
+  //   window.dispatchEvent(new CustomEvent("score:reset", {
+  //     detail: { score: data.score }
+  //   }));
 
-    return data.score;
-  }
+  //   return data.score;
+  // }
 
-  async function saveScore(game, score) {
+  // enregistrer un score pour un jeu et un profil
+  async function saveScore(game, score, profileId) {
     try {
       const response = await fetch('/api/score', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ game, score }),
+        body: JSON.stringify({ game, score, profileId }),
       });
 
       if (!response.ok) {
@@ -82,12 +78,23 @@ export const ScoreService = (() => {
     }
   }
 
+  // récupérer les leaderboards
+  async function getLeaderboards() {
+    const res = await fetch('/api/leaderboard/');
+    if (!res.ok) return 0;
+
+    const data = await res.json();
+    return data.leaderboards ?? 0;
+  }
+
   return {
     init,
     getScore,
-    addPoints,
-    resetScore,
+    getScoresProfile,
+    // addPoints,
+    // resetScore,
     saveScore,
+    getLeaderboards
   };
 })();
 
