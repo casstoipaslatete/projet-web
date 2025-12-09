@@ -1,84 +1,115 @@
+// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/addPoints/resetScore.
 
 export const ScoreService = (() => {
-
   let GAME_ID = null;
 
   function init(gameId) {
     GAME_ID = gameId;
   }
 
+  function ensureGameId() {
+    if (!GAME_ID) {
+      console.warn("[ScoreService] GAME_ID non initialisé. Appelle ScoreService.init(gameId) d'abord.");
+      return false;
+    }
+    return true;
+  }
+
+  // Récupère le score courant du jeu
   async function getScore() {
-    const res = await fetch(`/api/scores/${GAME_ID}`);
-    if (!res.ok) return 0;
+    if (!ensureGameId()) return 0;
 
-    const data = await res.json();
-    return data.score ?? 0;
+    try {
+      const res = await fetch(`/api/scores/${GAME_ID}`);
+      if (!res.ok) return 0;
+
+      const data = await res.json();
+      return data.score ?? 0;
+    } catch (err) {
+      console.error("[ScoreService] Erreur dans getScore :", err);
+      return 0;
+    }
   }
 
-  async function setScore(value) {
-    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ value }),
-    });
-
-    const data = await res.json();
-
-    window.dispatchEvent(new CustomEvent("score:changed", {
-      detail: { score: data.score }
-    }));
-
-    return data.score;
-  }
-
+  // Ajoute des points au score courant
   async function addPoints(points) {
-    const res = await fetch(`/api/scores/${GAME_ID}/add`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: points }),
-    });
+    if (!ensureGameId()) return 0;
 
-    const data = await res.json();
+    try {
+      const res = await fetch(`/api/scores/${GAME_ID}/add`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: points }),
+      });
 
-    window.dispatchEvent(new CustomEvent("score:addPoints", {
-      detail: { added: points, total: data.score }
-    }));
+      const data = await res.json();
+      const total = data.score ?? 0;
 
-    return data.score;
+      // Événement détaillé (ajout + total)
+      window.dispatchEvent(new CustomEvent("score:addPoints", {
+        detail: { added: points, total },
+      }));
+
+      // Événement générique "score changé"
+      window.dispatchEvent(new CustomEvent("score:changed", {
+        detail: { score: total },
+      }));
+
+      return total;
+    } catch (err) {
+      console.error("[ScoreService] Erreur dans addPoints :", err);
+      return 0;
+    }
   }
 
+  // Remet le score à zéro sur l'API
   async function resetScore() {
-    const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
-      method: "POST"
-    });
+    if (!ensureGameId()) return 0;
 
-    const data = await res.json();
+    try {
+      const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
+        method: "POST",
+      });
 
-    window.dispatchEvent(new CustomEvent("score:reset", {
-      detail: { score: data.score }
-    }));
+      const data = await res.json();
+      const score = data.score ?? 0;
 
-    return data.score;
+      window.dispatchEvent(new CustomEvent("score:reset", {
+        detail: { score },
+      }));
+
+      window.dispatchEvent(new CustomEvent("score:changed", {
+        detail: { score },
+      }));
+
+      return score;
+    } catch (err) {
+      console.error("[ScoreService] Erreur dans resetScore :", err);
+      return 0;
+    }
   }
 
+  // Sauvegarde d’un score "final" (leaderboard, etc.)
   async function saveScore(game, score) {
     try {
-      const response = await fetch('/api/score', {
-        method: 'POST',
+      const response = await fetch("/api/score", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ game, score }),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save score');
+        throw new Error("Failed to save score");
       }
 
       const result = await response.json();
-      console.log(result.message);
+      console.log("[ScoreService] Score sauvegardé :", result.message);
+      return result;
     } catch (error) {
-      console.error('Error saving score:', error);
+      console.error("[ScoreService] Erreur lors de la sauvegarde du score :", error);
+      return null;
     }
   }
 
@@ -90,99 +121,3 @@ export const ScoreService = (() => {
     saveScore,
   };
 })();
-
-// /**
-//  * Service de gestion des scores
-//  * Communique avec l'API pour sauvegarder et récupérer les scores
-//  */
-// const ScoreService = (() => {
-
-//   let GAME_ID = null;
-//   let currentUserId = null;
-//   let currentUsername = null;
-
-//   function init(gameId, userId = null, username = null) {
-//     GAME_ID = gameId;
-//     currentUserId = userId || localStorage.getItem('userId');
-//     currentUsername = username || localStorage.getItem('username');
-//   }
-
-//   // Récupère le leaderboard d'un jeu (top 10 scores)
-//   async function getLeaderboard(gameId = GAME_ID) {
-//     try {
-//       if (!gameId) throw new Error('Game ID not set');
-      
-//       const res = await fetch(`/api/scores/${gameId}`);
-//       if (!res.ok) return [];
-//       const data = await res.json();
-//       return data;
-//     } catch (error) {
-//       console.error('Erreur lors de la récupération du leaderboard:', error);
-//       return [];
-//     }
-//   }
-
-//   // Sauvegarde un score
-//   async function saveScore(scoreValue) {
-//     try {
-//       if (!GAME_ID) throw new Error('Game ID not set');
-
-//       const response = await fetch('/api/score', {
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ 
-//           game: GAME_ID, 
-//           score: scoreValue,
-//           userId: currentUserId ? parseInt(currentUserId) : null,
-//           username: currentUsername
-//         }),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error('Failed to save score');
-//       }
-
-//       const result = await response.json();
-//       console.log('Score sauvegardé:', result.message);
-      
-//       // Ancienne logique d'événement (conservée en commentaire):
-//       // // Dispatcher un événement pour mettre à jour l'UI
-//       // window.dispatchEvent(new CustomEvent("score:saved", {
-//       //   detail: { game: GAME_ID, score: scoreValue }
-//       // }));
-//       // On garde un log non bloquant
-//       console.log('Event score:saved was previously dispatched (now commented)');
-
-//       return result;
-//     } catch (error) {
-//       console.error('Erreur lors de la sauvegarde du score:', error);
-//     }
-//   }
-
-//   // Récupère les scores de l'utilisateur actuel
-//   async function getUserScores() {
-//     if (!currentUserId) {
-//       console.warn('Aucun utilisateur connecté');
-//       return [];
-//     }
-
-//     try {
-//       const res = await fetch(`/api/user/${currentUserId}/scores`);
-//       if (!res.ok) return [];
-//       const data = await res.json();
-//       return data;
-//     } catch (error) {
-//       console.error('Erreur lors de la récupération des scores utilisateur:', error);
-//       return [];
-//     }
-//   }
-
-//   return {
-//     init,
-//     getLeaderboard,
-//     saveScore,
-//     getUserScores,
-//   };
-// })();

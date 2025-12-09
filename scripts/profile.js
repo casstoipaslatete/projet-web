@@ -1,4 +1,3 @@
-// scripts/profile.js
 (function () {
   function initProfilePage() {
     const pageRoot = document.getElementById("profile-page");
@@ -24,14 +23,15 @@
       const avatar = profile.avatar ?? "😺";
       const color  = profile.color ?? "#ffcc00";
 
+      // UI
       pseudoInput.value = pseudo;
       previewAvatar.textContent = avatar;
       previewColor.style.backgroundColor = color;
 
+      // Color picker si on reçoit bien un hex
       if (colorPicker) {
-        // si l'API renvoie un rgb(), on garde au moins la couleur visuelle
         try {
-          if (color.startsWith("#")) {
+          if (typeof color === "string" && color.startsWith("#")) {
             colorPicker.value = color;
           }
         } catch {}
@@ -48,12 +48,40 @@
         const c = btn.getAttribute("data-color");
         btn.classList.toggle("selected", c === color);
       });
+
+      // Persistance locale
+      localStorage.setItem("pseudo", pseudo);
+      localStorage.setItem("avatar", avatar);
+      localStorage.setItem("color", color);
+
+      // Notifier le reste de l'app
+      window.dispatchEvent(
+        new CustomEvent("profile:updated", {
+          detail: { pseudo, avatar, color },
+        })
+      );
     }
 
     function getProfileFromUI() {
-      const pseudo = pseudoInput.value;
-      const avatar = previewAvatar.textContent;
-      const color  = getComputedStyle(previewColor).backgroundColor;
+      const pseudo = pseudoInput.value.trim();
+      const avatar = (previewAvatar.textContent || "😺").trim();
+
+      let color = "#ffcc00";
+
+      // 1) color picker si dispo
+      if (colorPicker && colorPicker.value) {
+        color = colorPicker.value;
+      } else {
+        // 2) bouton couleur sélectionné
+        const selectedBtn = pageRoot.querySelector(".color-choice.selected");
+        if (selectedBtn) {
+          color = selectedBtn.getAttribute("data-color") || color;
+        } else if (previewColor.style.backgroundColor) {
+          // 3) fallback sur la couleur CSS
+          color = previewColor.style.backgroundColor;
+        }
+      }
+
       return { pseudo, avatar, color };
     }
 
@@ -110,21 +138,41 @@
     if (saveButton) {
       saveButton.addEventListener("click", async () => {
         const profile = getProfileFromUI();
-        if (window.ProfileManager && typeof ProfileManager.save === "function") {
-          await ProfileManager.save(profile);
-        } else {
-          console.log("Profil (fallback, pas d'API):", profile);
+
+        try {
+          if (window.ProfileManager && typeof ProfileManager.save === "function") {
+            await ProfileManager.save(profile);
+          } else {
+            console.log("[profile] Profil (fallback, pas d'API):", profile);
+          }
+
+          // Mise à jour locale + event global
+          localStorage.setItem("pseudo", profile.pseudo);
+          localStorage.setItem("avatar", profile.avatar);
+          localStorage.setItem("color", profile.color);
+
+          window.dispatchEvent(
+            new CustomEvent("profile:updated", {
+              detail: profile,
+            })
+          );
+
+          console.log("[profile] Profil mis à jour !");
+        } catch (err) {
+          console.error("[profile] Erreur lors de la sauvegarde du profil :", err);
         }
       });
     }
 
     // Retour au menu
     if (backButton) {
-      backButton.addEventListener("click", () => {
-        if (window.Router) {
+      backButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (window.Router && typeof Router.goTo === "function") {
           Router.goTo("menu");
         } else {
-          window.location.hash = "#menu";
+          // fallback si pas de router
+          window.location.href = "/public/index.html#menu";
         }
       });
     }
@@ -133,13 +181,13 @@
     // Chargement depuis l'API
     // -----------------------
     (async () => {
+      let profile;
       if (window.ProfileManager && typeof ProfileManager.load === "function") {
-        const profile = await ProfileManager.load();
-        applyProfileToUI(profile);
+        profile = await ProfileManager.load();
       } else {
-        // Profil par défaut si pas d'API
-        applyProfileToUI({ pseudo: "", avatar: "😺", color: "#ffcc00" });
+        profile = { pseudo: "", avatar: "😺", color: "#ffcc00" };
       }
+      applyProfileToUI(profile);
     })();
   }
 
@@ -152,13 +200,4 @@
 
   // Cas SPA : on expose la fonction pour que le router puisse la rappeler
   window.initProfilePage = initProfilePage;
-
-  const backButton = pageRoot.querySelector("#back-to-arcade");
-
-  if (backButton && !window.Router) {
-    backButton.addEventListener("click", () => {
-      // Ici on renvoie vers l'arcade, où le router prend le relais
-      window.location.href = "/public/index.html#menu";
-    });
-  }
 })();
