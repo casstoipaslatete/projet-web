@@ -30,6 +30,7 @@ function withClickSfx(handler) {
 // Musique du jeu
 const audio = new Audio("music/mathDashMusic.mp3");
 audio.loop = true;
+audio.volume = 0.25;
 audio.play().catch(() => {});
 
 // ===============================

@@ -6,48 +6,74 @@
   <title>Color Rush</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
-  <link rel="stylesheet" href="/styles/main.css">
-  <link rel="stylesheet" href="colorRush.css">
-</head>
-<body>
-  <div id="game-container">
-    <h1>Color Rush</h1>
 
-    <div id="cr-root">
-      <div id="info-display">
+  <!-- Thème global + bordure -->
+  <link rel="stylesheet" href="/styles/main.css">
+  <!-- Thème arcade commun -->
+  <link rel="stylesheet" href="/styles/arcade-theme.css">
+  <!-- CSS spécifique au jeu -->
+  <link rel="stylesheet" href="/games/colorRush/colorRush.css">
+</head>
+
+<body class="arcade-game-body">
+  <div id="game-container" class="arcade-game-root">
+    <h1 class="arcade-title-main">Color Rush</h1>
+
+    <div id="cr-root" class="arcade-panel arcade-panel--compact">
+      <div id="info-display" class="arcade-text-muted">
         <p>Tour : <span id="cr-round">0</span> / 10</p>
         <p>Score de la partie : <span id="cr-score">0</span></p>
         <p>Niveau : <span id="cr-level">1</span></p>
       </div>
 
-      <div id="cr-word-box">
-        <span id="cr-word">Appuie sur "Commencer"!</span>
+      <!-- Mot affiché -->
+      <div id="cr-word-box" class="arcade-card">
+        <span id="cr-word">Appuie sur « Commencer » !</span>
       </div>
 
-      <div id="cr-timer-bar-container">
-        <div id="cr-timer-bar"></div>
+      <!-- Timer -->
+      <div id="cr-timer-bar-container" class="arcade-timer-container">
+        <div id="cr-timer-bar" class="arcade-timer-bar"></div>
       </div>
 
-      <div id="cr-feedback"></div>
+      <!-- Feedback -->
+      <div id="cr-feedback" class="arcade-feedback"></div>
 
+      <!-- Boutons de couleurs -->
       <div id="cr-buttons"></div>
 
+      <!-- Bouton démarrer -->
       <div style="margin-top: 15px;">
-        <button id="cr-start" class="simon-btn">Commencer!</button>
+        <button id="cr-start" class="arcade-btn arcade-btn--primary">
+          Commencer !
+        </button>
       </div>
 
-      <div id="cr-summary" class="hidden">
-        <h2>Fin de la partie!</h2>
+      <!-- Résumé de fin -->
+      <div id="cr-summary" class="hidden" style="margin-top: 18px;">
+        <h2 class="arcade-title-sub">Fin de la partie!</h2>
         <p>Ton score : <span id="cr-final-score">0</span> / 10</p>
+
         <p id="cr-best-row" class="hidden">
           Score global actuel : <span id="cr-best-score">0</span>
         </p>
-        <button id="cr-replay" class="simon-btn">Rejouer</button>
-        <button id="cr-back-menu2" class="simon-btn">← Retour à l’arcade</button>
+
+        <button id="cr-replay"
+                class="arcade-btn arcade-btn--primary"
+                style="margin-top: 10px;">
+          Rejouer
+        </button>
+      </div>
+
+      <!-- Bouton retour à l’arcade (toujours visible) -->
+      <div style="margin-top: 16px;">
+        <button id="cr-back" class="arcade-btn arcade-btn--danger">
+          ← Retour à l’arcade
+        </button>
       </div>
     </div>
   </div>
 
-  <script type="module" src="colorRush.js"></script>
+  <script type="module" src="/games/colorRush/colorRush.js"></script>
 </body>
 </html>

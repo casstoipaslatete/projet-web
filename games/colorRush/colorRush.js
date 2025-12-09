@@ -52,13 +52,12 @@ function withClickSfx(handler) {
   };
 }
 
-const audio = new Audio('music/colorRushMusic.mp3');
-
+const audio = new Audio("music/colorRushMusic.mp3");
 audio.loop = true;
+audio.volume = 0.25;
+audio.play().catch(() => {});
 
-audio.play();
-
-// DOM
+// --- DOM ---
 const roundSpan = document.getElementById("cr-round");
 const scoreSpan = document.getElementById("cr-score");
 const levelSpan = document.getElementById("cr-level");
@@ -67,7 +66,7 @@ const timerBar = document.getElementById("cr-timer-bar");
 const feedbackDiv = document.getElementById("cr-feedback");
 
 const buttonsContainer = document.getElementById("cr-buttons");
-let colorButtons = []; // sera rempli dynamiquement
+let colorButtons = [];
 
 const summary = document.getElementById("cr-summary");
 const finalScoreSpan = document.getElementById("cr-final-score");
@@ -76,11 +75,21 @@ const bestScoreSpan = document.getElementById("cr-best-score");
 
 const startBtn = document.getElementById("cr-start");
 const replayBtn = document.getElementById("cr-replay");
-const backMenuBtn2 = document.getElementById("cr-back-menu2");
+const backBtn = document.getElementById("cr-back");
 
 // ---------- Navigation vers l'arcade ----------
 function goBackToMenu() {
-  window.location.href = "/index.html#menu";
+  try {
+    audio.pause();
+    audio.currentTime = 0;
+  } catch {}
+
+  // Retour vers l'arcade (index SPA)
+  window.location.href = "/public/index.html#games";
+}
+
+if (backBtn) {
+  backBtn.addEventListener("click", withClickSfx(goBackToMenu));
 }
 
 // ---------- Helpers ----------
@@ -150,7 +159,7 @@ function startTimer() {
 // ---------- Création dynamique des boutons ----------
 function createColorButtons() {
   buttonsContainer.innerHTML = "";
-  colorButtons = COLORS.map(colorObj => {
+  colorButtons = COLORS.map((colorObj) => {
     const btn = document.createElement("button");
     btn.className = "cr-color-btn";
     btn.dataset.color = colorObj.value;
@@ -174,21 +183,16 @@ function setupRound() {
   feedbackDiv.textContent = "";
   feedbackDiv.className = "";
 
-  // Choix de la couleur cible
   const target = pickRandomColor();
   currentTargetColor = target.value;
 
-  // Choix si on active un "piège" Stroop
   let useTrap = false;
-  if (level === 2) {
-    useTrap = Math.random() < 0.4;
-  } else if (level === 3) {
-    useTrap = Math.random() < 0.8;
-  }
+  if (level === 2) useTrap = Math.random() < 0.4;
+  else if (level === 3) useTrap = Math.random() < 0.8;
 
   let displayColorCss = target.css;
   if (useTrap) {
-    const otherChoices = COLORS.filter(c => c.value !== target.value);
+    const otherChoices = COLORS.filter((c) => c.value !== target.value);
     const trapColor = otherChoices[randomInt(otherChoices.length)];
     displayColorCss = trapColor.css;
   }
@@ -196,7 +200,6 @@ function setupRound() {
   wordSpan.textContent = target.label;
   wordSpan.style.color = displayColorCss;
 
-  // On mélange l'ordre des couleurs pour les boutons
   const shuffledColors = shuffle(COLORS);
   shuffledColors.forEach((colorObj, idx) => {
     const btn = colorButtons[idx];
@@ -221,14 +224,20 @@ function startGame() {
   scoreSpan.textContent = "0";
   levelSpan.textContent = "1";
   roundSpan.textContent = "0";
+
   feedbackDiv.textContent = "";
   feedbackDiv.className = "";
   summary.classList.add("hidden");
+
+  // cacher "Commencer", cacher "Rejouer" au début d'une partie
+  if (startBtn) startBtn.classList.add("hidden");
+  if (replayBtn) replayBtn.classList.add("hidden");
+
   wordSpan.style.color = "white";
   wordSpan.textContent = "Prépare-toi...";
 
   ScoreService.init("colorRush");
-  ScoreService.resetScore().catch(err =>
+  ScoreService.resetScore().catch((err) =>
     console.warn("resetScore colorRush:", err)
   );
 
@@ -254,13 +263,13 @@ function handleColorClick(event) {
     feedbackDiv.textContent = "Bravo!";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch(err =>
+    ScoreService.addPoints(1).catch((err) =>
       console.warn("addPoints colorRush:", err)
     );
   } else {
     playSfx(sfxError);
     const correctLabel =
-      COLORS.find(c => c.value === currentTargetColor)?.label || "";
+      COLORS.find((c) => c.value === currentTargetColor)?.label || "";
     feedbackDiv.textContent = `La bonne couleur était ${correctLabel}.`;
     feedbackDiv.classList.add("bad");
   }
@@ -278,7 +287,7 @@ function handleTimeout() {
   playSfx(sfxError);
 
   const correctLabel =
-    COLORS.find(c => c.value === currentTargetColor)?.label || "";
+    COLORS.find((c) => c.value === currentTargetColor)?.label || "";
 
   feedbackDiv.textContent = `Temps écoulé! La bonne couleur était ${correctLabel}.`;
   feedbackDiv.classList.add("bad");
@@ -297,6 +306,9 @@ async function endGame() {
 
   finalScoreSpan.textContent = localScore.toString();
   summary.classList.remove("hidden");
+
+  // montrer "Rejouer"
+  if (replayBtn) replayBtn.classList.remove("hidden");
 
   try {
     await ScoreService.saveScore("colorRush", localScore);
@@ -317,10 +329,12 @@ async function endGame() {
 // ---------- Events & init ----------
 createColorButtons();
 
-// Boutons UI : clic + action
-startBtn.addEventListener("click", withClickSfx(startGame));
-replayBtn.addEventListener("click", withClickSfx(startGame));
-backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
+if (startBtn) {
+  startBtn.addEventListener("click", withClickSfx(startGame));
+}
+if (replayBtn) {
+  replayBtn.addEventListener("click", withClickSfx(startGame));
+}
 
 // init de base pour le service de score
 ScoreService.init("colorRush");
