@@ -1,0 +1,261 @@
+/* =========================================
+   ARCADE THEME GÉNÉRIQUE POUR LES MINI-JEUX
+   ========================================= */
+
+/* -------------------------
+   1) Layout global du mini-jeu
+   ------------------------- */
+
+/* À mettre sur le <body> des jeux :
+   <body class="arcade-game-body">
+*/
+.arcade-game-body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #2c3e50;
+  font-family: 'Arial', sans-serif;
+  color: #ecf0f1;
+}
+
+/* Conteneur racine du jeu (optionnel, mais pratique)
+   <div class="arcade-game-root">...</div>
+*/
+.arcade-game-root {
+  text-align: center;
+  padding: 20px;
+}
+
+
+/* -------------------------
+   2) Titres & textes
+   ------------------------- */
+
+/* Gros titre arcade (nom du jeu) */
+.arcade-title-main {
+  margin: 0 0 12px 0;
+  font-size: 2.6rem;
+  letter-spacing: 3px;
+  text-align: center;
+  color: #ffffff;
+
+  text-shadow:
+    0 0 10px #d2eaff,
+    0 0 20px #8bb6d8,
+    0 0 35px #5a7fa2,
+    0 0 55px #45647f,
+    0 0 85px #324b61;
+}
+
+@media (max-width: 768px) {
+  .arcade-title-main {
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+  }
+}
+
+/* Sous-titres (ex: "Résumé", "Options") */
+.arcade-title-sub {
+  margin: 0 0 8px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+/* Texte d’info / petit label */
+.arcade-text-muted {
+  font-size: 0.9rem;
+  opacity: 0.85;
+}
+
+
+/* -------------------------
+   3) Cartes / panneaux
+   ------------------------- */
+
+/* Panneau principal d’un jeu (boîte du jeu) */
+.arcade-panel {
+  margin: 0 auto;
+  max-width: 500px;
+
+  padding: 24px 28px;
+  border-radius: 24px;
+
+  background: radial-gradient(circle at top left, #273949, #101722);
+
+  box-shadow:
+    0 18px 30px rgba(0, 0, 0, 0.7),
+    0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* Variante plus compacte si besoin */
+.arcade-panel--compact {
+  padding: 18px 20px;
+  border-radius: 18px;
+}
+
+/* Bloc type “carte sombre” interne (ex: question) */
+.arcade-card {
+  background: radial-gradient(circle at top, #1f2a38, #121821);
+  border-radius: 18px;
+  padding: 14px 16px;
+
+  box-shadow:
+    inset 0 0 16px rgba(0, 0, 0, 0.7),
+    0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+/* -------------------------
+   4) Boutons génériques
+   ------------------------- */
+
+.arcade-btn {
+  display: inline-block;
+
+  padding: 9px 22px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+
+  color: #ffffff;
+
+  box-shadow:
+    inset 0 0 12px rgba(0, 0, 0, 0.55),
+    0 12px 20px rgba(0, 0, 0, 0.8),
+    0 0 20px rgba(0, 0, 0, 0.8);
+
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+/* Hover & active communs */
+.arcade-btn:hover,
+.arcade-btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow:
+    0 16px 26px rgba(0, 0, 0, 0.9),
+    0 0 26px rgba(255, 255, 255, 0.15);
+  filter: brightness(1.05);
+}
+
+.arcade-btn:active {
+  transform: translateY(0);
+  box-shadow:
+    0 8px 14px rgba(0, 0, 0, 0.9),
+    0 0 16px rgba(0, 0, 0, 0.9);
+  filter: brightness(0.95);
+}
+
+/* Variantes de couleur (comme menu/profil) */
+
+/* Principal / action (violet) */
+.arcade-btn--primary {
+  background: radial-gradient(circle at top, #ff7bff, #8e44ad);
+}
+
+/* Bleu (réponses, actions d’info) */
+.arcade-btn--info {
+  background: radial-gradient(circle at top, #7ec7ff, #1f6fa1);
+}
+
+/* Rouge (retour, annuler, quitter) */
+.arcade-btn--danger {
+  background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
+}
+
+/* Vert (valider, succès) */
+.arcade-btn--success {
+  background: radial-gradient(circle at top, #48e68f, #1b7a46);
+}
+
+
+/* -------------------------
+   5) Boutons de liste (ex: réponses)
+   ------------------------- */
+
+.arcade-btn-block {
+  display: block;
+  width: 100%;
+}
+
+.arcade-btn-lg {
+  padding: 10px 16px;
+  font-size: 1.4rem;
+}
+
+/* Parfait pour des boutons de réponses (type quiz) */
+.arcade-choice-btn {
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.55),
+    0 10px 18px rgba(0, 0, 0, 0.9);
+}
+
+/* États correct / wrong possibles */
+.arcade-choice-btn--correct {
+  background: radial-gradient(circle at top, #48e68f, #1b7a46);
+}
+
+.arcade-choice-btn--wrong {
+  background: radial-gradient(circle at top, #ff7b6b, #c0392b);
+}
+
+
+/* -------------------------
+   6) Timer / barres de progression
+   ------------------------- */
+
+.arcade-timer-container {
+  width: 100%;
+  height: 12px;
+  background-color: #1c2833;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 10px;
+
+  box-shadow:
+    inset 0 0 8px rgba(0, 0, 0, 0.7),
+    0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.arcade-timer-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #2ecc71, #27ae60);
+  transition: width 0.1s linear, background-color 0.2s;
+}
+
+
+/* -------------------------
+   7) Messages / feedback
+   ------------------------- */
+
+.arcade-feedback {
+  min-height: 24px;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+}
+
+.arcade-feedback--good {
+  color: #2ecc71;
+}
+
+.arcade-feedback--warn {
+  color: #f1c40f;
+}
+
+/* Réutilisable pour cacher des blocs */
+.arcade-hidden {
+  display: none !important;
+}

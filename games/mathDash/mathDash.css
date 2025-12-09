@@ -1,173 +1,59 @@
 /* ===========================
-   Layout global du jeu
+   Spécifique à Math Dash
+   (tout le look général vient de arcade-theme.css)
    =========================== */
 
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background-color: #2c3e50;
-  font-family: 'Arial', sans-serif;
-  color: #ecf0f1;
-}
-
-#game-container {
-  text-align: center;
-  padding: 20px;
-}
-
-/* ===========================
-   Carte principale du jeu
-   =========================== */
-
-#mathdash-root {
-  margin: 0 auto;
-  min-width: 280px;
-  max-width: 480px;
-
-  padding: 24px 28px;
-  border-radius: 24px;
-
-  background: radial-gradient(circle at top left, #273949, #101722);
-
-  box-shadow:
-    0 18px 30px rgba(0, 0, 0, 0.7),
-    0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-/* Titre du jeu (si tu as un <h1> ou similaire dans le conteneur) */
-#mathdash-root h1 {
-  margin: 0 0 12px 0;
-  font-size: 2.4rem;
-  letter-spacing: 3px;
-
-  color: #ffffff;
-  text-shadow:
-    0 0 10px #d2eaff,
-    0 0 20px #8bb6d8,
-    0 0 35px #5a7fa2,
-    0 0 55px #45647f,
-    0 0 85px #324b61;
-}
-
-/* Petite ligne d’info en haut (score, niveau, etc.) */
-#info-display {
-  margin-top: 4px;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-#info-display p {
-  margin: 3px 0;
-}
-
-/* ===========================
-   Question
-   =========================== */
-
+/* Ajuste un peu la taille de la question */
 #question-box {
-  background: radial-gradient(circle at top, #1f2a38, #121821);
-  border-radius: 18px;
-  padding: 16px 14px;
-  margin: 16px 0;
   font-size: 2rem;
-
-  box-shadow:
-    inset 0 0 16px rgba(0, 0, 0, 0.7),
-    0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-/* ===========================
-   Choix de réponses
-   =========================== */
-
+/* Layout des choix */
 #choices {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin: 10px 0 18px;
+  margin: 12px 0 18px;
 }
 
-/* Boutons de choix : style néon comme les autres boutons */
+/* On garde la largeur full, même si on a déjà arcade-btn-block */
 .choice-btn {
   width: 100%;
-  padding: 10px 14px;
-
-  font-size: 1.5rem;
-  font-weight: 600;
-
-  border-radius: 16px;
-  border: none;
-  cursor: pointer;
-
-  color: #ffffff;
-  text-align: center;
-
-  background: radial-gradient(circle at top, #7ec7ff, #1f6fa1);
-
-  box-shadow:
-    inset 0 0 10px rgba(0, 0, 0, 0.55),
-    0 10px 18px rgba(0, 0, 0, 0.9);
-
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
 }
 
-.choice-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 14px 22px rgba(0, 0, 0, 0.95),
-    0 0 18px rgba(255, 255, 255, 0.12);
-  filter: brightness(1.05);
-}
-
-/* États correct / incorrect (gardent le même style néon) */
-.choice-btn.correct {
+/* États correct / incorrect */
+.choice-btn.correct,
+.arcade-choice-btn--correct {
   background: radial-gradient(circle at top, #48e68f, #1b7a46);
 }
 
-.choice-btn.wrong {
+.choice-btn.wrong,
+.arcade-choice-btn--wrong {
   background: radial-gradient(circle at top, #ff7b6b, #c0392b);
 }
 
-/* ===========================
-   Timer & feedback
-   =========================== */
+/* Info en haut */
+#info-display p {
+  margin: 3px 0;
+}
 
+/* Timer : petit ajustement si tu veux */
 #timer-bar-container {
-  width: 100%;
-  height: 12px;
-  background-color: #1c2833;
-  border-radius: 999px;
-  overflow: hidden;
+  margin-top: 6px;
+}
+
+/* Résumé */
+#md-summary {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 10px;
+}
+
+/* Feedback (on réutilise arcade-feedback) */
+#md-feedback.arcade-feedback {
   margin-bottom: 10px;
-
-  box-shadow:
-    inset 0 0 8px rgba(0, 0, 0, 0.7),
-    0 0 1px rgba(255, 255, 255, 0.05);
 }
 
-#md-timer-bar {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #2ecc71, #27ae60);
-  transition: width 0.1s linear, background-color 0.2s;
-}
-
-#md-feedback {
-  min-height: 24px;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-}
-
+/* Classes de feedback depuis le JS */
 #md-feedback.good {
   color: #2ecc71;
 }
@@ -176,119 +62,7 @@ body {
   color: #f1c40f;
 }
 
-/* ===========================
-   Résumé / fin de partie
-   =========================== */
-
-#md-summary {
-  margin-top: 15px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
-  font-size: 0.95rem;
-}
-
-/* ===========================
-   Boutons génériques (Rejouer, Quitter, etc.)
-   =========================== */
-
-#mathdash-root button:not(.choice-btn) {
-  margin-top: 8px;
-  padding: 9px 22px;
-
-  font-size: 0.9rem;
-  font-weight: 600;
-
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-
-  color: #ffffff;
-  text-align: center;
-
-  background: radial-gradient(circle at top, #ff7bff, #8e44ad);
-
-  box-shadow:
-    inset 0 0 12px rgba(0, 0, 0, 0.55),
-    0 12px 20px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(0, 0, 0, 0.8);
-
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
-}
-
-#mathdash-root button:not(.choice-btn):hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 16px 26px rgba(0, 0, 0, 0.9),
-    0 0 26px rgba(255, 255, 255, 0.15);
-  filter: brightness(1.05);
-}
-
-#mathdash-root button:not(.choice-btn):active {
-  transform: translateY(0);
-  box-shadow:
-    0 8px 14px rgba(0, 0, 0, 0.9),
-    0 0 16px rgba(0, 0, 0, 0.9);
-  filter: brightness(0.97);
-}
-
-/* ===========================================
-   Bouton "Retour à l’arcade" — Rouge arcade
-   =========================================== */
-
-#btn-back {
-  display: block;
-  width: 230px;
-  max-width: 80%;
-  margin: 12px auto 0;
-  padding: 9px 22px;
-
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #ffffff;
-  text-align: center;
-
-  /* Dégradé rouge comme les autres boutons */
-  background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
-
-  /* Ombre interne + glow externe */
-  box-shadow:
-    inset 0 0 12px rgba(0, 0, 0, 0.55),
-    0 12px 20px rgba(0, 0, 0, 0.8),
-    0 0 20px rgba(0, 0, 0, 0.8);
-
-  transition:
-    transform 0.12s ease,
-    box-shadow 0.12s ease,
-    filter 0.12s ease;
-}
-
-#btn-back:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 16px 26px rgba(0, 0, 0, 0.9),
-    0 0 26px rgba(255, 255, 255, 0.15);
-  filter: brightness(1.05);
-}
-
-#btn-back:active {
-  transform: translateY(0);
-  box-shadow:
-    0 8px 14px rgba(0, 0, 0, 0.9),
-    0 0 16px rgba(0, 0, 0, 0.9);
-  filter: brightness(0.95);
-}
-
-/* ===========================
-   Utilitaires
-   =========================== */
-
+/* Cacher/afficher des blocs */
 .hidden {
-  display: none;
+  display: none !important;
 }

@@ -1,6 +1,8 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
-// --- SONS ET MUSIQUE ---
+// ===============================
+// SONS ET MUSIQUE
+// ===============================
 let sfxClic, sfxSuccess, sfxError;
 try {
   sfxClic = new Audio("sfx/clic.mp3");
@@ -15,9 +17,7 @@ function playSfx(audio) {
   try {
     audio.currentTime = 0;
     audio.play().catch(() => {});
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
 function withClickSfx(handler) {
@@ -27,32 +27,38 @@ function withClickSfx(handler) {
   };
 }
 
-const audio = new Audio('music/mathDashMusic.mp3');
-
+// Musique du jeu
+const audio = new Audio("music/mathDashMusic.mp3");
 audio.loop = true;
+audio.play().catch(() => {});
 
-audio.play();
+// ===============================
+// CONSTANTES ET ÉTAT DU JEU
+// ===============================
 
-// Nombre de questions par partie
 const TOTAL_QUESTIONS = 10;
 
-// Difficulté cachée: 1 (simple) → 3 (plus dur)
 let level = 1;
-let localScore = 0;       // score de la partie (0 à 10)
+let localScore = 0;
 let questionIndex = 0;
 let correctStreak = 0;
 
 let currentAnswer = null;
 let timerId = null;
 let timeLeftMs = 0;
-let maxTimeMs = 7000;     // temps max pour une question
+let maxTimeMs = 7000;
 
-// --------- Récupération des éléments DOM ---------
+// ===============================
+// ÉLÉMENTS DOM
+// ===============================
+
 const questionIndexSpan = document.getElementById("md-question-index");
 const scoreSpan = document.getElementById("md-score");
 const levelSpan = document.getElementById("md-level");
 const questionTextSpan = document.getElementById("md-question-text");
+
 const choiceButtons = Array.from(document.querySelectorAll(".choice-btn"));
+
 const feedbackDiv = document.getElementById("md-feedback");
 const timerBar = document.getElementById("md-timer-bar");
 
@@ -63,15 +69,31 @@ const bestScoreSpan = document.getElementById("md-best-score");
 
 const startBtn = document.getElementById("md-start");
 const replayBtn = document.getElementById("md-replay");
-const backMenuBtn = document.getElementById("btn-back-menu");
-const backMenuBtn2 = document.getElementById("md-back-menu2");
+const backArcadeBtn = document.getElementById("btn-back");
 
-// --------- Navigation vers le menu principal ---------
-function goBackToMenu() {
-  window.location.href = "/index.html#menu";
+// ===============================
+// BOUTON RETOUR À L’ARCADE
+// ===============================
+
+if (backArcadeBtn) {
+  backArcadeBtn.addEventListener(
+    "click",
+    withClickSfx(() => {
+      try {
+        audio.pause();
+        audio.currentTime = 0;
+      } catch {}
+
+      // Retour vers la sélection des jeux
+      window.location.href = "/public/index.html#games";
+    })
+  );
 }
 
-// --------- Helpers et génération de questions ---------
+// ===============================
+// OUTILS / GÉNÉRATION DES QUESTIONS
+// ===============================
+
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -97,55 +119,31 @@ function generateQuestionForLevel(level) {
   let a, b, questionText, answer;
 
   switch (opType) {
-    case "add": {
-      if (level === 1) {
-        a = randInt(1, 9);
-        b = randInt(1, 9);
-      } else if (level === 2) {
-        a = randInt(3, 15);
-        b = randInt(3, 15);
-      } else {
-        a = randInt(5, 30);
-        b = randInt(5, 30);
-      }
+    case "add":
+      a = randInt(1, 15);
+      b = randInt(1, 15);
       answer = a + b;
       questionText = `${a} + ${b} = ?`;
       break;
-    }
 
-    case "sub": {
-      if (level === 1) {
-        a = randInt(2, 10);
-        b = randInt(1, a);
-      } else if (level === 2) {
-        a = randInt(5, 20);
-        b = randInt(1, a - 1);
-      } else {
-        a = randInt(10, 35);
-        b = randInt(1, a - 1);
-      }
+    case "sub":
+      a = randInt(2, 20);
+      b = randInt(1, a);
       answer = a - b;
       questionText = `${a} − ${b} = ?`;
       break;
-    }
 
-    case "mul": {
-      if (level === 2) {
-        a = randInt(1, 5);
-        b = randInt(1, 5);
-      } else {
-        a = randInt(2, 9);
-        b = randInt(1, 10);
-      }
+    case "mul":
+      a = randInt(1, 9);
+      b = randInt(1, 10);
       answer = a * b;
       questionText = `${a} × ${b} = ?`;
       break;
-    }
 
-    case "div": {
+    case "div":
       const pairs = [
-        [4, 2], [6, 2], [8, 2], [9, 3], [12, 3],
-        [15, 5], [16, 4], [18, 3], [20, 5]
+        [4, 2], [6, 2], [9, 3], [12, 3],
+        [15, 5], [16, 4], [18, 3], [20, 5],
       ];
       const [num, den] = pairs[randInt(0, pairs.length - 1)];
       a = num;
@@ -153,17 +151,14 @@ function generateQuestionForLevel(level) {
       answer = num / den;
       questionText = `${a} ÷ ${b} = ?`;
       break;
-    }
 
-    default: {
+    default:
       a = randInt(1, 9);
       b = randInt(1, 9);
       answer = a + b;
       questionText = `${a} + ${b} = ?`;
-    }
   }
 
-  // Générer 2 mauvaises réponses plausibles
   const choices = new Set();
   choices.add(answer);
 
@@ -176,7 +171,6 @@ function generateQuestionForLevel(level) {
 
   const choiceArray = Array.from(choices);
 
-  // Mélange
   for (let i = choiceArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [choiceArray[i], choiceArray[j]] = [choiceArray[j], choiceArray[i]];
@@ -185,59 +179,56 @@ function generateQuestionForLevel(level) {
   return { questionText, answer, choices: choiceArray };
 }
 
-// --------- Timer ---------
+// ===============================
+// TIMER
+// ===============================
+
 function startTimer() {
   clearInterval(timerId);
 
-  if (level === 1) maxTimeMs = 7000;
-  else if (level === 2) maxTimeMs = 5500;
-  else maxTimeMs = 4500;
+  maxTimeMs = level === 1 ? 7000 : level === 2 ? 5500 : 4500;
 
   timeLeftMs = maxTimeMs;
   timerBar.style.width = "100%";
-  timerBar.style.backgroundColor = "#2ecc71";
 
   timerId = setInterval(() => {
     timeLeftMs -= 100;
+
     if (timeLeftMs <= 0) {
       clearInterval(timerId);
       timerBar.style.width = "0%";
       handleTimeout();
-    } else {
-      const ratio = timeLeftMs / maxTimeMs;
-      timerBar.style.width = `${ratio * 100}%`;
-      if (ratio < 0.3) {
-        timerBar.style.backgroundColor = "#e74c3c";
-      } else if (ratio < 0.6) {
-        timerBar.style.backgroundColor = "#f1c40f";
-      } else {
-        timerBar.style.backgroundColor = "#2ecc71";
-      }
+      return;
     }
+
+    const ratio = timeLeftMs / maxTimeMs;
+    timerBar.style.width = `${ratio * 100}%`;
+
+    if (ratio < 0.3) timerBar.style.backgroundColor = "#e74c3c";
+    else if (ratio < 0.6) timerBar.style.backgroundColor = "#f1c40f";
+    else timerBar.style.backgroundColor = "#2ecc71";
   }, 100);
 }
 
-// --------- Progression auto de la difficulté ---------
-function updateLevel(isCorrect) {
-  if (isCorrect) {
-    correctStreak++;
-  } else {
-    correctStreak = Math.max(0, correctStreak - 1);
-  }
+// ===============================
+// LOGIQUE DE PROGRESSION
+// ===============================
 
-  if (correctStreak >= 6) {
-    level = 3;
-  } else if (correctStreak >= 3) {
-    level = 2;
-  } else {
-    level = 1;
-  }
+function updateLevel(correct) {
+  if (correct) correctStreak++;
+  else correctStreak = Math.max(0, correctStreak - 1);
 
-  level = Math.min(3, Math.max(1, level));
+  if (correctStreak >= 6) level = 3;
+  else if (correctStreak >= 3) level = 2;
+  else level = 1;
+
   levelSpan.textContent = level.toString();
 }
 
-// --------- Afficher une nouvelle question ---------
+// ===============================
+// AFFICHAGE D'UNE QUESTION
+// ===============================
+
 function showQuestion() {
   questionIndex++;
   if (questionIndex > TOTAL_QUESTIONS) {
@@ -267,18 +258,22 @@ function showQuestion() {
   startTimer();
 }
 
-// --------- Gestion du clic sur une réponse ---------
-function handleChoiceClick(event) {
-  const btn = event.currentTarget;
+// ===============================
+// CLIC SUR UNE RÉPONSE
+// ===============================
+
+function handleChoiceClick(e) {
+  const btn = e.currentTarget;
   const value = Number(btn.dataset.value);
 
   clearInterval(timerId);
 
-  const isCorrect = value === currentAnswer;
-  updateLevel(isCorrect);
+  const correct = value === currentAnswer;
+  updateLevel(correct);
+
   choiceButtons.forEach(b => (b.disabled = true));
 
-  if (isCorrect) {
+  if (correct) {
     playSfx(sfxSuccess);
     localScore++;
     scoreSpan.textContent = localScore.toString();
@@ -286,17 +281,15 @@ function handleChoiceClick(event) {
     feedbackDiv.textContent = "Bravo !";
     feedbackDiv.classList.add("good");
 
-    // Score global via ScoreService (1 point par bonne réponse)
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("Erreur addPoints MathDash:", err)
-    );
+    ScoreService.addPoints(1).catch(() => {});
   } else {
     playSfx(sfxError);
     btn.classList.add("wrong");
-    const correctBtn = choiceButtons.find(
+    const goodBtn = choiceButtons.find(
       b => Number(b.dataset.value) === currentAnswer
     );
-    if (correctBtn) correctBtn.classList.add("correct");
+    if (goodBtn) goodBtn.classList.add("correct");
+
     feedbackDiv.textContent = `La bonne réponse était ${currentAnswer}.`;
     feedbackDiv.classList.add("bad");
   }
@@ -304,20 +297,24 @@ function handleChoiceClick(event) {
   setTimeout(showQuestion, 2000);
 }
 
-choiceButtons.forEach(btn => {
-  btn.addEventListener("click", handleChoiceClick);
-});
+choiceButtons.forEach(btn =>
+  btn.addEventListener("click", handleChoiceClick)
+);
 
-// --------- Timeout ---------
+// ===============================
+// TIMEOUT
+// ===============================
+
 function handleTimeout() {
   updateLevel(false);
   playSfx(sfxError);
+
   choiceButtons.forEach(b => (b.disabled = true));
 
-  const correctBtn = choiceButtons.find(
+  const goodBtn = choiceButtons.find(
     b => Number(b.dataset.value) === currentAnswer
   );
-  if (correctBtn) correctBtn.classList.add("correct");
+  if (goodBtn) goodBtn.classList.add("correct");
 
   feedbackDiv.textContent = `Temps écoulé! La bonne réponse était ${currentAnswer}.`;
   feedbackDiv.classList.add("bad");
@@ -325,10 +322,14 @@ function handleTimeout() {
   setTimeout(showQuestion, 2000);
 }
 
-// --------- Fin de partie ---------
+// ===============================
+// FIN DE PARTIE
+// ===============================
+
 async function endGame() {
   clearInterval(timerId);
-  questionTextSpan.textContent = "Fin de la partie!";
+
+  questionTextSpan.textContent = "Fin de la partie !";
   choiceButtons.forEach(b => (b.disabled = true));
   feedbackDiv.textContent = "";
 
@@ -337,30 +338,26 @@ async function endGame() {
   replayBtn.classList.remove("hidden");
   startBtn.classList.add("hidden");
 
-  // Sauvegarde pour le leaderboard global
   try {
     await ScoreService.saveScore("mathDash", localScore);
-  } catch (e) {
-    console.warn("Erreur saveScore MathDash:", e);
-  }
-
-  // Affichage d'un score global
-  try {
     const globalScore = await ScoreService.getScore();
     bestScoreSpan.textContent = globalScore.toString();
     bestScoreRow.classList.remove("hidden");
-  } catch (e) {
-    console.warn("Erreur getScore MathDash:", e);
+  } catch {
     bestScoreRow.classList.add("hidden");
   }
 }
 
-// --------- Démarrer / Rejouer une partie ---------
+// ===============================
+// DÉMARRER / REJOUER
+// ===============================
+
 function startGame() {
   startBtn.classList.add("hidden");
   replayBtn.classList.add("hidden");
 
   clearInterval(timerId);
+
   level = 1;
   localScore = 0;
   questionIndex = 0;
@@ -379,27 +376,26 @@ function startGame() {
     btn.classList.remove("correct", "wrong");
   });
 
-  // Réinitialiser le score global de MathDash côté API
-  ScoreService.resetScore().catch((err) =>
-    console.warn("Erreur resetScore MathDash:", err)
-  );
+  ScoreService.resetScore().catch(() => {});
 
   showQuestion();
 }
 
-// Boutons UI : clic + action
 startBtn.addEventListener("click", withClickSfx(startGame));
 replayBtn.addEventListener("click", withClickSfx(startGame));
-backMenuBtn2.addEventListener("click", withClickSfx(goBackToMenu));
 
-// --------- Initialisation ---------
+// ===============================
+// INITIALISATION
+// ===============================
+
 function initMathDash() {
   ScoreService.init("mathDash");
 
-  startBtn.classList.remove("hidden");   // montrer Commencer
-  replayBtn.classList.add("hidden");     // cacher Rejouer
+  startBtn.classList.remove("hidden");
+  replayBtn.classList.add("hidden");
 
   clearInterval(timerId);
+
   level = 1;
   localScore = 0;
   questionIndex = 0;
@@ -410,8 +406,9 @@ function initMathDash() {
   questionIndexSpan.textContent = "0";
 
   summarySection.classList.add("hidden");
+
   feedbackDiv.className = "";
-  feedbackDiv.textContent = "Clique sur « Commencer » pour démarrer la partie !";
+  feedbackDiv.textContent = "Clique sur « Commencer » pour commencer !";
 
   questionTextSpan.textContent = "Prépare-toi pour Math Dash !";
 

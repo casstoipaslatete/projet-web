@@ -6,51 +6,74 @@
   <title>Math Dash</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
+
+  <!-- Thème globale arcade (bordures etc.) si tu veux -->
   <link rel="stylesheet" href="/styles/main.css">
+
+  <!-- 💡 IMPORTANT : le thème arcade AVANT le CSS spécifique du jeu -->
+  <link rel="stylesheet" href="/styles/arcade-theme.css">
   <link rel="stylesheet" href="/games/mathDash/mathDash.css">
 </head>
-<body>
-  <div id="game-container">
-    <h1>Math Dash</h1>
 
-    <div id="mathdash-root">
-      <div id="info-display">
+<body class="arcade-game-body">
+  <div id="game-container" class="arcade-game-root">
+    <!-- Titre avec glow -->
+    <h1 class="arcade-title-main">Math Dash</h1>
+
+    <!-- Panneau principal du jeu -->
+    <div id="mathdash-root" class="arcade-panel arcade-panel--compact">
+
+      <!-- Infos haut (score, niveau...) -->
+      <div id="info-display" class="arcade-text-muted">
         <p>Question : <span id="md-question-index">1</span> / 10</p>
         <p>Score de la partie : <span id="md-score">0</span></p>
         <p>Niveau : <span id="md-level">1</span></p>
       </div>
 
-      <div id="question-box">
+      <!-- Question -->
+      <div id="question-box" class="arcade-card">
         <span id="md-question-text">3 + 4 = ?</span>
       </div>
 
+      <!-- Choix de réponses -->
       <div id="choices">
-        <button class="choice-btn" data-index="0">0</button>
-        <button class="choice-btn" data-index="1">0</button>
-        <button class="choice-btn" data-index="2">0</button>
+        <button class="choice-btn arcade-btn arcade-btn-block arcade-btn-lg arcade-btn--info arcade-choice-btn" data-index="0">0</button>
+        <button class="choice-btn arcade-btn arcade-btn-block arcade-btn-lg arcade-btn--info arcade-choice-btn" data-index="1">0</button>
+        <button class="choice-btn arcade-btn arcade-btn-block arcade-btn-lg arcade-btn--info arcade-choice-btn" data-index="2">0</button>
       </div>
 
-      <div id="timer-bar-container">
-        <div id="md-timer-bar"></div>
+      <!-- Timer -->
+      <div id="timer-bar-container" class="arcade-timer-container">
+        <div id="md-timer-bar" class="arcade-timer-bar"></div>
       </div>
 
-      <div id="md-feedback"></div>
+      <!-- Feedback -->
+      <div id="md-feedback" class="arcade-feedback"></div>
 
-      <div id="md-actions">
-        <button id="md-start" class="simon-btn">Commencer</button>
+      <!-- Actions principales -->
+      <div id="md-actions" style="margin-top: 8px;">
+        <button id="md-start" class="arcade-btn arcade-btn--primary">
+          Commencer
+        </button>
       </div>
 
-      <div style="margin-top: 20px;">
-        <button id="btn-back">← Retour à l’arcade</button>
+      <!-- Bouton retour arcade rouge -->
+      <div style="margin-top: 16px;">
+        <button id="btn-back" class="arcade-btn arcade-btn--danger">
+          ← Retour à l’arcade
+        </button>
       </div>
 
-      <div id="md-summary" class="hidden">
-        <h2>Partie terminée!</h2>
+      <!-- Résumé de fin -->
+      <div id="md-summary" class="hidden" style="margin-top: 20px;">
+        <h2 class="arcade-title-sub">Partie terminée!</h2>
         <p>Ton score : <span id="md-final-score">0</span> / 10</p>
         <p id="md-best-score-row" class="hidden">
           Score global actuel : <span id="md-best-score">0</span>
         </p>
-        <button id="md-replay">Rejouer</button>
+        <button id="md-replay" class="arcade-btn arcade-btn--primary" style="margin-top: 10px;">
+          Rejouer
+        </button>
       </div>
     </div>
   </div>
