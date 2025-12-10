@@ -132,6 +132,8 @@ function startGame() {
   correctStreak = 0;
   awaitingAnswer = false;
 
+  ScoreService.init("motMystere");
+
   scoreSpan.textContent = "0";
   levelSpan.textContent = "1";
   roundSpan.textContent = "0";
@@ -181,7 +183,7 @@ function handleTimeout() {
   setTimeout(nextRound, 1000);
 }
 
-function endGame() {
+async function endGame() {
   clearInterval(timerId);
 
   wordSpan.textContent = "Fin !";
@@ -190,6 +192,21 @@ function endGame() {
 
   finalScoreSpan.textContent = score;
   summary.classList.remove("hidden");
+
+  try {
+    await ScoreService.saveScore("motMystere", score);
+  } catch (e) {
+    console.warn("saveScore motMystere:", e);
+  }
+
+  try {
+    const globalScore = await ScoreService.getScore();
+    bestScoreSpan.textContent = globalScore.toString();
+    bestRow.classList.remove("ce-hidden");
+  } catch (e) {
+    console.warn("getScore motMystere:", e);
+    bestRow.classList.add("ce-hidden");
+  }
 
   replayBtn.classList.remove("hidden");
 }

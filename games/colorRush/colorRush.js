@@ -228,9 +228,6 @@ function startGame() {
   wordSpan.textContent = "Prépare-toi...";
 
   ScoreService.init("colorRush");
-  ScoreService.resetScore().catch(err =>
-    console.warn("resetScore colorRush:", err)
-  );
 
   setTimeout(() => {
     setupRound();
@@ -254,9 +251,6 @@ function handleColorClick(event) {
     feedbackDiv.textContent = "Bravo!";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch(err =>
-      console.warn("addPoints colorRush:", err)
-    );
   } else {
     playSfx(sfxError);
     const correctLabel =

@@ -1,16 +1,16 @@
 
 export const ScoreService = (() => {
 
-  let GAME_ID = null;
+  let GAME = null;
 
-  function init(gameId) {
-    GAME_ID = gameId;
+  function init(gameId, profileId = 1) {
+    GAME = gameId;
     PROFILE_ID = profileId;
   }
 
   // récupérer le score pour un jeu
   async function getScore() {
-    const res = await fetch(`/api/scores/${GAME_ID}`);
+    const res = await fetch(`/api/scores/${GAME}`);
     if (!res.ok) return 0;
 
     const data = await res.json();
@@ -27,7 +27,7 @@ export const ScoreService = (() => {
   }
 
   // enregistrer un score pour un jeu et un profil
-  async function saveScore(game, score, profileId) {
+  async function saveScore(game, score, profileId = 1) {
     try {
       const response = await fetch('/api/score', {
         method: 'POST',

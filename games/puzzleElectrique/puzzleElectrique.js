@@ -560,9 +560,6 @@ function startGame() {
   ensureMusic();
 
   ScoreService.init("puzzleElectrique");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore puzzleElectrique:", err)
-  );
 
   solvedCount = 0;
   scoreSpan.textContent = "0";
@@ -599,12 +596,6 @@ async function handleLaunchCurrent() {
       puzzleAlreadyCounted = true;
       solvedCount++;
       scoreSpan.textContent = solvedCount.toString();
-
-      try {
-        await ScoreService.addPoints(1);
-      } catch (e) {
-        console.warn("addPoints puzzleElectrique:", e);
-      }
     }
 
     if (currentPuzzleIndex < TOTAL_PUZZLES - 1) {

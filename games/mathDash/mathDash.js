@@ -286,10 +286,6 @@ function handleChoiceClick(event) {
     feedbackDiv.textContent = "Bravo !";
     feedbackDiv.classList.add("good");
 
-    // Score global via ScoreService (1 point par bonne réponse)
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("Erreur addPoints MathDash:", err)
-    );
   } else {
     playSfx(sfxError);
     btn.classList.add("wrong");
@@ -378,11 +374,6 @@ function startGame() {
     btn.disabled = false;
     btn.classList.remove("correct", "wrong");
   });
-
-  // Réinitialiser le score global de MathDash côté API
-  ScoreService.resetScore().catch((err) =>
-    console.warn("Erreur resetScore MathDash:", err)
-  );
 
   showQuestion();
 }

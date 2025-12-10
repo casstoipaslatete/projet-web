@@ -1,3 +1,5 @@
+import { ScoreService } from "../../scripts/scoreService.js";
+
 const pads = document.querySelectorAll('.simon-pad');
 const startBtn = document.getElementById('start-btn');
 const scoreDisplay = document.getElementById('score');
@@ -59,6 +61,8 @@ function startGame() {
   score = 0;
   sequenceTurn = false;
   gameOver = false;
+
+  ScoreService.init("Simon");
 
   updateScore(0);
   summary.classList.add('hidden');
@@ -133,7 +137,7 @@ function updateScore(newScore) {
   scoreDisplay.textContent = score;
 }
 
-function endGame() {
+async function endGame() {
   gameOver = true;
 
   finalScoreDisplay.textContent = score;
@@ -141,7 +145,11 @@ function endGame() {
 
   replayBtn.classList.remove('hidden');
 
-  // À AJOUTER SCORESERVICE.JS
+  try {
+    await ScoreService.saveScore("Simon", score);
+  } catch (e) {
+    console.warn("saveScore Simon:", e);
+  }
 }
 
 // ---------- État initial ----------
