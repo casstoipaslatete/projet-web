@@ -291,9 +291,6 @@ function isCurrentPuzzleValid() {
 // ---------- Logique ----------
 function startGame() {
   ScoreService.init("atelierPotions");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore atelierPotions:", err)
-  );
 
   solvedCount = 0;
   scoreSpan.textContent = "0";
@@ -333,12 +330,6 @@ async function handleValidate() {
       puzzleAlreadyCounted = true;
       solvedCount++;
       scoreSpan.textContent = solvedCount.toString();
-
-      try {
-        await ScoreService.addPoints(1);
-      } catch (e) {
-        console.warn("addPoints atelierPotions:", e);
-      }
     }
 
     if (currentPuzzleIndex < TOTAL_PUZZLES - 1) {
@@ -379,7 +370,8 @@ async function endGame() {
   }
 
   try {
-    const globalScore = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("hidden");
   } catch (e) {

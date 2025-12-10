@@ -237,9 +237,6 @@ function startGame() {
   wordSpan.textContent = "Prépare-toi...";
 
   ScoreService.init("colorRush");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore colorRush:", err)
-  );
 
   setTimeout(() => {
     setupRound();
@@ -263,9 +260,6 @@ function handleColorClick(event) {
     feedbackDiv.textContent = "Bravo!";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("addPoints colorRush:", err)
-    );
   } else {
     playSfx(sfxError);
     const correctLabel =
@@ -317,7 +311,8 @@ async function endGame() {
   }
 
   try {
-    const globalScore = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("hidden");
   } catch (e) {

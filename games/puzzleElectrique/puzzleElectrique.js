@@ -558,9 +558,6 @@ function startGame() {
   ensureMusic();
 
   ScoreService.init("puzzleElectrique");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore puzzleElectrique:", err)
-  );
 
   solvedCount = 0;
   scoreSpan.textContent = "0";
@@ -602,12 +599,6 @@ async function handleLaunchCurrent() {
       puzzleAlreadyCounted = true;
       solvedCount++;
       scoreSpan.textContent = solvedCount.toString();
-
-      try {
-        await ScoreService.addPoints(1);
-      } catch (e) {
-        console.warn("addPoints puzzleElectrique:", e);
-      }
     }
 
     if (currentPuzzleIndex < TOTAL_PUZZLES - 1) {
@@ -680,7 +671,8 @@ async function endGame() {
   }
 
   try {
-    const globalScore = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("ce-hidden");
   } catch (e) {

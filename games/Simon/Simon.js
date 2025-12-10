@@ -106,6 +106,8 @@ function startGame() {
   sequenceTurn = false;
   gameOver = false;
 
+  ScoreService.init("Simon");
+
   updateScore(0);
   summary.classList.add("hidden");
   bestRow.classList.add("hidden");

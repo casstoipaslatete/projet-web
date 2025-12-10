@@ -140,8 +140,8 @@
         const profile = getProfileFromUI();
 
         try {
-          if (window.ProfileManager && typeof ProfileManager.save === "function") {
-            await ProfileManager.save(profile);
+          if (window.ProfileManager && typeof ProfileManager.saveProfile === "function") {
+            await ProfileManager.saveProfile(profile);
           } else {
             console.log("[profile] Profil (fallback, pas d'API):", profile);
           }
@@ -182,10 +182,11 @@
     // -----------------------
     (async () => {
       let profile;
-      if (window.ProfileManager && typeof ProfileManager.load === "function") {
-        profile = await ProfileManager.load();
+      if (window.ProfileManager && typeof ProfileManager.loadProfile === "function") {
+        profile = await ProfileManager.loadProfile();
       } else {
-        profile = { pseudo: "", avatar: "😺", color: "#ffcc00" };
+        // Profil par défaut si pas d'API
+        applyProfileToUI({ pseudo: "anonyme", avatar: "😺", color: "#ffcc00" });
       }
       applyProfileToUI(profile);
     })();

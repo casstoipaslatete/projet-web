@@ -202,11 +202,6 @@ function startGame() {
   input.disabled = false;
   validateBtn.disabled = false;
 
-  // reset score global pour ce jeu côté API
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore speedTyping:", err)
-  );
-
   nextRound();
 }
 
@@ -250,9 +245,6 @@ function handleValidate() {
     feedbackDiv.textContent = "Bravo!";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("addPoints speedTyping:", err)
-    );
   } else {
     playSfx(sfxError);
     feedbackDiv.textContent = `Le mot était "${currentWord}".`;
@@ -302,7 +294,8 @@ async function endGame() {
   }
 
   try {
-    const globalScore = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("hidden");
   } catch (e) {
