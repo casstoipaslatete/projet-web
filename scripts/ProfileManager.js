@@ -4,48 +4,98 @@
 // AUCUN accès au DOM ici.
 window.ProfileManager = (function () {
   const DEFAULT_PROFILE = {
-    pseudo: "",
+    pseudo: "anonyme",
     avatar: "😺",
     color: "#ffcc00",
   };
 
-  const DEFAULT_PROFILE_ID = 1; // Simple default profile ID (no auth system)
+  // const DEFAULT_PROFILE_ID = 1;
 
-  async function load() {
+  async function loadProfile(profileId = null) {
     try {
-      const response = await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`);
-      if (!response.ok) {
-        console.warn("[ProfileManager] /api/profile a répondu", response.status);
+      if(!profileId) {
         return DEFAULT_PROFILE;
       }
+
+      const response = await fetch(`/api/profile/${profileId}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        console.warn("[ProfileManager] /api/profile/{PROFILE_ID} a répondu", response.status);
+        return DEFAULT_PROFILE;
+      }
+
       const data = await response.json();
-      return {
-        pseudo: data.pseudo ?? "",
-        avatar: data.avatar ?? "😺",
-        color: data.color ?? "#ffcc00",
-      };
+
+      return data.profile ? data.profile : DEFAULT_PROFILE;
     } catch (err) {
       console.error("[ProfileManager] Erreur lors du chargement du profil:", err);
       return DEFAULT_PROFILE;
     }
   }
 
-  async function save(profile) {
+  async function saveProfile(pseudo, avatar, color) {
     try {
-      await fetch(`/api/profile/`, {
+      const response = await fetch(`/api/profile/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
+        body: JSON.stringify({ 
+          pseudo, 
+          avatar, 
+          color 
+        })
       });
+
+      if(!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Erreur lors de la sauvegarde");
+      }
+
+      const data = await response.json();
+
       console.log("[ProfileManager] Profil sauvegardé !");
+
+      return data.profile ? data.profile : DEFAULT_PROFILE;
     } catch (err) {
       console.error("[ProfileManager] Erreur lors de la sauvegarde du profil:", err);
     }
   }
 
-  async function delete_profile() {
+  async function updateProfile(profileId, pseudo, avatar, color) {
     try {
-      await fetch(`/api/profile/${DEFAULT_PROFILE_ID}`, {
+
+      const response = await fetch(`/api/profile/${profileId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          pseudo,
+          avatar,
+          color
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Erreur lors de la sauvegarde');
+      }
+
+      const data = await response.json();
+
+      console.log("[ProfileManager] Profil modifié !");
+
+      return data.profile ? data.profile : DEFAULT_PROFILE;
+
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde du profil:', error);
+      throw error;
+    }
+  }
+
+  async function deleteProfile(profileId) {
+    try {
+      await fetch(`/api/profile/${profileId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" }
       });
@@ -56,8 +106,9 @@ window.ProfileManager = (function () {
   }
 
   return {
-    load,
-    save,
-    delete_profile,
+    loadProfile,
+    saveProfile,
+    updateProfile,
+    deleteProfile,
   };
 })();
