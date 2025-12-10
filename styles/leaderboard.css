@@ -1,0 +1,87 @@
+
+#leaderboard table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#leaderboard thead {
+  background: #1c2833;
+}
+
+#leaderboard th,
+#leaderboard td {
+  padding: 14px 10px;
+  font-family: 'Arial', sans-serif;
+  font-size: 1.5rem;
+  color: #ecf0f1;
+}
+
+#leaderboard th {
+  
+  border-bottom: 3px solid #9a54c6;
+}
+
+#leaderboard td {
+  border-bottom: 1px solid #9a54c684;
+}
+
+#leaderboard tbody td:first-child {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.25rem;
+    color: #ecf0f1;
+    text-align: left;
+}
+
+#leaderboard tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+#leaderboard tbody tr:hover {
+  background: #9a54c619;
+}
+
+/* SCORE */
+
+#leaderboard td:last-child {
+  color: #9a54c6;
+  text-shadow: 0 0 6px #9a54c685;
+}
+
+#leaderboard tbody td:last-child {
+    font-family: 'Arial', sans-serif;
+    font-size: 1.25rem;
+    color: #9a54c6;
+}
+
+/* Back rouge (utilise la classe globale arcade-back-btn) */
+.arcade-back-btn {
+  padding: 9px 26px;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow:
+    0 14px 22px rgba(0, 0, 0, 0.9),
+    0 0 18px rgba(0, 0, 0, 0.7);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease,
+    filter 0.12s ease;
+}
+
+.arcade-back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 18px 28px rgba(0, 0, 0, 1),
+    0 0 22px rgba(0, 0, 0, 0.85);
+  filter: brightness(1.03);
+}
+
+.ta-footer-actions {
+  display: flex;
+  justify-content: center;   
+  margin-top: 24px;          
+}

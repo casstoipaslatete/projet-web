@@ -270,6 +270,8 @@ async function finDePartie() {
     console.warn("saveScore trierAliments:", e);
   }
 
+  const nouveauRecord = updateBestScore("trierAliments", bienPlaces);
+
   try {
     const globalScore = await ScoreService.getScore();
     bestScoreSpan.textContent = globalScore.toString();

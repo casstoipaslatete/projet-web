@@ -199,6 +199,42 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+// =========================
+// Route LEADERBOARD
+// =========================
+Router.register("leaderboard", async (root) => {
+  if (window.GlobalAudio) {
+    GlobalAudio.startMusic();
+  }
+
+  root.innerHTML = "<p>Chargement des scores...</p>";
+
+  try {
+    const res = await fetch("/public/leaderboard.html");
+    if (!res.ok) throw new Error("HTTP " + res.status);
+
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    // On injecte seulement l’écran du leaderboard
+    const screen = doc.querySelector(".arcade-game-root");
+    if (!screen) {
+      root.innerHTML = "<p>Leaderboard introuvable.</p>";
+      return;
+    }
+
+    root.innerHTML = screen.outerHTML;
+
+    // ✅ Initialisation JS du leaderboard
+    if (window.initLeaderboardPage) {
+      window.initLeaderboardPage();
+    }
+  } catch (err) {
+    root.innerHTML = "<p>Impossible de charger le leaderboard.</p>";
+    console.error(err);
+  }
+});
+
   Router.start();
 });
 
@@ -208,3 +244,4 @@ window.addEventListener("pageshow", (event) => {
     GlobalAudio.startMusic();
   }
 });
+
