@@ -200,7 +200,8 @@ async function endGame() {
   }
 
   try {
-    const globalScore = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestRow.classList.remove("ce-hidden");
   } catch (e) {

@@ -3,10 +3,11 @@ export const ScoreService = (() => {
 
   let GAME = null;
 
-  function init(gameId, profileId = 1) {
+  function init(gameId) {
     GAME = gameId;
-    PROFILE_ID = profileId;
   }
+
+  const DEFAULT_PROFILE_ID = 5; // ID de profil par défaut --> en BDD "anonyme"
 
   // récupérer le score pour un jeu
   async function getScore() {
@@ -18,8 +19,8 @@ export const ScoreService = (() => {
   }
 
   // récupérer le score pour un profil
-  async function getScoresProfile() {
-    const res = await fetch(`/api/profile/${PROFILE_ID}/scores`);
+  async function getScoresProfile(profileId = DEFAULT_PROFILE_ID) {
+    const res = await fetch(`/api/profile/${profileId}/scores`);
     if (!res.ok) return 0;
 
     const data = await res.json();
@@ -27,7 +28,7 @@ export const ScoreService = (() => {
   }
 
   // enregistrer un score pour un jeu et un profil
-  async function saveScore(game, score, profileId = 1) {
+  async function saveScore(game, score, profileId = DEFAULT_PROFILE_ID) {
     try {
       const response = await fetch('/api/score', {
         method: 'POST',

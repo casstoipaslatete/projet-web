@@ -9,8 +9,6 @@ window.ProfileManager = (function () {
     color: "#ffcc00",
   };
 
-  // const DEFAULT_PROFILE_ID = 1;
-
   async function loadProfile(profileId = null) {
     try {
       if(!profileId) {

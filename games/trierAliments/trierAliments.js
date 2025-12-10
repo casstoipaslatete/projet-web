@@ -1,3 +1,5 @@
+import { ScoreService } from "../../scripts/scoreService.js";
+
 const aliments = [
     // Fruits
     { label: "🍎 Pomme",      category: "fruits" },
@@ -157,6 +159,8 @@ function initialiserJeu() {
             zone.appendChild(titre);
         }
     });
+
+    ScoreService.init("trierAliments");
 
     afficherAlimentCourant();
 }
