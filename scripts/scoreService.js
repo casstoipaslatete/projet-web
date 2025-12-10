@@ -2,8 +2,9 @@
 export const ScoreService = (() => {
 
   let GAME_ID = null;
+  let PROFILE_ID;
 
-  function init(gameId, profileId) {
+  function init(gameId, profileId = 1) {
     GAME_ID = gameId;
     PROFILE_ID = profileId;
   }
