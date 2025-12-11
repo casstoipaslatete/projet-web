@@ -88,4 +88,11 @@ projet-web/
 ├── .env             # Variables d'env
 └── package.json
 ```
+### 🧠 Fichiers clés
+
+- ```server.js``` : Définition des routes de l'API (lien BD)
+- ```router.js``` : Définition des règles de bases pour la navigation
+- ```main.js``` : Définition des routes pour la navigation + audio arcade
+- ```scoreService.js``` : Gestion du score - Appels routes pour gestion des données avec la BD
+- ```profilManager.js``` : Gestion des profils - Appels routes pour gestion des données avec la BD
 
