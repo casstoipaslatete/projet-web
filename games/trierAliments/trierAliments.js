@@ -31,7 +31,7 @@ const aliments = [
   { label: "🍬 Bonbon",        category: "desserts" },
   { label: "🍿 Popcorn",       category: "desserts" },
 
-  // Viandes & protéines
+  // Viandes
   { label: "🍗 Poulet",   category: "viandes" },
   { label: "🥩 Steak",    category: "viandes" },
   { label: "🌭 Saucisse", category: "viandes" },
@@ -49,9 +49,14 @@ let ordreAliments = [];
 let currentIndex = 0;
 let currentItem = null;
 let bienPlaces = 0;
+// +1 seulement si l'aliment est bien placé du premier coup
+let scorePartie = 0;
 let totalAliments = 0;
+// est-ce que l'utilisateur s'est déjà trompé pour l'aliment courant ?
+let aDejaRateAliment = false;
 
 // ------- DOM -------
+
 const itemsContainer = document.getElementById("ta-items-container");
 const zones = Array.from(document.querySelectorAll(".ta-zone"));
 const scoreSpan = document.getElementById("ta-score");
@@ -75,6 +80,7 @@ const backMenuBtn = document.getElementById("ta-back-menu");
 const backMenuInGameBtn = document.getElementById("ta-back-menu-ingame");
 
 // ------- AUDIO -------
+
 let sfxClic, sfxError, sfxSuccess;
 let bgMusic;
 
@@ -108,6 +114,7 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
+  // on coupe la musique globale s'il y en a une
   if (window.GlobalAudio && GlobalAudio.music) {
     try {
       GlobalAudio.music.pause();
@@ -126,6 +133,7 @@ function stopMusic() {
 }
 
 // ------- NAVIGATION -------
+
 function goBackToMenu() {
   stopMusic();
   window.location.hash = "#menu";
@@ -135,6 +143,7 @@ function goBackToMenu() {
 }
 
 // ------- HELPERS -------
+
 function shuffle(array) {
   const arr = array.slice();
   for (let i = arr.length - 1; i > 0; i--) {
@@ -156,6 +165,7 @@ function setFeedback(msg, type) {
 }
 
 // ------- JEU -------
+
 function afficherAlimentCourant() {
   itemsContainer.innerHTML = "";
 
@@ -165,6 +175,10 @@ function afficherAlimentCourant() {
   }
 
   currentItem = ordreAliments[currentIndex];
+
+  // nouvel aliment. Aucune erreur encore
+  aDejaRateAliment = false;
+
   indexSpan.textContent = String(currentIndex + 1);
 
   const card = document.createElement("div");
@@ -177,12 +191,10 @@ function afficherAlimentCourant() {
 function initialiserJeu() {
   ensureMusic();
   ScoreService.init("trierAliments");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore trierAliments:", err)
-  );
 
   ordreAliments = shuffle(aliments).slice(0, NB_ALIMENTS_PAR_PARTIE);
   bienPlaces = 0;
+  scorePartie = 0;
   currentIndex = 0;
   currentItem = null;
   totalAliments = ordreAliments.length;
@@ -210,8 +222,6 @@ function initialiserJeu() {
     });
   });
 
-    ScoreService.init("trierAliments");
-
   afficherAlimentCourant();
 }
 
@@ -221,7 +231,9 @@ function handleZoneClick(zone) {
   const categorieZone = zone.dataset.category;
   const bonneCategorie = currentItem.category;
 
-  if (categorieZone === bonneCategorie) {
+  const estCorrect = (categorieZone === bonneCategorie);
+
+  if (estCorrect) {
     playSfx(sfxSuccess);
 
     const sorted = document.createElement("div");
@@ -230,12 +242,12 @@ function handleZoneClick(zone) {
     zone.appendChild(sorted);
 
     bienPlaces++;
-    scoreSpan.textContent = String(bienPlaces);
 
-    // Score global : 1 point par bon tri
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("addPoints trierAliments:", err)
-    );
+    // si aucune erreur pour cet aliment, +1 point
+    if (!aDejaRateAliment) {
+      scorePartie++;
+      scoreSpan.textContent = String(scorePartie);
+    }
 
     if (bienPlaces === totalAliments) {
       finDePartie();
@@ -245,6 +257,9 @@ function handleZoneClick(zone) {
       setFeedback("Bien joué ! Continue de trier les aliments.", "good");
     }
   } else {
+    // mauvaise catégorie : on enregistre qu'il y a eu au moins une erreur
+    aDejaRateAliment = true;
+
     playSfx(sfxError);
     setFeedback("Oups, ce n’est pas la bonne catégorie.", "warn");
 
@@ -260,28 +275,23 @@ async function finDePartie() {
   currentItemWrapper.classList.add("arcade-hidden");
   summaryDiv.classList.remove("arcade-hidden");
 
-  finalScoreSpan.textContent = String(bienPlaces);
+  // score final
+  finalScoreSpan.textContent = String(scorePartie);
+  finalTotalSpan.textContent = String(totalAliments);
+
   setFeedback("", null);
 
-  // cacher le bouton retour in-game (on garde seulement celui du bas dans le résumé)
   backMenuInGameBtn.classList.add("arcade-hidden");
 
+  // sauvegarde du score pour le leaderboard
   try {
-    await ScoreService.saveScore("trierAliments", bienPlaces);
+    await ScoreService.saveScore("trierAliments", scorePartie);
   } catch (e) {
     console.warn("saveScore trierAliments:", e);
   }
 
-  const nouveauRecord = updateBestScore("trierAliments", bienPlaces);
-
-  try {
-    const globalScore = await ScoreService.getScore();
-    bestScoreSpan.textContent = globalScore.toString();
-    bestRow.classList.remove("arcade-hidden");
-  } catch (e) {
-    console.warn("getScore trierAliments:", e);
-    bestRow.classList.add("arcade-hidden");
-  }
+  // On garde la ligne "Score global actuel" cachée
+  bestRow.classList.add("arcade-hidden");
 }
 
 // ------- EVENTS -------
@@ -306,6 +316,7 @@ backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
 backMenuInGameBtn.addEventListener("click", withClickSfx(goBackToMenu));
 
 // ------- INIT -------
+
 function initTrierAliments() {
   ScoreService.init("trierAliments");
 
@@ -324,3 +335,4 @@ function initTrierAliments() {
 }
 
 initTrierAliments();
+
