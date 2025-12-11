@@ -10,26 +10,16 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-}
-
-// User model
-model User {
-  id        Int     @id @default(autoincrement())
-  username  String  @unique
-  password  String
-  createdAt DateTime @default(now())
-  profile   Profile?
-  scores    Score[]
+  url      = env("DATABASE_URL")
 }
 
 // Profile model
 model Profile {
   id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  pseudo    String?
+  pseudo    String? @default("")
   avatar    String? @default("😺")
   color     String? @default("#ffcc00")
+  scores    Score[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -37,9 +27,8 @@ model Profile {
 // Score model
 model Score {
   id        Int     @id @default(autoincrement())
-  userId    Int?
-  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
-  username  String?
+  profileId Int
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
   game      String
   score     Int
   date      DateTime @default(now())

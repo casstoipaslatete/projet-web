@@ -282,7 +282,6 @@ function handleChoiceClick(e) {
     feedbackDiv.textContent = "Bravo !";
     feedbackDiv.classList.add("good");
 
-    ScoreService.addPoints(1).catch(() => {});
   } else {
     playSfx(sfxError);
     btn.classList.add("wrong");
@@ -341,7 +340,14 @@ async function endGame() {
 
   try {
     await ScoreService.saveScore("mathDash", localScore);
-    const globalScore = await ScoreService.getScore();
+  } catch (e) {
+    console.warn("Erreur saveScore MathDash:", e);
+  }
+
+  // Affichage d'un score global
+  try {
+    const scores = await ScoreService.getScore();
+    const globalScore = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = globalScore.toString();
     bestScoreRow.classList.remove("hidden");
   } catch {
@@ -376,8 +382,6 @@ function startGame() {
     btn.disabled = false;
     btn.classList.remove("correct", "wrong");
   });
-
-  ScoreService.resetScore().catch(() => {});
 
   showQuestion();
 }

@@ -210,6 +210,8 @@ function initialiserJeu() {
     });
   });
 
+    ScoreService.init("trierAliments");
+
   afficherAlimentCourant();
 }
 

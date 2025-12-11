@@ -1,103 +1,43 @@
-// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/addPoints/resetScore.
+// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/saveScore.
+// ScoreService.init() avant d'appeler getLeaderboards
 
 export const ScoreService = (() => {
-  let GAME_ID = null;
 
-  function init(gameId) {
-    GAME_ID = gameId;
+  let GAME = null;
+
+  function init(gameId = null) {
+    GAME = gameId;
   }
 
-  function ensureGameId() {
-    if (!GAME_ID) {
-      console.warn("[ScoreService] GAME_ID non initialisé. Appelle ScoreService.init(gameId) d'abord.");
-      return false;
-    }
-    return true;
-  }
+  const DEFAULT_PROFILE_ID = 5; // ID de profil par défaut --> en BDD "anonyme"
 
-  // Récupère le score courant du jeu
+  // récupérer le score pour un jeu
   async function getScore() {
-    if (!ensureGameId()) return 0;
+    const res = await fetch(`/api/scores/${GAME}`);
+    if (!res.ok) return 0;
 
-    try {
-      const res = await fetch(`/api/scores/${GAME_ID}`);
-      if (!res.ok) return 0;
-
-      const data = await res.json();
-      return data.score ?? 0;
-    } catch (err) {
-      console.error("[ScoreService] Erreur dans getScore :", err);
-      return 0;
-    }
+    const data = await res.json();
+    return data.scores ?? 0;
   }
 
-  // Ajoute des points au score courant
-  async function addPoints(points) {
-    if (!ensureGameId()) return 0;
+  // récupérer le score pour un profil
+  async function getScoresProfile(profileId = DEFAULT_PROFILE_ID) {
+    const res = await fetch(`/api/profile/${profileId}/scores`);
+    if (!res.ok) return 0;
 
-    try {
-      const res = await fetch(`/api/scores/${GAME_ID}/add`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: points }),
-      });
-
-      const data = await res.json();
-      const total = data.score ?? 0;
-
-      // Événement détaillé (ajout + total)
-      window.dispatchEvent(new CustomEvent("score:addPoints", {
-        detail: { added: points, total },
-      }));
-
-      // Événement générique "score changé"
-      window.dispatchEvent(new CustomEvent("score:changed", {
-        detail: { score: total },
-      }));
-
-      return total;
-    } catch (err) {
-      console.error("[ScoreService] Erreur dans addPoints :", err);
-      return 0;
-    }
+    const data = await res.json();
+    return data.scores ?? 0;
   }
 
-  // Remet le score à zéro sur l'API
-  async function resetScore() {
-    if (!ensureGameId()) return 0;
-
-    try {
-      const res = await fetch(`/api/scores/${GAME_ID}/reset`, {
-        method: "POST",
-      });
-
-      const data = await res.json();
-      const score = data.score ?? 0;
-
-      window.dispatchEvent(new CustomEvent("score:reset", {
-        detail: { score },
-      }));
-
-      window.dispatchEvent(new CustomEvent("score:changed", {
-        detail: { score },
-      }));
-
-      return score;
-    } catch (err) {
-      console.error("[ScoreService] Erreur dans resetScore :", err);
-      return 0;
-    }
-  }
-
-  // Sauvegarde d’un score "final" (leaderboard, etc.)
-  async function saveScore(game, score) {
+  // enregistrer un score pour un jeu et un profil
+  async function saveScore(game, score, profileId = DEFAULT_PROFILE_ID) {
     try {
       const response = await fetch("/api/score", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ game, score }),
+        body: JSON.stringify({ game, score, profileId }),
       });
 
       if (!response.ok) {
@@ -113,11 +53,29 @@ export const ScoreService = (() => {
     }
   }
 
+  // récupérer les leaderboards
+  async function getLeaderboards() {
+    const res = await fetch('/api/leaderboard/');
+    if (!res.ok) return 0;
+
+    const data = await res.json();
+    return data.leaderboards ?? 0;
+  }
+
+  // récupérer les leaderboards
+  async function getLeaderboards() {
+    const res = await fetch('/api/leaderboard/');
+    if (!res.ok) return 0;
+
+    const data = await res.json();
+    return data.leaderboards ?? 0;
+  }
+
   return {
     init,
     getScore,
-    addPoints,
-    resetScore,
+    getScoresProfile,
     saveScore,
+    getLeaderboards
   };
 })();

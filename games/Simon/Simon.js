@@ -95,16 +95,15 @@ function startGame() {
   const backBtnInGameLocal = document.getElementById("btn-back");
   if (backBtnInGameLocal) backBtnInGameLocal.classList.remove("hidden");
 
-  ScoreService.init("simon");
-  ScoreService.resetScore().catch((err) =>
-    console.warn("resetScore simon:", err)
-  );
+  ScoreService.init("Simon");
 
   sequence = [];
   playerSequence = [];
   score = 0;
   sequenceTurn = false;
   gameOver = false;
+
+  ScoreService.init("Simon");
 
   updateScore(0);
   summary.classList.add("hidden");
@@ -184,11 +183,6 @@ function checkPlayerInput() {
     const newScore = score + 1;
     updateScore(newScore);
 
-    // 1 point par séquence réussie pour le score global
-    ScoreService.addPoints(1).catch((err) =>
-      console.warn("addPoints simon:", err)
-    );
-
     setTimeout(nextTurn, 900);
   }
 }
@@ -206,13 +200,14 @@ async function endGame() {
 
   // Sauvegarde du meilleur score
   try {
-    await ScoreService.saveScore("simon", score);
+    await ScoreService.saveScore("Simon", score);
   } catch (e) {
     console.warn("saveScore simon:", e);
   }
 
   try {
-    const best = await ScoreService.getScore();
+    const scores = await ScoreService.getScore();
+    const best = Math.max(...scores.map(s => s.score));
     bestScoreSpan.textContent = best.toString();
     bestRow.classList.remove("hidden");
   } catch (e) {
