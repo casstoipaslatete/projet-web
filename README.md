@@ -10,7 +10,6 @@ Plateforme web de mini-jeux avec gestion de profils utilisateur, système de sco
 
 Projet web permettant de jouer à des petits jeux directement dans le navigateur.  
 L'application inclut:
-- Gestion des comptes utilisateur (inscription, connexion)
 - Profils personnalisables (pseudo, avatar, couleur)
 - Système de scores
 - Leaderboards par jeu / global
@@ -25,7 +24,6 @@ L'application inclut:
 - **Express** 4.21.2
 - **Prisma** 5.21.1 (ORM)
 - **SQLite** (Base de données)
-- **bcryptjs** 3.0.3
 
 ### Frontend
 - **HTML5**
@@ -69,7 +67,6 @@ L'application sera accessible sur `http://localhost:3000`
 
 ## 🎮 Fonctionnalités
 
-- ✅ Authentification utilisateur (inscription/connexion)
 - ✅ Gestion de profil personnalisé (avatar/couleur)
 - ✅ Mini-jeux
 - ✅ Sauvegarde automatique des scores
