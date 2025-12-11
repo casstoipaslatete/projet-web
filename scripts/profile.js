@@ -111,7 +111,7 @@
       saveButton.addEventListener("click", async () => {
         const profile = getProfileFromUI();
         if (window.ProfileManager && typeof ProfileManager.saveProfile === "function") {
-          await ProfileManager.saveProfile(profile);
+          await ProfileManager.saveProfile(profile.pseudo, profile.avatar, profile.color);
         } else {
           console.log("Profil (fallback, pas d'API):", profile);
         }
