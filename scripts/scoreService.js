@@ -1,10 +1,11 @@
-// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/addPoints/resetScore.
+// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/saveScore.
+// ScoreService.init() avant d'appeler getLeaderboards
 
 export const ScoreService = (() => {
 
   let GAME = null;
 
-  function init(gameId) {
+  function init(gameId = null) {
     GAME = gameId;
   }
 

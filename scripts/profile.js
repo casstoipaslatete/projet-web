@@ -141,7 +141,7 @@
 
         try {
           if (window.ProfileManager && typeof ProfileManager.saveProfile === "function") {
-            await ProfileManager.saveProfile(profile);
+            await ProfileManager.saveProfile(profile.pseudo, profile.avatar, profile.color);
           } else {
             console.log("[profile] Profil (fallback, pas d'API):", profile);
           }

@@ -297,11 +297,11 @@
 }
 
 .btn-back {
-  margin-bottom: 10px;
   background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
 }
 
 .btn-save {
+  margin-bottom: 10px;
   background: radial-gradient(circle at top, #ff7bff, #8e44ad);
 }
 
