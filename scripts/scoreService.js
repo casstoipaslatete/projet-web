@@ -9,7 +9,8 @@ export const ScoreService = (() => {
     GAME = gameId;
   }
 
-  const DEFAULT_PROFILE_ID = 5; // ID de profil par défaut --> en BDD "anonyme"
+  // ID de profil par défaut --> en BDD "anonyme" => Il faut que le profil soit ajouté dans la BDD avant
+  const DEFAULT_PROFILE_ID = 5; 
 
   // récupérer le score pour un jeu
   async function getScore() {
@@ -62,15 +63,6 @@ export const ScoreService = (() => {
     return data.leaderboards ?? 0;
   }
 
-  // récupérer les leaderboards
-  async function getLeaderboards() {
-    const res = await fetch('/api/leaderboard/');
-    if (!res.ok) return 0;
-
-    const data = await res.json();
-    return data.leaderboards ?? 0;
-  }
-
   return {
     init,
     getScore,
@@ -78,4 +70,5 @@ export const ScoreService = (() => {
     saveScore,
     getLeaderboards
   };
+  
 })();

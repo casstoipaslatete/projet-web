@@ -1,8 +1,4 @@
-// scripts/router.js
 
-// Router global - routage côté client basé sur les hashes (#)
-// Définit `window.Router` si non présent, et évite la redéclaration si le script
-// est accidentellement chargé plusieurs fois (préserve l'état précédemment enregistré).
 if (!window.Router) {
   window.Router = (() => {
     const routes = {};          // { menu: handler, profile: handler, leaderboard: handler }

@@ -165,13 +165,13 @@ app.get('/api/scores/:game', async (req, res) => {
         const { game } = req.params;
 
         const scores = await prisma.score.findMany({
-                where: { game },
-                include: {
-                    profile: true
-                },
-                orderBy: { score: 'desc' },
-                take: 10
-            });
+            where: { game },
+            include: {
+                profile: true
+            },
+            orderBy: { score: 'desc' },
+            take: 10
+        });
 
             res.status(200).json({ message: 'Scores fetched successfully', scores: scores });
     } catch (error) {
