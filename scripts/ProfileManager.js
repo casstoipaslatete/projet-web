@@ -5,6 +5,7 @@ window.ProfileManager = (function () {
     color: "#ffcc00",
   };
 
+  // --- CHARGEMENT PROFIL ---
   async function loadProfile(profileId = null) {
     try {
       if(!profileId) {
@@ -30,6 +31,7 @@ window.ProfileManager = (function () {
     }
   }
 
+  // --- SAUVEGARDER PROFIL ---
   async function saveProfile(pseudo, avatar, color) {
     try {
       const response = await fetch(`/api/profile/`, {
@@ -58,6 +60,7 @@ window.ProfileManager = (function () {
     }
   }
 
+  // --- MISE À JOUR PROFIL ---
   async function updateProfile(profileId, pseudo, avatar, color) {
     try {
 
@@ -88,48 +91,7 @@ window.ProfileManager = (function () {
     }
   }
 
-  async function deleteProfile(profileId) {
-    try {
-      await fetch(`/api/profile/${profileId}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" }
-      });
-      console.log("[ProfileManager] Profil supprimé !");
-    } catch (err) {
-      console.error("[ProfileManager] Erreur lors de la suppression du profil:", err);
-    }
-  }
-
-  async function updateProfile(profileId, pseudo, avatar, color) {
-    try {
-
-      const response = await fetch(`/api/profile/${profileId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          pseudo,
-          avatar,
-          color
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || 'Erreur lors de la sauvegarde');
-      }
-
-      const data = await response.json();
-
-      console.log("[ProfileManager] Profil modifié !");
-
-      return data.profile ? data.profile : DEFAULT_PROFILE;
-
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde du profil:', error);
-      throw error;
-    }
-  }
-
+  // --- SUPRRIMER PROFIL ---
   async function deleteProfile(profileId) {
     try {
       await fetch(`/api/profile/${profileId}`, {

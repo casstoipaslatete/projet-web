@@ -48,14 +48,13 @@ body {
   }
 }
 
-/* Desktop (optionnel, mais explicite) */
+/* Desktop */
 @media screen and (min-width: 1200px) {
   body {
     background-image: url("/static/BorderV2.svg");
   }
 }
 
-/* Conteneur principal injecté par le router */
 #app-root {
   width: 100%;
   max-width: 900px;
@@ -64,7 +63,7 @@ body {
 }
 
 /* =========================================
-   MENU PRINCIPAL (index)
+   MENU PRINCIPAL
    ========================================= */
 
 #menu {
@@ -74,7 +73,7 @@ body {
   justify-content: center;
 }
 
-/* Titre "MINI ARCADE" */
+/* Titre */
 .nomSiteWeb {
   margin: 0;
   text-align: center;
@@ -107,7 +106,7 @@ body {
   margin-top: 28px;
 }
 
-/* Style commun pour les boutons de menu (les <a>) */
+/* Style commun pour les boutons de menu */
 .menu-btn {
   background: radial-gradient(circle at top, rgba(255,255,255,0.25), rgba(0,0,0,0.55));
   display: block;
@@ -133,7 +132,7 @@ body {
 }
 
 
-/* Hover / focus commun */
+/* Hover / focus */
 .menu-btn:hover,
 .menu-btn:focus-visible {
   transform: translateY(-2px);
@@ -143,7 +142,7 @@ body {
   filter: brightness(1.05);
 }
 
-/* Clic : bouton "enfoncé" */
+/* Clic */
 .menu-btn:active {
   transform: translateY(0);
   box-shadow:
@@ -152,10 +151,7 @@ body {
   filter: brightness(0.97);
 }
 
-/* ---------------------------
-   Variantes de couleur
-   --------------------------- */
-
+/* Couleur des boutons du menu */
 .btnJouer {
   background: radial-gradient(circle at top, #9a54c6, #5d2d73);
 }
@@ -182,8 +178,6 @@ body {
   margin: 0 auto;
 }
 
-/* Centre uniquement la page de sélection de jeu
-   à l'intérieur de #app-root */
 #app-root > .game-select {
   min-height: 100vh;
   display: flex;

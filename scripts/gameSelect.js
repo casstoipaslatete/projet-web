@@ -1,5 +1,3 @@
-// scripts/gameSelect.js
-
 (() => {
   const GAMES = [
     {
@@ -53,7 +51,7 @@
     },
   ];
 
-  // On expose une fonction globale que le router pourra appeler
+  // --- Appel pour le router ---
   window.initGameSelectCarousel = function initGameSelectCarousel() {
     const track = document.getElementById("game-track");
     const prevBtn = document.getElementById("game-prev");
@@ -83,11 +81,9 @@
       card.addEventListener("click", () => {
         const gameId = game.id;
 
-        // Si le Router global existe, on l'utilise
         if (window.Router && typeof Router.goToGame === "function") {
           Router.goToGame(gameId);
         } else {
-          // Fallback : navigation directe
           window.location.href = `/games/${gameId}/${gameId}.html`;
         }
       });
@@ -96,10 +92,8 @@
     });
 
     // --- Logique du carrousel infini ---
-
     let isAnimating = false;
 
-    // Calcule dynamiquement la taille d'un "pas" (carte + gap)
     function getStep() {
       const firstCard = track.children[0];
       if (!firstCard) return 0;
@@ -117,25 +111,20 @@
 
       isAnimating = true;
 
-      // On anime vers la gauche
       track.style.transition = "transform 0.35s ease-in-out";
       track.style.transform = `translateX(-${step}px)`;
 
       const onTransitionEnd = () => {
         track.removeEventListener("transitionend", onTransitionEnd);
 
-        // On enlève la transition pour réorganiser les cartes sans voir le jump
         track.style.transition = "none";
         track.style.transform = "translateX(0)";
 
-        // On déplace la première carte à la fin => effet infini
         const first = track.firstElementChild;
         if (first) {
           track.appendChild(first);
         }
 
-        // On force le navigateur à appliquer les changements avant de réactiver la transition
-        // (évite des glitches visuels)
         void track.offsetWidth;
 
         track.style.transition = "";
@@ -152,7 +141,6 @@
 
       isAnimating = true;
 
-      // On enlève d'abord la transition, on place la dernière carte au début
       track.style.transition = "none";
 
       const last = track.lastElementChild;
@@ -160,13 +148,10 @@
         track.insertBefore(last, track.firstElementChild);
       }
 
-      // On place la track déjà décalée vers la gauche
       track.style.transform = `translateX(-${step}px)`;
 
-      // On force le reflow pour que le navigateur "prenne en compte" ce transform
       void track.offsetWidth;
 
-      // Puis on anime pour revenir à 0
       track.style.transition = "transform 0.35s ease-in-out";
       track.style.transform = "translateX(0)";
 
@@ -179,7 +164,7 @@
       track.addEventListener("transitionend", onTransitionEnd);
     }
 
-    // Boutons
+    // --- Boutons ---
     prevBtn.addEventListener("click", (event) => {
       event.stopPropagation();
       slidePrev();
@@ -190,7 +175,6 @@
       slideNext();
     });
 
-    // On s'assure que le transform est bien initialisé
     track.style.transform = "translateX(0)";
   };
 })();

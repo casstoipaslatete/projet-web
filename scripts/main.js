@@ -1,6 +1,4 @@
-// ==============================
-// AUDIO GLOBAL – arcade (hors mini-jeux)
-// ==============================
+// --- MUSIQUE ET SONS GLOBAUX ---
 if (!window.GlobalAudio) {
   window.GlobalAudio = {
     music: null,
@@ -9,12 +7,10 @@ if (!window.GlobalAudio) {
 
     init() {
       try {
-        // Musique globale de l'arcade
         this.music = new Audio("/static/music/mainMusic.mp3");
         this.music.loop = true;
         this.music.volume = 0.6;
 
-        // Clic global pour le menu / profil / selection, etc.
         this.sfxClick = new Audio("/static/sfx/clic.mp3");
         this.sfxClick.volume = 0.9;
       } catch (e) {
@@ -25,14 +21,12 @@ if (!window.GlobalAudio) {
     startMusic() {
       if (!this.music) return;
 
-      // si déjà en lecture → ne rien faire
       if (!this.music.paused) return;
 
       this.music.currentTime = 0;
       const p = this.music.play();
       if (p && typeof p.then === "function") {
         p.catch(() => {
-          // navigateur pas content → on attend un clic utilisateur
           this.needsUnlock = true;
         });
       }
@@ -52,7 +46,7 @@ if (!window.GlobalAudio) {
 
 window.addEventListener("DOMContentLoaded", () => {
   if (window.GlobalAudio) {
-    GlobalAudio.startMusic();   // essai auto (peut être bloqué)
+    GlobalAudio.startMusic();
   }
 
   const scoreValue = document.getElementById("score-value");
@@ -63,7 +57,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Navigation : on intercepte les clics sur [data-route]
   document.body.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-route]");
     if (!btn) return;
@@ -73,14 +66,13 @@ window.addEventListener("DOMContentLoaded", () => {
 
     if (window.GlobalAudio) {
       GlobalAudio.playClick();
-      GlobalAudio.startMusic();   // clic de nav = gesture utilisateur
+      GlobalAudio.startMusic();
     }
 
     e.preventDefault();
     Router.goTo(route);
   });
 
-  // le prochain clic sur n'importe quel bouton/lien relance la musique.
   document.body.addEventListener("click", (e) => {
     if (!window.GlobalAudio) return;
 
@@ -90,9 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // =========================
-  // Route GAMES (gameSelect)
-  // =========================
+// --- ROUTE GAMES ---
   Router.register("games", async (root) => {
     if (window.GlobalAudio) {
           GlobalAudio.startMusic();
@@ -126,9 +116,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // =========================
-  // Route MENU
-  // =========================
+// --- ROUTE MENU ---
   Router.register("menu", async (root) => {
     if (window.GlobalAudio) {
       GlobalAudio.startMusic();
@@ -143,7 +131,6 @@ window.addEventListener("DOMContentLoaded", () => {
       const html = await res.text();
       const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-      // On récupère l'écran complet (bordure + menu)
       const screen = doc.getElementById('screen');
       if (screen) {
         root.innerHTML = screen.outerHTML;
@@ -159,9 +146,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // =========================
-  // Route PROFILE
-  // =========================
+// --- ROUTE PROFILE ---
   Router.register("profile", async (root) => {
     if (window.GlobalAudio) {
       GlobalAudio.startMusic();
@@ -176,12 +161,10 @@ window.addEventListener("DOMContentLoaded", () => {
       const html = await res.text();
       const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-      // On récupère l'écran complet (bordure + page profil)
       const screen = doc.getElementById('screen');
       if (screen) {
         root.innerHTML = screen.outerHTML;
 
-        // On reconnecte la logique du profil
         if (window.initProfilePage) {
           window.initProfilePage();
         } else {
@@ -199,9 +182,7 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-// =========================
-// Route LEADERBOARD
-// =========================
+// ROUTE LEADERBOARD ---
 Router.register("leaderboard", async (root) => {
   if (window.GlobalAudio) {
     GlobalAudio.startMusic();
@@ -216,7 +197,6 @@ Router.register("leaderboard", async (root) => {
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html, "text/html");
 
-    // On injecte seulement l’écran du leaderboard
     const screen = doc.querySelector(".arcade-game-root");
     if (!screen) {
       root.innerHTML = "<p>Leaderboard introuvable.</p>";
@@ -225,7 +205,6 @@ Router.register("leaderboard", async (root) => {
 
     root.innerHTML = screen.outerHTML;
 
-    // ✅ Initialisation JS du leaderboard
     if (window.initLeaderboardPage) {
       window.initLeaderboardPage();
     }
@@ -238,10 +217,8 @@ Router.register("leaderboard", async (root) => {
   Router.start();
 });
 
-// pageshow à part, pour les retours via Back/Forward
 window.addEventListener("pageshow", (event) => {
   if (window.GlobalAudio) {
     GlobalAudio.startMusic();
   }
 });
-

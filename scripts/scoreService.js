@@ -1,6 +1,3 @@
-// Penser à appeler ScoreService.init("NomDuJeu") avant d'utiliser getScore/saveScore.
-// ScoreService.init() avant d'appeler getLeaderboards
-
 export const ScoreService = (() => {
 
   let GAME = null;
@@ -9,10 +6,9 @@ export const ScoreService = (() => {
     GAME = gameId;
   }
 
-  // ID de profil par défaut --> en BDD "anonyme" => Il faut que le profil soit ajouté dans la BDD avant
   const DEFAULT_PROFILE_ID = 5; 
 
-  // récupérer le score pour un jeu
+  // --- Récupérer le score pour un jeu ---
   async function getScore() {
     const res = await fetch(`/api/scores/${GAME}`);
     if (!res.ok) return 0;
@@ -21,7 +17,7 @@ export const ScoreService = (() => {
     return data.scores ?? 0;
   }
 
-  // récupérer le score pour un profil
+  // --- Récupérer le score pour un profil ---
   async function getScoresProfile(profileId = DEFAULT_PROFILE_ID) {
     const res = await fetch(`/api/profile/${profileId}/scores`);
     if (!res.ok) return 0;
@@ -30,7 +26,7 @@ export const ScoreService = (() => {
     return data.scores ?? 0;
   }
 
-  // enregistrer un score pour un jeu et un profil
+  // --- Enregistrer un score pour un jeu et un profil ---
   async function saveScore(game, score, profileId = DEFAULT_PROFILE_ID) {
     try {
       const response = await fetch("/api/score", {
@@ -54,7 +50,7 @@ export const ScoreService = (() => {
     }
   }
 
-  // récupérer les leaderboards
+  // --- Récupérer les leaderboards ---
   async function getLeaderboards() {
     const res = await fetch('/api/leaderboard/');
     if (!res.ok) return 0;

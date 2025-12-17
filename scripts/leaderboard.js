@@ -1,6 +1,6 @@
 console.log("[leaderboard] script chargé");
 
-// Liste des jeux
+// --- Liste des jeux ---
 const GAMES = [
   { id: "Simon", name: "Simon" },
   { id: "mathDash", name: "Math dash" },
@@ -12,6 +12,7 @@ const GAMES = [
   { id: "motMystere", name: "Mot mystère" },
 ];
 
+// --- Logique de recherche du meilleur score ---
 async function fetchBestScore(gameId) {
   try {
     const res = await fetch(`/api/scores/${gameId}`);
@@ -28,7 +29,6 @@ async function fetchBestScore(gameId) {
       scoresArray = data.scores;
     }
     
-    // On cherche le meilleur score dans le tableau.
     let best = 0;
     for (const entry of scoresArray) {
       const value =
@@ -46,7 +46,7 @@ async function fetchBestScore(gameId) {
   }
 }
 
-
+// --- Logique d'affichage du tableau ---
 async function renderLeaderboard() {
   const tbody = document.getElementById("leaderboard-body");
   if (!tbody) {
@@ -68,7 +68,6 @@ async function renderLeaderboard() {
   }
 }
 
-// Appelée par le Router après injection du HTML
 window.initLeaderboardPage = function () {
   console.log("[leaderboard] initLeaderboardPage appelé");
   renderLeaderboard();

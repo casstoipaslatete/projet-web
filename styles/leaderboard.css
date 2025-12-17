@@ -1,4 +1,4 @@
-
+/* Table du leaderboard */
 #leaderboard table{
   width: 100%;
   border-collapse: collapse;
@@ -40,8 +40,7 @@
   background: #9a54c619;
 }
 
-/* SCORE */
-
+/* Score */
 #leaderboard td:last-child {
   color: #9a54c6;
   text-shadow: 0 0 6px #9a54c685;
@@ -53,7 +52,7 @@
     color: #9a54c6;
 }
 
-/* Back rouge (utilise la classe globale arcade-back-btn) */
+/* Bouton de retour */
 .arcade-back-btn {
   padding: 9px 26px;
   border: none;

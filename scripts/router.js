@@ -1,8 +1,7 @@
-
 if (!window.Router) {
   window.Router = (() => {
-    const routes = {};          // { menu: handler, profile: handler, leaderboard: handler }
-    const rootId = "app-root";  // injection dans #app-root
+    const routes = {};
+    const rootId = "app-root";
 
     function register(routeName, handler) {
       routes[routeName] = handler;
@@ -23,7 +22,6 @@ if (!window.Router) {
         return;
       }
 
-      // Appelle le handler avec le conteneur
       handler(root);
     }
 
@@ -40,5 +38,4 @@ if (!window.Router) {
   })();
 }
 
-// Expose `Router` dans le scope global
 var Router = window.Router;
