@@ -27,7 +27,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+
   }
 }
 
@@ -192,7 +192,7 @@ function initUI() {
   indicator.classList.remove("on");
   setFeedback("", null);
 
-  // Boutons visibles / cachés au démarrage
+  // Boutons au démarrage
   startBtn.classList.remove("hidden");
   startBtn.disabled = false;
 
@@ -275,7 +275,6 @@ function loadPuzzle(index) {
   indicator.classList.remove("on");
   setFeedback("", null);
 
-  // on remet "Valider" actif pour la nouvelle énigme
   validateBtn.classList.remove("hidden");
   validateBtn.disabled = false;
 
@@ -296,7 +295,6 @@ function startGame() {
   scoreSpan.textContent = "0";
   summary.classList.add("hidden");
 
-  // pendant la partie : on cache "Commencer", on active "Valider"
   startBtn.classList.add("hidden");
   validateBtn.classList.remove("hidden");
   validateBtn.disabled = false;
@@ -322,7 +320,6 @@ async function handleValidate() {
     setFeedback("Bravo! Tu as créé la bonne potion!", "good");
     playSfx(sfxSuccess);
 
-    // une fois correct → on ne peut plus re-valider
     validateBtn.classList.add("hidden");
     validateBtn.disabled = true;
 
@@ -353,10 +350,6 @@ async function endGame() {
   finalScoreSpan.textContent = solvedCount.toString();
   finalTotalSpan.textContent = TOTAL_PUZZLES.toString();
   summary.classList.remove("hidden");
-
-  // Fin de partie :
-  // - on CACHE Commencer / Valider / Prochaine potion
-  // - on ne garde visibles que Rejouer + Retour
   startBtn.classList.add("hidden");
   validateBtn.classList.add("hidden");
   validateBtn.disabled = true;
@@ -383,7 +376,7 @@ async function endGame() {
 function handleNext() {
   if (currentPuzzleIndex < TOTAL_PUZZLES - 1) {
     loadPuzzle(currentPuzzleIndex + 1);
-    startBtn.classList.add("hidden"); // on garde "Commencer" caché
+    startBtn.classList.add("hidden"); 
   }
 }
 

@@ -1,20 +1,15 @@
-/* Tape Éclair – styles spécifiques
-   Tout le look principal vient de arcade-theme.css
-*/
-
-/* Panneau principal : on limite juste la largeur */
 #st-root {
   max-width: 480px;
 }
 
-/* Infos du haut (réutilise #info-display comme les autres jeux) */
+/* Infos */
 #info-display p {
   margin: 4px 0;
   font-size: 0.95rem;
   opacity: 0.9;
 }
 
-/* Mot à taper : on garde la carte sombre du thème, on ajuste surtout la taille de police */
+/* Mot à taper */
 #st-word-box {
   margin: 18px 0;
   font-size: 2rem;
@@ -57,25 +52,22 @@
   background: #0d1721;
 }
 
-/* Timer : on reprend les styles de .arcade-timer-container / .arcade-timer-bar
-   mais on ajuste juste le spacing si besoin */
+/* Timer */
 #st-timer-bar-container {
   margin-bottom: 10px;
 }
 
-/* Feedback : on s'aligne sur arcade-feedback */
+/* Feedback */
 #st-feedback {
-  /* déjà min-height + font-size via .arcade-feedback */
   margin-top: 4px;
 }
 
-/* Mapping avec les classes déjà utilisées dans le JS */
 #st-feedback.good {
-  color: #2ecc71; /* même couleur que .arcade-feedback--good */
+  color: #2ecc71;
 }
 
 #st-feedback.bad {
-  color: #f1c40f; /* même couleur que .arcade-feedback--warn */
+  color: #f1c40f;
 }
 
 /* Résumé */
@@ -85,12 +77,11 @@
   border-top: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Classe utilitaire déjà utilisée par le JS */
 .hidden {
   display: none !important;
 }
 
-/* Responsive léger */
+/* Responsive */
 @media (max-width: 480px) {
   #st-root {
     padding: 20px 18px 22px;

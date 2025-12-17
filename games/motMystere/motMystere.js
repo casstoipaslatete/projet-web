@@ -1,8 +1,6 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
-/* --------------------------------------------------
-    MUSIQUE + SFX
--------------------------------------------------- */
+// --- MUSIQUE ET SONS ---
 let sfxClick, sfxSuccess, sfxError;
 let music;
 
@@ -26,10 +24,7 @@ function clickWrap(handler) {
   };
 }
 
-/* --------------------------------------------------
-    LOGIQUE DU JEU
--------------------------------------------------- */
-
+// --- LOGIQUE DE JEU ---
 const TOTAL_WORDS = 10;
 
 let level = 1;
@@ -44,7 +39,6 @@ let timeLeftMs = 0;
 let maxTimeMs = 8000;
 let awaitingAnswer = false;
 
-// mots enfants
 const WORDS_LEVEL_1 = [
   "chat","chien","papa","maman","nez","mer","lune","soleil",
   "main","livre","porte","table","tasse"
@@ -67,10 +61,7 @@ function scramble(word) {
     .join("");
 }
 
-/* --------------------------------------------------
-   DOM
--------------------------------------------------- */
-
+// --- DOM ---
 const roundSpan = document.getElementById("mm-round");
 const scoreSpan = document.getElementById("mm-score");
 const levelSpan = document.getElementById("mm-level");
@@ -89,10 +80,6 @@ const bestScoreSpan = document.getElementById("mm-best-score");
 const startBtn = document.getElementById("mm-start");
 const replayBtn = document.getElementById("mm-replay");
 const backBtn = document.getElementById("mm-back");
-
-/* --------------------------------------------------
-   SÉLECTION DES MOTS
--------------------------------------------------- */
 
 function pickWord(level) {
   const arr =
@@ -113,10 +100,7 @@ function updateLevel(isCorrect) {
   levelSpan.textContent = level;
 }
 
-/* --------------------------------------------------
-   TIMER
--------------------------------------------------- */
-
+// --- TIMER ---
 function startTimer() {
   clearInterval(timerId);
 
@@ -145,10 +129,6 @@ function startTimer() {
     }
   }, 100);
 }
-
-/* --------------------------------------------------
-   MANCHE
--------------------------------------------------- */
 
 function nextRound() {
   roundIndex++;
@@ -197,10 +177,6 @@ function startGame() {
   nextRound();
 }
 
-/* --------------------------------------------------
-   VALIDATION
--------------------------------------------------- */
-
 function handleValidate() {
   if (!awaitingAnswer) return;
 
@@ -241,10 +217,6 @@ function handleTimeout() {
   setTimeout(nextRound, 2000);
 }
 
-/* --------------------------------------------------
-   FIN DE PARTIE
--------------------------------------------------- */
-
 async function endGame() {
   clearInterval(timerId);
 
@@ -275,20 +247,12 @@ async function endGame() {
   replayBtn.classList.remove("hidden");
 }
 
-/* --------------------------------------------------
-   BOUTON RETOUR
--------------------------------------------------- */
-
 if (backBtn) {
   backBtn.addEventListener("click", () => {
     playSfx(sfxClick);
     window.location.href = "/public/index.html#games";
   });
 }
-
-/* --------------------------------------------------
-   EVENTS
--------------------------------------------------- */
 
 startBtn.addEventListener("click", clickWrap(startGame));
 replayBtn.addEventListener("click", clickWrap(startGame));
@@ -298,10 +262,7 @@ input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") handleValidate();
 });
 
-/* --------------------------------------------------
-   INIT
--------------------------------------------------- */
-
+// --- INITIALISATION ---
 function initMotMystere() {
   feedbackDiv.textContent = "Clique sur « Commencer » pour jouer !";
   input.disabled = true;

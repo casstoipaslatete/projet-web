@@ -1,4 +1,3 @@
-/* Conteneur du jeu (centré par arcade-theme) */
 #game-container {
   text-align: center;
 }
@@ -104,7 +103,7 @@
   color: #f1c40f;
 }
 
-/* Boutons pilules */
+/* Boutons */
 .mm-btn {
   display: inline-block;
   min-width: 200px;
@@ -134,7 +133,7 @@
   filter: brightness(1.05);
 }
 
-/* Bouton retour = rouge */
+/* Bouton retour */
 .mm-btn--back {
   margin-top: 12px;
   background: radial-gradient(circle at top, #ff7b6b, #e74c3c);
@@ -160,7 +159,7 @@
   margin: 4px;
 }
 
-/* Footer (retour) */
+/* Footer */
 .mm-footer-actions {
   margin-top: 14px;
 }
@@ -170,7 +169,6 @@
   display: none;
 }
 
-/* Responsive léger */
 @media (max-width: 480px) {
   #mm-root {
     padding: 20px 18px 22px;

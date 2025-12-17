@@ -7,15 +7,16 @@
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
 
-  <!-- Styles globaux de l’arcade -->
+  <!-- Thème global + bordure -->
   <link rel="stylesheet" href="/styles/main.css" />
+  <!-- Thème arcade commun -->
   <link rel="stylesheet" href="/styles/arcade-theme.css" />
-
-  <!-- Style spécifique au jeu -->
+  <!-- CSS spécifique à puzzleElectrique -->
   <link rel="stylesheet" href="puzzleElectrique.css" />
 </head>
 
 <body class="arcade-game-body">
+  <!-- Div du jeu -->
   <div id="ce-container" class="arcade-game-root">
     <h1 class="arcade-title-main">Puzzle électrique</h1>
 
@@ -28,7 +29,6 @@
       <p>Circuits réussis : <span id="ce-score">0</span></p>
     </div>
 
-    <!-- Zone lampe + ligne de circuit -->
     <div id="ce-line">
       <div class="ce-endpoint">
         <div class="ce-end-icon">🔋</div>
@@ -52,10 +52,7 @@
       <strong>« Lancer le courant »</strong> pour voir si la lampe s’allume ! ⚡
     </p>
 
-    <!-- Palette des modules -->
-    <div id="ce-palette">
-      <!-- remplie dynamiquement -->
-    </div>
+    <div id="ce-palette"></div>
 
     <div id="ce-feedback"></div>
 
@@ -79,6 +76,7 @@
       <p id="ce-best-row" class="ce-hidden">
         Score global actuel : <span id="ce-best-score">0</span>
       </p>
+      
       <button id="ce-replay" class="ce-btn ce-btn-primary">Rejouer</button>
       <button id="ce-back-menu3" class="ce-btn ce-btn-back">← Retour à l’arcade</button>
     </div>

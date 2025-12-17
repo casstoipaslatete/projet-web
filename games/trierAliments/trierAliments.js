@@ -49,14 +49,11 @@ let ordreAliments = [];
 let currentIndex = 0;
 let currentItem = null;
 let bienPlaces = 0;
-// +1 seulement si l'aliment est bien placé du premier coup
 let scorePartie = 0;
 let totalAliments = 0;
-// est-ce que l'utilisateur s'est déjà trompé pour l'aliment courant ?
 let aDejaRateAliment = false;
 
 // ------- DOM -------
-
 const itemsContainer = document.getElementById("ta-items-container");
 const zones = Array.from(document.querySelectorAll(".ta-zone"));
 const scoreSpan = document.getElementById("ta-score");
@@ -79,8 +76,7 @@ const replayBtn = document.getElementById("ta-replay");
 const backMenuBtn = document.getElementById("ta-back-menu");
 const backMenuInGameBtn = document.getElementById("ta-back-menu-ingame");
 
-// ------- AUDIO -------
-
+// ------- MUSIQUE ET SONS -------
 let sfxClic, sfxError, sfxSuccess;
 let bgMusic;
 
@@ -102,7 +98,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+
   }
 }
 
@@ -114,7 +110,6 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
-  // on coupe la musique globale s'il y en a une
   if (window.GlobalAudio && GlobalAudio.music) {
     try {
       GlobalAudio.music.pause();
@@ -133,7 +128,6 @@ function stopMusic() {
 }
 
 // ------- NAVIGATION -------
-
 function goBackToMenu() {
   stopMusic();
   window.location.hash = "#menu";
@@ -141,8 +135,6 @@ function goBackToMenu() {
     window.location.href = "/public/index.html#games";
   }
 }
-
-// ------- HELPERS -------
 
 function shuffle(array) {
   const arr = array.slice();
@@ -165,7 +157,6 @@ function setFeedback(msg, type) {
 }
 
 // ------- JEU -------
-
 function afficherAlimentCourant() {
   itemsContainer.innerHTML = "";
 
@@ -176,7 +167,6 @@ function afficherAlimentCourant() {
 
   currentItem = ordreAliments[currentIndex];
 
-  // nouvel aliment. Aucune erreur encore
   aDejaRateAliment = false;
 
   indexSpan.textContent = String(currentIndex + 1);
@@ -212,7 +202,6 @@ function initialiserJeu() {
 
   setFeedback("Clique sur une catégorie pour classer l’aliment.", null);
 
-  // Reset visuel des zones
   zones.forEach((zone) => {
     zone.classList.remove("ta-zone--wrong");
     const title = zone.querySelector(".ta-zone-title");
@@ -243,7 +232,6 @@ function handleZoneClick(zone) {
 
     bienPlaces++;
 
-    // si aucune erreur pour cet aliment, +1 point
     if (!aDejaRateAliment) {
       scorePartie++;
       scoreSpan.textContent = String(scorePartie);
@@ -257,7 +245,6 @@ function handleZoneClick(zone) {
       setFeedback("Bien joué ! Continue de trier les aliments.", "good");
     }
   } else {
-    // mauvaise catégorie : on enregistre qu'il y a eu au moins une erreur
     aDejaRateAliment = true;
 
     playSfx(sfxError);
@@ -275,7 +262,6 @@ async function finDePartie() {
   currentItemWrapper.classList.add("arcade-hidden");
   summaryDiv.classList.remove("arcade-hidden");
 
-  // score final
   finalScoreSpan.textContent = String(scorePartie);
   finalTotalSpan.textContent = String(totalAliments);
 
@@ -283,25 +269,19 @@ async function finDePartie() {
 
   backMenuInGameBtn.classList.add("arcade-hidden");
 
-  // sauvegarde du score pour le leaderboard
   try {
     await ScoreService.saveScore("trierAliments", scorePartie);
   } catch (e) {
     console.warn("saveScore trierAliments:", e);
   }
 
-  // On garde la ligne "Score global actuel" cachée
   bestRow.classList.add("arcade-hidden");
 }
 
-// ------- EVENTS -------
-
-// Zones
 zones.forEach((zone) => {
   zone.addEventListener("click", () => handleZoneClick(zone));
 });
 
-// Boutons
 startBtn.addEventListener("click", withClickSfx(() => {
   backMenuInGameBtn.classList.remove("arcade-hidden");
   initialiserJeu();
@@ -315,8 +295,7 @@ replayBtn.addEventListener("click", withClickSfx(() => {
 backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
 backMenuInGameBtn.addEventListener("click", withClickSfx(goBackToMenu));
 
-// ------- INIT -------
-
+// ------- INITIALISATION -------
 function initTrierAliments() {
   ScoreService.init("trierAliments");
 

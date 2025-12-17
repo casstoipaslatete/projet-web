@@ -1,8 +1,6 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
-// ==============================
-// LIBRAIRIE DES MODULES
-// ==============================
+// --- MODULES ---
 const MODULE_LIBRARY = {
   wire: {
     id: "wire",
@@ -63,7 +61,7 @@ const MODULE_LIBRARY = {
 };
 
 // ==============================
-// PUZZLES (plus variés & fun)
+// PUZZLES
 // ==============================
 // goal:
 //  - "LAMP_ON"       → lampe doit s’allumer
@@ -72,7 +70,7 @@ const MODULE_LIBRARY = {
 //  - "SAFE"          → on veut juste un circuit sans danger
 //
 // palette: { moduleId: maxQuantité }  (avec compteur xN restants)
-// maxModules: nombre max de modules posés dans les 3 slots (facultatif)
+
 const PUZZLES = [
   {
     id: "p1",
@@ -177,9 +175,7 @@ const PUZZLES = [
 
 const TOTAL_PUZZLES = PUZZLES.length;
 
-// ==============================
-// AUDIO – musique & sfx
-// ==============================
+// --- MUSIQUE ET SONS
 let sfxClic, sfxPowerOn, sfxZap, sfxError;
 let bgMusic;
 
@@ -194,7 +190,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+
   }
 }
 
@@ -217,24 +213,18 @@ function ensureMusic() {
   }
 }
 
-// ==============================
 // ÉTAT DU JEU
-// ==============================
 let currentPuzzleIndex = 0;
 let currentPuzzle = PUZZLES[0];
 
 let solvedCount = 0;
 let puzzleAlreadyCounted = false;
 
-// slots = tableau de 3 positions (0,1,2)
-let currentSlots = [null, null, null]; // moduleId ou null
+let currentSlots = [null, null, null];
 let selectedModuleId = null;
-// combien de fois chaque module est utilisé dans ce puzzle
 let usedCounts = {};
 
-// ==============================
-// DOM
-// ==============================
+// --- DOM ---
 const puzzleIndexSpan = document.getElementById("ce-puzzle-index");
 const puzzleTotalSpan = document.getElementById("ce-puzzle-total");
 const scoreSpan = document.getElementById("ce-score");
@@ -264,9 +254,7 @@ const backMenuBtn3 = document.getElementById("ce-back-menu3");
 
 const actionsRow = document.getElementById("ce-actions");
 
-// ==============================
-// NAVIGATION ARCADE
-// ==============================
+// --- LOGIQUE ---
 function goBackToMenu() {
   window.location.hash = "#menu";
 
@@ -275,10 +263,6 @@ function goBackToMenu() {
   }
 }
 
-
-// ==============================
-// HELPERS UI
-// ==============================
 function setFeedback(message, type) {
   feedbackDiv.textContent = message || "";
   feedbackDiv.className = "";
@@ -347,9 +331,6 @@ function updatePaletteCounts() {
   });
 }
 
-// ==============================
-// CREATION PALETTE & SLOTS
-// ==============================
 function createModuleCard(moduleId, limit) {
   const def = MODULE_LIBRARY[moduleId];
   if (!def) return null;
@@ -368,7 +349,6 @@ function createModuleCard(moduleId, limit) {
   `;
 
   card.addEventListener("click", () => {
-    // si déjà sélectionné → on désélectionne
     if (selectedModuleId === moduleId) {
       selectedModuleId = null;
     } else {
@@ -404,7 +384,6 @@ function onSlotClick(slotIndex) {
 
     const previousModule = currentSlots[slotIndex];
 
-    // Si aucun module sélectionné → on vide la case
     if (!selectedModuleId) {
       if (previousModule) {
         usedCounts[previousModule] = Math.max(
@@ -422,7 +401,6 @@ function onSlotClick(slotIndex) {
     const limit = currentPuzzle.palette[selectedModuleId] ?? 0;
     const alreadyUsed = usedCounts[selectedModuleId] ?? 0;
 
-    // si on veut enlever le même module → toggle off
     if (previousModule === selectedModuleId) {
       usedCounts[selectedModuleId] = Math.max(0, alreadyUsed - 1);
       currentSlots[slotIndex] = null;
@@ -432,14 +410,12 @@ function onSlotClick(slotIndex) {
       return;
     }
 
-    // check limite avant de remplacer
     if (alreadyUsed >= limit) {
       setFeedback("Tu as déjà utilisé ce module au maximum.", "bad");
       playSfx(sfxError);
       return;
     }
 
-    // libère l’ancien module si présent
     if (previousModule) {
       usedCounts[previousModule] = Math.max(
         0,
@@ -447,7 +423,6 @@ function onSlotClick(slotIndex) {
       );
     }
 
-    // place le nouveau
     usedCounts[selectedModuleId] = alreadyUsed + 1;
     currentSlots[slotIndex] = selectedModuleId;
 
@@ -460,9 +435,6 @@ function onSlotClick(slotIndex) {
   };
 }
 
-// ==============================
-// SIMULATION DU COURANT
-// ==============================
 function simulateCircuit(slots) {
   let modulesCount = 0;
   let hasHazard = false;
@@ -528,9 +500,6 @@ function evaluateGoal(puzzle, sim) {
   }
 }
 
-// ==============================
-// CHARGEMENT D’UN PUZZLE
-// ==============================
 function loadPuzzle(index) {
   currentPuzzleIndex = index;
   currentPuzzle = PUZZLES[currentPuzzleIndex];
@@ -551,9 +520,7 @@ function loadPuzzle(index) {
   clearBtn.disabled = false;
 }
 
-// ==============================
-// LOGIQUE DU JEU
-// ==============================
+// --- LOGIQUE DE JEU ---
 function startGame() {
   ensureMusic();
 
@@ -611,7 +578,6 @@ async function handleLaunchCurrent() {
       await endGame();
     }
   } else {
-    // Gestion des échecs plus fun
     if (result.reason === "empty") {
       setLamp(false, "Lampe éteinte");
       setFeedback(
@@ -681,9 +647,6 @@ async function endGame() {
   }
 }
 
-// ==============================
-// EVENTS
-// ==============================
 startBtn.addEventListener("click", withClickSfx(startGame));
 launchBtn.addEventListener("click", withClickSfx(handleLaunchCurrent));
 clearBtn.addEventListener("click", withClickSfx(clearCircuit));
@@ -696,7 +659,7 @@ slotsEls.forEach((slot, index) => {
   slot.addEventListener("click", onSlotClick(index));
 });
 
-// Init de base
+// --- INITIALISATION ---
 ScoreService.init("puzzleElectrique");
 puzzleTotalSpan.textContent = TOTAL_PUZZLES.toString();
 setLamp(false, "Lampe éteinte");

@@ -6,8 +6,12 @@
   <title>Simon</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png" />
+
+  <!-- Thème global + bordure -->
   <link rel="stylesheet" href="/styles/main.css" />
+  <!-- Thème arcade commun -->
   <link rel="stylesheet" href="/styles/arcade-theme.css" />
+  <!-- CSS spécifique à simon -->
   <link rel="stylesheet" href="Simon.css" />
 </head>
 <body class="arcade-game-body">
@@ -15,6 +19,7 @@
     <h1 class="arcade-title-main">Simon</h1>
 
     <div id="simon-root">
+      <!-- Div du jeu -->
       <div class="simon-container">
         <div class="simon-pad green" data-color="green"></div>
         <div class="simon-pad red" data-color="red"></div>
@@ -32,6 +37,7 @@
         <button id="btn-back" class="arcade-back-btn">← Retour à l’arcade</button>
       </div>
 
+      <!-- Résumé de la partie -->
       <div id="summary" class="hidden">
         <h2>Fin de la partie !</h2>
         <p>Ton score : <span id="final-score">0</span></p>

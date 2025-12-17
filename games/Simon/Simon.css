@@ -1,4 +1,3 @@
-/* Conteneur principal du jeu */
 #simon-root {
   background: radial-gradient(circle at top, #263547, #0d121b);
   padding: 24px 26px 28px;
@@ -54,7 +53,7 @@
   font-size: 0.98rem;
 }
 
-/* Boutons principaux (violets) */
+/* Boutons principaux */
 .simon-btn {
   padding: 10px 26px;
   font-size: 0.95rem;
@@ -96,7 +95,7 @@
   margin: 6px;
 }
 
-/* Back rouge (utilise la classe globale arcade-back-btn) */
+/* Bouton de retour */
 .arcade-back-btn {
   padding: 9px 26px;
   border: none;
@@ -123,7 +122,6 @@
   filter: brightness(1.03);
 }
 
-/* Utils */
 .hidden {
   display: none;
 }

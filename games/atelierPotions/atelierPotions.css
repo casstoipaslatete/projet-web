@@ -1,13 +1,8 @@
-/* ===========================
-   Atelier de potions – spécifique
-   (le look global vient de arcade-theme.css)
-   =========================== */
-
 #game-container {
   text-align: center;
 }
 
-/* Carte principale (le fond du panel vient de .arcade-panel) */
+/* Carte principale*/
 #cl-root {
   max-width: 520px;
   margin: 0 auto;
@@ -65,7 +60,7 @@
   transform: translateY(-2px);
 }
 
-/* Ouvert = coloré, version enfant */
+/* Ouvert = coloré*/
 .cl-faucet.open[data-index="0"] {
   background: radial-gradient(circle at top, #ff6b6b, #e74c3c);
 }
@@ -79,7 +74,7 @@
   background: radial-gradient(circle at top, #6ec1ff, #3498db);
 }
 
-/* Zone potion / chaudron */
+/* Zone chaudron */
 #cl-cauldron-area {
   margin-bottom: 12px;
 }
@@ -111,7 +106,7 @@
   font-size: 0.95rem;
 }
 
-/* Barre de potion (couleur du mélange) */
+/* Barre de potion */
 #cl-potion-bar-container {
   width: 100%;
   height: 12px;
@@ -175,7 +170,6 @@
   animation: pop-in 0.25s ease-out;
 }
 
-/* Layout un peu plus horizontal sur moyen écran */
 @media (min-width: 480px) {
   #cl-actions {
     flex-direction: row;
@@ -183,7 +177,6 @@
   }
 }
 
-/* Classe utilitaire pour cacher */
 .hidden {
   display: none !important;
 }

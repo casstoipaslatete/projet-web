@@ -13,7 +13,6 @@ let timeLeftMs = 0;
 let maxTimeMs = 8000;
 let awaitingAnswer = false;
 
-// mots adaptés 6-9 ans
 const WORDS_LEVEL_1 = [
   "chat", "chien", "papa", "maman", "nez", "mer", "lune", "soleil",
   "main", "livre", "porte", "table", "tasse"
@@ -40,8 +39,7 @@ try {
 
   bgMusic = new Audio("music/speedTypingMusic.mp3");
   bgMusic.loop = true;
-  bgMusic.volume = 0.25;     // volume plus doux
-  // ne pas lancer tout de suite pour éviter les blocages autoplay
+  bgMusic.volume = 0.25;
 } catch (e) {
   console.warn("Audio speedTyping non disponible:", e);
 }
@@ -52,7 +50,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+    
   }
 }
 
@@ -64,7 +62,6 @@ function withClickSfx(handler) {
 }
 
 function ensureMusic() {
-  // couper éventuellement la musique globale du menu
   if (window.GlobalAudio && GlobalAudio.music) {
     try {
       GlobalAudio.music.pause();
@@ -82,7 +79,7 @@ function stopMusic() {
   bgMusic.currentTime = 0;
 }
 
-// DOM
+// --- DOM ---
 const roundSpan = document.getElementById("st-round");
 const scoreSpan = document.getElementById("st-score");
 const levelSpan = document.getElementById("st-level");
@@ -102,20 +99,17 @@ const replayBtn = document.getElementById("st-replay");
 const backMenuBtn = document.getElementById("st-back-menu");
 const backMenuBtn2 = document.getElementById("st-back-menu2");
 
-// ---- navigation vers l'arcade ----
+// ---- NAVIGATION ----
 function goBackToMenu() {
   stopMusic();
 
-  // SPA : on change le hash
   window.location.hash = "#menu";
 
-  // Fallback si jamais Router n'est pas dispo (lancé en standalone)
   if (!window.Router) {
     window.location.href = "/public/index.html#games";
   }
 }
 
-// ---- helpers ----
 function pickWordForLevel(level) {
   let arr;
   if (level === 1) arr = WORDS_LEVEL_1;
@@ -172,7 +166,7 @@ function startTimer() {
   }, 100);
 }
 
-// ---- logique du jeu ----
+// ---- LOGIQUE ----
 function startGame() {
   ensureMusic();
 
@@ -191,14 +185,11 @@ function startGame() {
   summary.classList.add("hidden");
   bestRow.classList.add("hidden");
 
-  // boutons : cacher Commencer/Rejouer pendant la partie
   startBtn.classList.add("hidden");
   replayBtn.classList.add("hidden");
 
-  // montrer le bouton retour milieu pendant la partie
   backMenuBtn.classList.remove("hidden");
 
-  // réactiver input + bouton valider
   input.disabled = false;
   validateBtn.disabled = false;
 
@@ -274,17 +265,13 @@ async function endGame() {
   wordSpan.textContent = "Bon travail!";
   input.value = "";
 
-  // désactiver input + bouton valider
   input.disabled = true;
   validateBtn.disabled = true;
 
-  // à la fin : cacher le bouton retour du milieu
   backMenuBtn.classList.add("hidden");
 
   finalScoreSpan.textContent = localScore.toString();
   summary.classList.remove("hidden");
-
-  // montrer Rejouer à la fin
   replayBtn.classList.remove("hidden");
 
   try {
@@ -304,7 +291,6 @@ async function endGame() {
   }
 }
 
-// ---- events ----
 startBtn.addEventListener("click", withClickSfx(startGame));
 replayBtn.addEventListener("click", withClickSfx(startGame));
 
@@ -320,7 +306,7 @@ input.addEventListener("keydown", (e) => {
   }
 });
 
-// ---- init ----
+// ---- INITIALISATION ----
 function initSpeedTyping() {
   ScoreService.init("speedTyping");
 
@@ -343,12 +329,10 @@ function initSpeedTyping() {
   summary.classList.add("hidden");
   bestRow.classList.add("hidden");
 
-  // état des boutons
   startBtn.classList.remove("hidden");
   replayBtn.classList.add("hidden");
-  backMenuBtn.classList.remove("hidden"); // visible au début
+  backMenuBtn.classList.remove("hidden");
 
-  // désactiver input + valider tant que la partie n'est pas lancée
   input.disabled = true;
   validateBtn.disabled = true;
 }

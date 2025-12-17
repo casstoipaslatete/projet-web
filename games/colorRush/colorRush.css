@@ -1,8 +1,3 @@
-/* ===========================
-   Spécifique à Color Rush
-   (le look global vient de arcade-theme.css)
-   =========================== */
-
 /* Info en haut */
 #info-display p {
   margin: 3px 0;
@@ -15,7 +10,7 @@
   text-align: center;
 }
 
-/* Timer : petit ajustement */
+/* Timer */
 #cr-timer-bar-container {
   margin-bottom: 10px;
 }
@@ -34,7 +29,7 @@
   color: #f1c40f;
 }
 
-/* Conteneur de boutons : grille auto */
+/* Conteneur de boutons */
 #cr-buttons {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
@@ -61,7 +56,7 @@
   filter: brightness(1.1);
 }
 
-/* Couleurs des boutons (selon data-color) */
+/* Couleurs des boutons */
 .cr-color-btn[data-color="rouge"] {
   background-color: #e74c3c;
 }
@@ -108,7 +103,6 @@
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Classe utilitaire pour cacher */
 .hidden {
   display: none !important;
 }

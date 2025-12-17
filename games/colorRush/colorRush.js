@@ -41,7 +41,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+
   }
 }
 
@@ -84,7 +84,6 @@ function goBackToMenu() {
     audio.currentTime = 0;
   } catch {}
 
-  // Retour vers l'arcade (index SPA)
   window.location.href = "/public/index.html#games";
 }
 
@@ -228,8 +227,6 @@ function startGame() {
   feedbackDiv.textContent = "";
   feedbackDiv.className = "";
   summary.classList.add("hidden");
-
-  // cacher "Commencer", cacher "Rejouer" au début d'une partie
   if (startBtn) startBtn.classList.add("hidden");
   if (replayBtn) replayBtn.classList.add("hidden");
 
@@ -300,8 +297,6 @@ async function endGame() {
 
   finalScoreSpan.textContent = localScore.toString();
   summary.classList.remove("hidden");
-
-  // montrer "Rejouer"
   if (replayBtn) replayBtn.classList.remove("hidden");
 
   try {
@@ -331,5 +326,4 @@ if (replayBtn) {
   replayBtn.addEventListener("click", withClickSfx(startGame));
 }
 
-// init de base pour le service de score
 ScoreService.init("colorRush");

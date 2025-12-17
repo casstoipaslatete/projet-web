@@ -1,8 +1,6 @@
 import { ScoreService } from "../../scripts/scoreService.js";
 
-// ===============================
-// SONS ET MUSIQUE
-// ===============================
+// --- SONS ET MUSIQUE ---
 let sfxClic, sfxSuccess, sfxError;
 try {
   sfxClic = new Audio("sfx/clic.mp3");
@@ -27,15 +25,13 @@ function withClickSfx(handler) {
   };
 }
 
-// Musique du jeu
 const audio = new Audio("music/mathDashMusic.mp3");
 audio.loop = true;
 audio.volume = 0.25;
 audio.play().catch(() => {});
 
-// ===============================
-// CONSTANTES ET ÉTAT DU JEU
-// ===============================
+
+// --- ÉTAT DE JEU ---
 
 const TOTAL_QUESTIONS = 10;
 
@@ -49,9 +45,9 @@ let timerId = null;
 let timeLeftMs = 0;
 let maxTimeMs = 7000;
 
-// ===============================
-// ÉLÉMENTS DOM
-// ===============================
+
+// --- DOM ---
+
 
 const questionIndexSpan = document.getElementById("md-question-index");
 const scoreSpan = document.getElementById("md-score");
@@ -72,9 +68,8 @@ const startBtn = document.getElementById("md-start");
 const replayBtn = document.getElementById("md-replay");
 const backArcadeBtn = document.getElementById("btn-back");
 
-// ===============================
-// BOUTON RETOUR À L’ARCADE
-// ===============================
+
+// --- BOUTON RETOUR ---
 
 if (backArcadeBtn) {
   backArcadeBtn.addEventListener(
@@ -85,15 +80,13 @@ if (backArcadeBtn) {
         audio.currentTime = 0;
       } catch {}
 
-      // Retour vers la sélection des jeux
       window.location.href = "/public/index.html#games";
     })
   );
 }
 
-// ===============================
-// OUTILS / GÉNÉRATION DES QUESTIONS
-// ===============================
+
+// --- GÉNÉRATION DE QUESTIONS ---
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -180,9 +173,8 @@ function generateQuestionForLevel(level) {
   return { questionText, answer, choices: choiceArray };
 }
 
-// ===============================
-// TIMER
-// ===============================
+
+// --- TIMER ---
 
 function startTimer() {
   clearInterval(timerId);
@@ -211,9 +203,8 @@ function startTimer() {
   }, 100);
 }
 
-// ===============================
-// LOGIQUE DE PROGRESSION
-// ===============================
+
+// --- LOGIQUE ---
 
 function updateLevel(correct) {
   if (correct) correctStreak++;
@@ -225,10 +216,6 @@ function updateLevel(correct) {
 
   levelSpan.textContent = level.toString();
 }
-
-// ===============================
-// AFFICHAGE D'UNE QUESTION
-// ===============================
 
 function showQuestion() {
   questionIndex++;
@@ -258,10 +245,6 @@ function showQuestion() {
 
   startTimer();
 }
-
-// ===============================
-// CLIC SUR UNE RÉPONSE
-// ===============================
 
 function handleChoiceClick(e) {
   const btn = e.currentTarget;
@@ -301,10 +284,6 @@ choiceButtons.forEach(btn =>
   btn.addEventListener("click", handleChoiceClick)
 );
 
-// ===============================
-// TIMEOUT
-// ===============================
-
 function handleTimeout() {
   updateLevel(false);
   playSfx(sfxError);
@@ -321,10 +300,6 @@ function handleTimeout() {
 
   setTimeout(showQuestion, 2000);
 }
-
-// ===============================
-// FIN DE PARTIE
-// ===============================
 
 async function endGame() {
   clearInterval(timerId);
@@ -344,7 +319,6 @@ async function endGame() {
     console.warn("Erreur saveScore MathDash:", e);
   }
 
-  // Affichage d'un score global
   try {
     const scores = await ScoreService.getScore();
     const globalScore = Math.max(...scores.map(s => s.score));
@@ -354,10 +328,6 @@ async function endGame() {
     bestScoreRow.classList.add("hidden");
   }
 }
-
-// ===============================
-// DÉMARRER / REJOUER
-// ===============================
 
 function startGame() {
   startBtn.classList.add("hidden");
@@ -389,9 +359,8 @@ function startGame() {
 startBtn.addEventListener("click", withClickSfx(startGame));
 replayBtn.addEventListener("click", withClickSfx(startGame));
 
-// ===============================
-// INITIALISATION
-// ===============================
+
+// --- INITIALISATION ---
 
 function initMathDash() {
   ScoreService.init("mathDash");

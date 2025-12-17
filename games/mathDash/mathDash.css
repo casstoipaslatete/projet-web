@@ -1,9 +1,3 @@
-/* ===========================
-   Spécifique à Math Dash
-   (tout le look général vient de arcade-theme.css)
-   =========================== */
-
-/* Ajuste un peu la taille de la question */
 #question-box {
   font-size: 2rem;
 }
@@ -16,7 +10,6 @@
   margin: 12px 0 18px;
 }
 
-/* On garde la largeur full, même si on a déjà arcade-btn-block */
 .choice-btn {
   width: 100%;
 }
@@ -37,7 +30,7 @@
   margin: 3px 0;
 }
 
-/* Timer : petit ajustement si tu veux */
+/* Timer */
 #timer-bar-container {
   margin-top: 6px;
 }
@@ -48,12 +41,11 @@
   padding-top: 10px;
 }
 
-/* Feedback (on réutilise arcade-feedback) */
+/* Feedback */
 #md-feedback.arcade-feedback {
   margin-bottom: 10px;
 }
 
-/* Classes de feedback depuis le JS */
 #md-feedback.good {
   color: #2ecc71;
 }
@@ -62,7 +54,6 @@
   color: #f1c40f;
 }
 
-/* Cacher/afficher des blocs */
 .hidden {
   display: none !important;
 }

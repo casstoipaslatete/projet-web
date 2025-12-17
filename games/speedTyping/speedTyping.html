@@ -6,12 +6,17 @@
   <title>Tape Éclair</title>
   <link rel="icon" type="image/png" href="/static/favicon.png" />
   <link rel="apple-touch-icon" href="/static/favicon.png">
-  <!-- Thème arcade global -->
+
+  <!-- Thème global + bordure -->
+  <link rel="stylesheet" href="/styles/main.css" />
+  <!-- Thème arcade commun -->
   <link rel="stylesheet" href="/styles/arcade-theme.css">
-  <!-- Styles spécifiques au jeu -->
+  <!-- CSS spécifique à speedTyping -->
   <link rel="stylesheet" href="speedTyping.css">
 </head>
+
 <body class="arcade-game-body">
+  <!-- Div du jeu -->
   <div class="arcade-game-root">
     <h1 class="arcade-title-main">Tape Éclair</h1>
 
@@ -43,7 +48,7 @@
         </button>
       </div>
 
-      <!-- Barre de temps (réutilise le timer générique) -->
+      <!-- Barre de temps -->
       <div id="st-timer-bar-container" class="arcade-timer-container">
         <div id="st-timer-bar" class="arcade-timer-bar"></div>
       </div>
@@ -61,7 +66,7 @@
         </button>
       </div>
 
-      <!-- Bouton retour (pendant la partie) -->
+      <!-- Bouton retour -->
       <div style="margin-top: 10px;">
         <button
           id="st-back-menu"

@@ -26,12 +26,10 @@ let sfxSimonBeep, sfxClic, sfxError;
 let bgMusic;
 
 try {
-  // SFX
   sfxSimonBeep = new Audio("sfx/simonBeep.mp3");
   sfxClic      = new Audio("sfx/clic.mp3");
   sfxError     = new Audio("sfx/error.mp3");
 
-  // Musique de fond
   bgMusic = new Audio("music/SimonMusic.mp3");
   bgMusic.loop = true;
   bgMusic.volume = 0.25;
@@ -46,7 +44,7 @@ function playSfx(audio) {
     audio.currentTime = 0;
     audio.play().catch(() => {});
   } catch {
-    // ignore
+
   }
 }
 
@@ -74,10 +72,8 @@ function stopMusic() {
 function goBackToMenu() {
   stopMusic();
 
-  // Hash pour la SPA
   window.location.hash = "#menu";
 
-  // Fallback si jamais Router n'est pas là (chargé en standalone)
   if (!window.Router) {
     window.location.href = "/public/index.html#games";
   }
@@ -145,7 +141,6 @@ function flashPad(color) {
     const pad = document.querySelector(`.simon-pad[data-color="${color}"]`);
     if (!pad) return resolve();
 
-    // son du pad
     playSfx(sfxSimonBeep);
 
     pad.classList.add("active");
@@ -162,7 +157,6 @@ pads.forEach((pad) => {
 
     const clickedColor = pad.dataset.color;
 
-    // petit flash visuel + son au clic
     await flashPad(clickedColor);
 
     playerSequence.push(clickedColor);
@@ -190,7 +184,6 @@ function checkPlayerInput() {
 async function endGame() {
   gameOver = true;
 
-  // Cacher le bouton Retour du milieu en fin de partie
   const backBtnInGameLocal = document.getElementById("btn-back");
   if (backBtnInGameLocal) backBtnInGameLocal.classList.add("hidden");
 
@@ -198,7 +191,6 @@ async function endGame() {
   summary.classList.remove("hidden");
   replayBtn.classList.remove("hidden");
 
-  // Sauvegarde du meilleur score
   try {
     await ScoreService.saveScore("Simon", score);
   } catch (e) {
@@ -216,14 +208,13 @@ async function endGame() {
   }
 }
 
-// ---------- EVENTS ----------
 startBtn.addEventListener("click", withClickSfx(startGame));
 replayBtn.addEventListener("click", withClickSfx(startGame));
 
 backMenuBtn.addEventListener("click", withClickSfx(goBackToMenu));
 backBtnInGame.addEventListener("click", withClickSfx(goBackToMenu));
 
-// ---------- INIT ----------
+// ---------- INITIALISATION ----------
 function initSimon() {
   ScoreService.init("simon");
 
